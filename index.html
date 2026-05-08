@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kinetic Age — Admin Panel</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">KA</div>
+        <div class="brand-text">
+          <div class="brand-title">Kinetic Age</div>
+          <div class="brand-subtitle">Admin Panel</div>
+        </div>
+      </div>
+
+      <div class="nav-label">Navigation</div>
+
+      <nav class="nav">
+        <a class="nav-item" href="#" data-page="dashboard"><span class="nav-icon">▦</span><span>Dashboard</span></a>
+        <a class="nav-item" href="#" data-page="analytics"><span class="nav-icon">📊</span><span>Analytics</span></a>
+        <a class="nav-item active" href="#" data-page="clients"><span class="nav-icon">👥</span><span>Client</span></a>
+        <a class="nav-item" href="#" data-page="trainers"><span class="nav-icon">🏋</span><span>Trainers</span></a>
+        <a class="nav-item" href="#" data-page="sessions"><span class="nav-icon">📅</span><span>Sessions</span></a>
+        <a class="nav-item" href="#" data-page="pending-plans"><span class="nav-icon">📝</span><span>Pending Exercise Plans</span></a>
+        <a class="nav-item" href="#" data-page="leaves"><span class="nav-icon">🌴</span><span>Leaves</span></a>
+        <a class="nav-item" href="#" data-page="reports"><span class="nav-icon">📈</span><span>Reports</span></a>
+        <a class="nav-item" href="#" data-page="trials"><span class="nav-icon">⏱</span><span>Trials</span></a>
+        <a class="nav-item" href="#" data-page="audits"><span class="nav-icon">🔍</span><span>Audits</span></a>
+        <a class="nav-item" href="#" data-page="reviews"><span class="nav-icon">⭐</span><span>Reviews</span></a>
+        <a class="nav-item" href="#" data-page="crm"><span class="nav-icon">💼</span><span>CRM</span></a>
+        <a class="nav-item" href="#" data-page="call-analysis"><span class="nav-icon">📞</span><span>Call Analysis</span></a>
+        <a class="nav-item" href="#" data-page="universal-otp"><span class="nav-icon">🔑</span><span>Universal OTP</span></a>
+        <a class="nav-item" href="#" data-page="on-demand"><span class="nav-icon">⚡</span><span>On Demand</span></a>
+      </nav>
+    </aside>
+
+    <!-- Main area -->
+    <div class="main">
+      <header class="header">
+        <div class="search">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search..." />
+        </div>
+        <div class="user">
+          <div class="user-avatar">AD</div>
+          <div class="user-meta">
+            <div class="user-name">Riddhi</div>
+            <div class="user-role">Admin</div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content" id="page-content">
+        <section class="page" id="page-clients">
+
+          <!-- ============ TOP ALERT BANNER ============ -->
+          <div class="alert-banner">
+            <div class="alert-left">
+              <div class="alert-eyebrow">Friday, May 8, 2026</div>
+              <h1 class="alert-title">5 sessions need your attention</h1>
+              <div class="alert-meta">
+                <button class="alert-chip alert-chip-clickable" data-scroll-to="block-ongoing">
+                  <span class="chip-count" id="chip-ongoing-count">2</span> Ongoing &rarr;
+                </button>
+                <button class="alert-chip alert-chip-clickable" data-scroll-to="block-assign-physio">
+                  <span class="chip-count" id="chip-physio-count">0</span> Assign physio &rarr;
+                </button>
+              </div>
+            </div>
+            <div class="alert-right">
+              <div class="alert-num">5<span class="alert-num-suffix">/ 20</span></div>
+              <div class="alert-num-label">attention / total today</div>
+            </div>
+          </div>
+
+          <!-- ============ ONGOING SESSION ============ -->
+          <section class="section attention-section">
+            <h2 class="section-title attention-title">Ongoing Session</h2>
+
+            <!-- Critical ongoing -->
+            <div class="attention-block" id="block-ongoing">
+              <div class="attention-block-head">
+                <span class="attention-block-title">Critical right now</span>
+                <span class="attention-count">2</span>
+              </div>
+              <div class="ongoing-grid">
+                <div class="ongoing-box ongoing-critical">
+                  <div class="ongoing-status status-critical">Not started &middot; 18 min late</div>
+                  <div class="ongoing-pair"><span class="ongoing-label">Client</span><span class="ongoing-value">Aman</span></div>
+                  <div class="ongoing-pair"><span class="ongoing-label">Physio</span><span class="ongoing-value">Dr. Rajan Iyer</span></div>
+                  <div class="ongoing-time">Scheduled 6:15 PM &middot; No start logged</div>
+                </div>
+                <div class="ongoing-box ongoing-delayed">
+                  <div class="ongoing-status status-delayed">Delayed &middot; 8 min</div>
+                  <div class="ongoing-pair"><span class="ongoing-label">Client</span><span class="ongoing-value">Amogh</span></div>
+                  <div class="ongoing-pair"><span class="ongoing-label">Physio</span><span class="ongoing-value">Dr. Rajan Iyer</span></div>
+                  <div class="ongoing-time">Scheduled 11:00 AM &middot; Started 11:08 AM</div>
+                </div>
+              </div>
+
+              <details class="show-details">
+                <summary>Show on-time sessions (1)</summary>
+                <div class="ongoing-grid" style="margin-top: 12px;">
+                  <div class="ongoing-box ongoing-on-time">
+                    <div class="ongoing-status status-on-time">Started on time</div>
+                    <div class="ongoing-pair"><span class="ongoing-label">Client</span><span class="ongoing-value">Akshat</span></div>
+                    <div class="ongoing-pair"><span class="ongoing-label">Physio</span><span class="ongoing-value">Dr. Neha Sharma</span></div>
+                    <div class="ongoing-time">Scheduled 4:30 PM &middot; Started 4:30 PM</div>
+                  </div>
+                </div>
+              </details>
+            </div>
+
+            <!-- TODO tasks block (light red) — moved above Upcoming -->
+            <div class="attention-block todo-block" id="block-assign-physio">
+              <div class="attention-block-head">
+                <span class="attention-block-title">TODO tasks &middot; Assign physio</span>
+                <span class="attention-count" id="todo-count">0</span>
+              </div>
+              <div class="todo-list" id="todo-list"></div>
+              <div class="todo-empty" id="todo-empty">No pending TODOs &mdash; everything's set.</div>
+            </div>
+
+            <!-- Upcoming sessions -->
+            <div class="attention-block">
+              <div class="attention-block-head">
+                <span class="attention-block-title">Upcoming sessions</span>
+                <span class="attention-count" id="upcoming-count">3</span>
+              </div>
+
+              <div class="upcoming-filter" data-filter-group="date">
+                <span class="filter-group-label">When:</span>
+                <button class="filter-pill active" data-filter="all">All</button>
+                <button class="filter-pill" data-filter="today">Today</button>
+                <button class="filter-pill" data-filter="tomorrow">Tomorrow</button>
+                <span class="filter-divider"></span>
+                <label for="upcoming-date-filter" class="filter-date-label">Pick a date:</label>
+                <input type="date" class="filter-date" id="upcoming-date-filter" />
+              </div>
+
+              <div class="upcoming-filter" data-filter-group="service">
+                <span class="filter-group-label">Service:</span>
+                <button class="filter-pill active" data-service-filter="all">All</button>
+                <button class="filter-pill" data-service-filter="Physiotherapy">Physiotherapy</button>
+                <button class="filter-pill" data-service-filter="Physical Trainer">Physical Trainer</button>
+                <button class="filter-pill" data-service-filter="Stretching">Stretching</button>
+              </div>
+
+              <div class="cards-grid" id="upcoming-grid">
+
+                <!-- Sorted by date ASC: May 9 → May 10 → May 12 -->
+
+                <!-- Amogh — May 9, 11:00 AM -->
+                <article class="client-card" data-card-id="amogh" data-datetime="2026-05-09T11:00" data-service="Physical Trainer">
+                  <header class="cc-header">
+                    <div class="cc-avatar">AM</div>
+                    <div class="cc-id"><div class="cc-name">Amogh</div><div class="cc-age">Age 41</div></div>
+                    <span class="cc-status status-scheduled">Scheduled</span>
+                    <div class="cc-menu-wrap">
+                      <button class="cc-menu-btn" data-menu-toggle aria-label="More options">&#x22EF;</button>
+                      <div class="cc-menu" hidden>
+                        <button class="cc-menu-item" data-add-docs>Add documents</button>
+                      </div>
+                      <input type="file" class="cc-file-input" hidden multiple />
+                    </div>
+                  </header>
+                  <div class="cc-address-row">
+                    <p class="cc-address">12, Dollars Colony, RMV 2nd Stage, Bengaluru</p>
+                    <span class="cc-service">Physical Trainer</span>
+                  </div>
+                  <div class="cc-datetime">
+                    <div class="cc-dt-display">
+                      <span class="cc-dt-item"><strong>May 9, 2026</strong></span>
+                      <span class="cc-dt-item"><strong>11:00 AM</strong></span>
+                    </div>
+                    <div class="cc-dt-edit" hidden>
+                      <input type="date" class="dt-input dt-date" value="2026-05-09" />
+                      <input type="time" class="dt-input dt-time" value="11:00" />
+                      <div class="dt-edit-actions">
+                        <button class="btn btn-outline btn-sm" data-cancel>Cancel</button>
+                        <button class="btn btn-primary btn-sm" data-save>Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cc-physio-info cc-physio-assigned" data-physio-info>
+                    <span class="cc-physio-label">Pre-assigned</span>
+                    <span class="cc-physio-name">Dr. Neha Sharma</span>
+                  </div>
+
+                  <details class="cc-view-more">
+                    <summary>View more</summary>
+                    <div class="cc-view-more-content">
+                      <div class="cc-payment">
+                        <div class="cc-section-label">Payment</div>
+                        <div class="cc-payment-row"><span class="payment-label">Session fee</span><span class="payment-amount">&#8377;2,500</span></div>
+                        <div class="cc-payment-row"><span class="payment-label">Status</span><span class="payment-status payment-paid">Paid</span></div>
+                        <div class="cc-payment-row"><span class="payment-label">Paid on</span><span class="payment-value">May 5, 2026</span></div>
+                        <div class="cc-payment-row"><span class="payment-label">Method</span><span class="payment-value">UPI</span></div>
+                        <div class="cc-payment-row"><span class="payment-label">Transaction</span><span class="payment-value">TXN-78432901</span></div>
+                      </div>
+                      <div class="cc-description">
+                        <div class="cc-section-label">Description</div>
+                        <p>Chronic right-shoulder stiffness with limited overhead movement after a recent gym injury.</p>
+                      </div>
+                      <div class="cc-attachments">
+                        <div class="cc-section-label">Attachments</div>
+                        <div class="cc-attachment-list">
+                          <a class="cc-attachment" href="#" onclick="return false;">
+                            <span class="cc-attachment-ext ext-pdf">PDF</span>
+                            <span class="cc-attachment-name">shoulder-xray-report.pdf</span>
+                            <span class="cc-attachment-size">3.2 MB</span>
+                          </a>
+                          <a class="cc-attachment" href="#" onclick="return false;">
+                            <span class="cc-attachment-ext ext-doc">DOC</span>
+                            <span class="cc-attachment-name">workout-history.docx</span>
+                            <span class="cc-attachment-size">420 KB</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </details>
+
+                  <footer class="cc-actions cc-actions-grid">
+                    <button class="btn btn-outline" data-reassign-physio>Reassign physio</button>
+                    <button class="btn btn-outline" data-reschedule-time>Reschedule session</button>
+                    <button class="btn btn-outline-danger" data-cancel-session>Cancel session</button>
+                    <div class="cc-call-cell">
+                      <button class="btn btn-primary" data-call-toggle>Call client</button>
+                      <div class="cc-phone-display" hidden>
+                        <a href="tel:+919812345002" class="cc-phone-link">+91 98123 45002</a>
+                      </div>
+                    </div>
+                  </footer>
+                </article>
+
+                <!-- Akshat — May 10, 4:30 PM -->
+                <article class="client-card" data-card-id="akshat" data-datetime="2026-05-10T16:30" data-service="Stretching">
+                  <header class="cc-header">
+                    <div class="cc-avatar">AK</div>
+                    <div class="cc-id"><div class="cc-name">Akshat</div><div class="cc-age">Age 34</div></div>
+                    <span class="cc-status status-scheduled">Scheduled</span>
+                    <div class="cc-menu-wrap">
+                      <button class="cc-menu-btn" data-menu-toggle aria-label="More options">&#x22EF;</button>
+                      <div class="cc-menu" hidden>
+                        <button class="cc-menu-item" data-add-docs>Add documents</button>
+                      </div>
+                      <input type="file" class="cc-file-input" hidden multiple />
+                    </div>
+                  </header>
+                  <div class="cc-address-row">
+                    <p class="cc-address">B-204, Prestige Lake Ridge, JP Nagar, Bengaluru</p>
+                    <span class="cc-service">Stretching</span>
+                  </div>
+                  <div class="cc-datetime">
+                    <div class="cc-dt-display">
+                      <span class="cc-dt-item"><strong>May 10, 2026</strong></span>
+                      <span class="cc-dt-item"><strong>4:30 PM</strong></span>
+                    </div>
+                    <div class="cc-dt-edit" hidden>
+                      <input type="date" class="dt-input dt-date" value="2026-05-10" />
+                      <input type="time" class="dt-input dt-time" value="16:30" />
+                      <div class="dt-edit-actions">
+                        <button class="btn btn-outline btn-sm" data-cancel>Cancel</button>
+                        <button class="btn btn-primary btn-sm" data-save>Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cc-physio-info cc-physio-assigned" data-physio-info>
+                    <span class="cc-physio-label">Pre-assigned</span>
+                    <span class="cc-physio-name">Dr. Neha Sharma</span>
+                  </div>
+
+                  <details class="cc-view-more">
+                    <summary>View more</summary>
+                    <div class="cc-view-more-content">
+                      <div class="cc-payment">
+                        <div class="cc-section-label">Payment</div>
+                        <div class="cc-payment-row"><span class="payment-label">Session fee</span><span class="payment-amount">&#8377;1,800</span></div>
+                        <div class="cc-payment-row"><span class="payment-label">Status</span><span class="payment-status payment-paid">Paid</span></div>
+                        <div class="cc-payment-row"><span class="payment-label">Paid on</span><span class="payment-value">May 7, 2026</span></div>
+                        <div class="cc-payment-row"><span class="payment-label">Method</span><span class="payment-value">Credit Card</span></div>
+                        <div class="cc-payment-row"><span class="payment-label">Transaction</span><span class="payment-value">TXN-78519044</span></div>
+                      </div>
+                      <div class="cc-description">
+                        <div class="cc-section-label">Description</div>
+                        <p>Sharp lower-back pain radiating to the left leg, worsens after sitting for long hours.</p>
+                      </div>
+                      <div class="cc-attachments">
+                        <div class="cc-section-label">Attachments</div>
+                        <div class="cc-attachment-list">
+                          <a class="cc-attachment" href="#" onclick="return false;">
+                            <span class="cc-attachment-ext ext-pdf">PDF</span>
+                            <span class="cc-attachment-name">MRI-lumbar-spine.pdf</span>
+                            <span class="cc-attachment-size">2.4 MB</span>
+                          </a>
+                          <a class="cc-attachment" href="#" onclick="return false;">
+                            <span class="cc-attachment-ext ext-img">JPG</span>
+                            <span class="cc-attachment-name">posture-photo.jpg</span>
+                            <span class="cc-attachment-size">1.1 MB</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </details>
+
+                  <footer class="cc-actions cc-actions-grid">
+                    <button class="btn btn-outline" data-reassign-physio>Reassign physio</button>
+                    <button class="btn btn-outline" data-reschedule-time>Reschedule session</button>
+                    <button class="btn btn-outline-danger" data-cancel-session>Cancel session</button>
+                    <div class="cc-call-cell">
+                      <button class="btn btn-primary" data-call-toggle>Call client</button>
+                      <div class="cc-phone-display" hidden>
+                        <a href="tel:+919812345001" class="cc-phone-link">+91 98123 45001</a>
+                      </div>
+                    </div>
+                  </footer>
+                </article>
+
+                <!-- Aman — May 12, 6:15 PM (Rescheduled) -->
+                <article class="client-card client-card-attention" data-card-id="aman" data-datetime="2026-05-12T18:15" data-service="Physiotherapy">
+                  <header class="cc-header">
+                    <div class="cc-avatar">AN</div>
+                    <div class="cc-id"><div class="cc-name">Aman</div><div class="cc-age">Age 28</div></div>
+                    <span class="cc-status status-reschedule">Rescheduled</span>
+                    <div class="cc-menu-wrap">
+                      <button class="cc-menu-btn" data-menu-toggle aria-label="More options">&#x22EF;</button>
+                      <div class="cc-menu" hidden>
+                        <button class="cc-menu-item" data-add-docs>Add documents</button>
+                      </div>
+                      <input type="file" class="cc-file-input" hidden multiple />
+                    </div>
+                  </header>
+                  <div class="cc-address-row">
+                    <p class="cc-address">Flat 7B, Brigade Meadows, Kanakapura Road, Bengaluru</p>
+                    <span class="cc-service">Physiotherapy</span>
+                  </div>
+                  <div class="cc-datetime">
+                    <div class="cc-dt-display">
+                      <span class="cc-dt-item"><strong>May 12, 2026</strong></span>
+                      <span class="cc-dt-item"><strong>6:15 PM</strong></span>
+                    </div>
+                    <div class="cc-dt-edit" hidden>
+                      <input type="date" class="dt-input dt-date" value="2026-05-12" />
+                      <input type="time" class="dt-input dt-time" value="18:15" />
+                      <div class="dt-edit-actions">
+                        <button class="btn btn-outline btn-sm" data-cancel>Cancel</button>
+                        <button class="btn btn-primary btn-sm" data-save>Save</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cc-reschedule-note">
+                    <span class="rn-label">Rescheduled</span>
+                    <span class="rn-old">May 11, 2026, 11:00 AM</span>
+                    <span class="rn-arrow">&rarr;</span>
+                    <span class="rn-new">May 12, 2026, 6:15 PM</span>
+                  </div>
+
+                  <div class="cc-physio-info cc-physio-assigned" data-physio-info>
+                    <span class="cc-physio-label">Pre-assigned</span>
+                    <span class="cc-physio-name">Dr. Rajan Iyer</span>
+                  </div>
+
+                  <details class="cc-view-more">
+                    <summary>View more</summary>
+                    <div class="cc-view-more-content">
+                      <div class="cc-payment">
+                        <div class="cc-section-label">Payment</div>
+                        <div class="cc-payment-row"><span class="payment-label">Session fee</span><span class="payment-amount">&#8377;2,000</span></div>
+                        <div class="cc-payment-row"><span class="payment-label">Status</span><span class="payment-status payment-pending">Pending</span></div>
+                        <div class="cc-payment-row"><span class="payment-label">Due by</span><span class="payment-value">May 12, 2026</span></div>
+                        <div class="cc-payment-row"><span class="payment-label">Method</span><span class="payment-value">&mdash;</span></div>
+                        <div class="cc-payment-row"><span class="payment-label">Transaction</span><span class="payment-value">&mdash;</span></div>
+                      </div>
+                      <div class="cc-description">
+                        <div class="cc-section-label">Description</div>
+                        <p>Persistent knee pain while climbing stairs, suspected meniscus strain from running.</p>
+                      </div>
+                      <div class="cc-attachments">
+                        <div class="cc-section-label">Attachments</div>
+                        <div class="cc-attachment-list">
+                          <a class="cc-attachment" href="#" onclick="return false;">
+                            <span class="cc-attachment-ext ext-img">JPG</span>
+                            <span class="cc-attachment-name">knee-mri.jpg</span>
+                            <span class="cc-attachment-size">1.8 MB</span>
+                          </a>
+                          <a class="cc-attachment" href="#" onclick="return false;">
+                            <span class="cc-attachment-ext ext-pdf">PDF</span>
+                            <span class="cc-attachment-name">previous-physio-notes.pdf</span>
+                            <span class="cc-attachment-size">680 KB</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </details>
+
+                  <footer class="cc-actions cc-actions-grid">
+                    <button class="btn btn-outline" data-reassign-physio>Reassign physio</button>
+                    <button class="btn btn-outline" data-reschedule-time>Reschedule session</button>
+                    <button class="btn btn-outline-danger" data-cancel-session>Cancel session</button>
+                    <div class="cc-call-cell">
+                      <button class="btn btn-primary" data-call-toggle>Call client</button>
+                      <div class="cc-phone-display" hidden>
+                        <a href="tel:+919812345003" class="cc-phone-link">+91 98123 45003</a>
+                      </div>
+                    </div>
+                  </footer>
+                </article>
+
+              </div>
+            </div>
+
+            <!-- Cancelled sessions block (populated when user cancels) -->
+            <div class="attention-block" id="attention-cancelled-block">
+              <div class="attention-block-head">
+                <span class="attention-block-title">Cancelled sessions</span>
+                <span class="attention-count" id="cancelled-count">0</span>
+              </div>
+              <div class="cards-grid" id="cancelled-grid"></div>
+              <div class="cancelled-empty" id="cancelled-empty">No cancelled sessions yet.</div>
+            </div>
+
+            <!-- Past Sessions (renamed from Recent issues) -->
+            <div class="attention-block">
+              <div class="attention-block-head">
+                <span class="attention-block-title">Past Sessions</span>
+                <span class="attention-count">8</span>
+              </div>
+
+              <div class="metrics-filter" data-filter-group="metrics-service">
+                <span class="filter-group-label">Service:</span>
+                <button class="filter-pill active" data-metrics-service="all">All</button>
+                <button class="filter-pill" data-metrics-service="Physiotherapy">Physiotherapy</button>
+                <button class="filter-pill" data-metrics-service="Physical Trainer">Physical Trainer</button>
+                <button class="filter-pill" data-metrics-service="Stretching">Stretching</button>
+              </div>
+
+              <div class="metrics-filter" data-filter-group="metrics-sort">
+                <span class="filter-group-label">Sort by:</span>
+                <button class="filter-pill active" data-metrics-sort="date">Date</button>
+                <button class="filter-pill" data-metrics-sort="week">Week</button>
+                <button class="filter-pill" data-metrics-sort="month">Month</button>
+              </div>
+
+              <div class="metrics-table-wrap">
+                <table class="metrics-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th><th>Client</th><th>Service</th><th>Physio</th><th>Start</th><th>End</th><th>Rating</th><th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="metrics-tbody">
+                    <tr data-status="delayed" data-physio="Dr. Rajan Iyer" data-service="Physical Trainer" data-date="2026-05-06" data-short="true">
+                      <td>May 6, 2026</td><td>Amogh</td><td><span class="service-tag">Physical Trainer</span></td><td>Dr. Rajan Iyer</td><td>11:08 AM</td>
+                      <td>11:35 AM<div class="short-note">Session under 45 min (27 min)</div></td>
+                      <td><span class="rating">3.0 / 5</span></td>
+                      <td><span class="pill pill-delayed">Delayed</span></td>
+                    </tr>
+                    <tr data-status="rescheduled" data-physio="Dr. Priya Menon" data-service="Physiotherapy" data-date="2026-05-05">
+                      <td>May 5, 2026</td><td>Aman</td><td><span class="service-tag">Physiotherapy</span></td><td>Dr. Priya Menon</td><td>6:15 PM</td><td>7:15 PM</td>
+                      <td><span class="rating">3.5 / 5</span></td>
+                      <td><span class="pill pill-rescheduled">Rescheduled</span></td>
+                    </tr>
+                    <tr data-status="scheduled" data-physio="Dr. Neha Sharma" data-service="Physiotherapy" data-date="2026-05-04" data-short="true">
+                      <td>May 4, 2026</td><td>Misnawaz</td><td><span class="service-tag">Physiotherapy</span></td><td>Dr. Neha Sharma</td><td>9:00 AM</td>
+                      <td>9:30 AM<div class="short-note">Session under 45 min (30 min)</div></td>
+                      <td><span class="rating">3.5 / 5</span></td>
+                      <td><span class="pill pill-scheduled">Scheduled</span></td>
+                    </tr>
+                    <tr data-status="cancelled" data-physio="Dr. Rajan Iyer" data-service="Physical Trainer" data-date="2026-05-03">
+                      <td>May 3, 2026</td><td>Nagaratna</td><td><span class="service-tag">Physical Trainer</span></td><td>Dr. Rajan Iyer</td><td>2:00 PM</td><td>3:00 PM</td>
+                      <td><span class="rating rating-na">&mdash;</span></td>
+                      <td><span class="pill pill-cancelled">Cancelled</span></td>
+                    </tr>
+                    <tr data-status="delayed" data-physio="Dr. Neha Sharma" data-service="Stretching" data-date="2026-05-02">
+                      <td>May 2, 2026</td><td>Rizwana</td><td><span class="service-tag">Stretching</span></td><td>Dr. Neha Sharma</td><td>7:18 PM</td><td>8:18 PM</td>
+                      <td><span class="rating">4.5 / 5</span></td>
+                      <td><span class="pill pill-delayed">Delayed</span></td>
+                    </tr>
+                    <tr data-status="rescheduled" data-physio="Dr. Rajan Iyer" data-service="Physical Trainer" data-date="2026-04-30">
+                      <td>Apr 30, 2026</td><td>Krishnamma</td><td><span class="service-tag">Physical Trainer</span></td><td>Dr. Rajan Iyer</td><td>5:00 PM</td><td>6:00 PM</td>
+                      <td><span class="rating">4.0 / 5</span></td>
+                      <td><span class="pill pill-rescheduled">Rescheduled</span></td>
+                    </tr>
+                    <tr data-status="cancelled" data-physio="Dr. Neha Sharma" data-service="Stretching" data-date="2026-04-29">
+                      <td>Apr 29, 2026</td><td>Himanshu</td><td><span class="service-tag">Stretching</span></td><td>Dr. Neha Sharma</td><td>12:00 PM</td><td>1:00 PM</td>
+                      <td><span class="rating rating-na">&mdash;</span></td>
+                      <td><span class="pill pill-cancelled">Cancelled</span></td>
+                    </tr>
+                    <tr data-status="delayed" data-physio="Dr. Rajan Iyer" data-service="Physiotherapy" data-date="2026-04-28" data-short="true">
+                      <td>Apr 28, 2026</td><td>Akshat</td><td><span class="service-tag">Physiotherapy</span></td><td>Dr. Rajan Iyer</td><td>6:22 PM</td>
+                      <td>6:55 PM<div class="short-note">Session under 45 min (33 min)</div></td>
+                      <td><span class="rating">2.5 / 5</span></td>
+                      <td><span class="pill pill-delayed">Delayed</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="metrics-empty" id="metrics-empty" hidden>No sessions match the selected filters.</div>
+              </div>
+
+              <details class="show-details">
+                <summary>Show clean / on-track sessions (2)</summary>
+                <div class="metrics-table-wrap" style="margin-top: 12px;">
+                  <table class="metrics-table">
+                    <thead>
+                      <tr>
+                        <th>Date</th><th>Client</th><th>Physio</th><th>Start</th><th>End</th><th>Rating</th><th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>May 7, 2026</td><td>Akshat</td><td>Dr. Neha Sharma</td><td>4:30 PM</td><td>5:30 PM</td>
+                        <td><span class="rating">4.5 / 5</span></td>
+                        <td><span class="pill pill-scheduled">Scheduled</span></td>
+                      </tr>
+                      <tr>
+                        <td>May 1, 2026</td><td>Saloni Ram</td><td>Dr. Priya Menon</td><td>10:00 AM</td><td>11:00 AM</td>
+                        <td><span class="rating">5.0 / 5</span></td>
+                        <td><span class="pill pill-scheduled">Scheduled</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            </div>
+          </section>
+
+        </section>
+      </main>
+    </div>
+
+    <!-- Floating helper -->
+    <button class="kinetic-query">KineticQuery</button>
+
+    <!-- Cancel Session modal -->
+    <div class="modal-overlay" id="cancel-modal" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cancel-title">
+        <header class="modal-header">
+          <h3 class="modal-title" id="cancel-title">Cancel Session</h3>
+          <button class="modal-close" data-close>&times;</button>
+        </header>
+        <div class="modal-body">
+          <p class="modal-sub">Cancel session for <strong id="cancel-client-name">&mdash;</strong>?</p>
+          <div class="cancel-form">
+            <label for="cancel-reason">Reason for cancellation <span class="required-mark">*</span></label>
+            <textarea id="cancel-reason" required placeholder="Required: e.g. Client unavailable, physio unwell, weather, other..."></textarea>
+            <div class="form-hint">A reason is required to cancel this session.</div>
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-outline" data-close>Keep session</button>
+            <button class="btn btn-danger" id="confirm-cancel" disabled>Confirm Cancellation</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assign Physiotherapist modal -->
+    <div class="modal-overlay" id="assign-modal" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="assign-title">
+        <header class="modal-header">
+          <h3 class="modal-title" id="assign-title">Reassign Physiotherapist</h3>
+          <button class="modal-close" data-close>&times;</button>
+        </header>
+        <div class="modal-body">
+          <div class="modal-view" data-view="list">
+            <p class="modal-sub">Select an available physiotherapist to view their schedule.</p>
+            <div class="physio-list">
+              <button class="physio-row" data-physio="neha" data-name="Dr. Neha Sharma" data-spec="Sports Rehab">
+                <div class="physio-avatar">NS</div>
+                <div class="physio-info"><div class="physio-name">Dr. Neha Sharma</div><div class="physio-spec">Sports Rehab</div></div>
+                <span class="physio-status physio-available">Available</span>
+              </button>
+              <button class="physio-row" data-physio="rajan" data-name="Dr. Rajan Iyer" data-spec="Orthopedic Physio">
+                <div class="physio-avatar">RI</div>
+                <div class="physio-info"><div class="physio-name">Dr. Rajan Iyer</div><div class="physio-spec">Orthopedic Physio</div></div>
+                <span class="physio-status physio-available">Available</span>
+              </button>
+              <button class="physio-row physio-disabled" data-physio="priya" disabled>
+                <div class="physio-avatar">PM</div>
+                <div class="physio-info"><div class="physio-name">Dr. Priya Menon</div><div class="physio-spec">Pain Management</div></div>
+                <span class="physio-status physio-unavailable">Unavailable today</span>
+              </button>
+
+              <div class="physio-divider">No real physio available?</div>
+
+              <button class="physio-row physio-dummy" data-physio="dummy" data-dummy="true" data-name="Dummy Physio (Placeholder)" data-spec="Temporary &mdash; replace once a real physio is ready">
+                <div class="physio-avatar physio-avatar-dummy">!</div>
+                <div class="physio-info">
+                  <div class="physio-name">Dummy Physio (Placeholder)</div>
+                  <div class="physio-spec">Holds the slot until a real physio is assigned</div>
+                </div>
+                <span class="physio-status physio-todo">TODO</span>
+              </button>
+            </div>
+          </div>
+          <div class="modal-view" data-view="schedule" hidden>
+            <button class="back-btn" data-back>&larr; Back</button>
+            <div class="schedule-head">
+              <div>
+                <div class="schedule-name" id="schedule-name">Dr. —</div>
+                <div class="schedule-spec" id="schedule-spec">—</div>
+              </div>
+              <div class="schedule-date" id="schedule-date">May 10, 2026</div>
+            </div>
+            <p class="modal-sub">Tap an open slot to assign the session.</p>
+            <div class="schedule-slots">
+              <button class="slot slot-booked" disabled>8:00 AM</button>
+              <button class="slot">9:00 AM</button>
+              <button class="slot">10:00 AM</button>
+              <button class="slot slot-booked" disabled>11:00 AM</button>
+              <button class="slot">12:00 PM</button>
+              <button class="slot">1:00 PM</button>
+              <button class="slot slot-booked" disabled>2:00 PM</button>
+              <button class="slot">3:00 PM</button>
+              <button class="slot">4:00 PM</button>
+              <button class="slot">5:00 PM</button>
+              <button class="slot slot-booked" disabled>6:00 PM</button>
+              <button class="slot">7:00 PM</button>
+            </div>
+            <div class="slot-legend">
+              <span class="legend-dot legend-free"></span> Available
+              <span class="legend-dot legend-booked"></span> Booked
+              <span class="legend-dot legend-selected"></span> Selected
+            </div>
+            <div class="schedule-actions">
+              <button class="btn btn-primary" id="confirm-assign" disabled>Confirm Assignment</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
