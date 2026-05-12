@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Kinetic Age — Trainer</title>
+  <link rel="stylesheet" href="trainer.css?v=1" />
+</head>
+<body>
+  <div class="phone-stage">
+    <div class="phone" data-active-screen="home">
+
+      <!-- ==================== Home screen ==================== -->
+      <main class="screen screen-home" data-screen="home">
+        <header class="welcome">
+          <h1 class="welcome-title">Welcome Aman Kumar!</h1>
+        </header>
+
+        <!-- Schedule -->
+        <section class="section">
+          <h2 class="section-title">Schedule</h2>
+          <button type="button" class="session-card session-card-new" data-open-session="riya">
+            <div class="session-card-head">
+              <div class="session-id">
+                <div class="session-name">Riya Sharma</div>
+                <div class="session-source">
+                  <span class="session-source-dot" aria-hidden="true"></span>
+                  via OnDemand
+                </div>
+              </div>
+              <span class="session-tag">
+                <span class="session-tag-dot" aria-hidden="true"></span>
+                New client
+              </span>
+            </div>
+            <div class="session-when">
+              <div class="session-date">Wed, May 13, 2026</div>
+              <div class="session-time">
+                <svg class="session-time-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 7v5l3 2" />
+                </svg>
+                10:30 AM
+              </div>
+            </div>
+            <span class="session-card-chev" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 6 15 12 9 18" />
+              </svg>
+            </span>
+          </button>
+        </section>
+
+        <!-- Alerts -->
+        <section class="section">
+          <h2 class="section-title">Alerts</h2>
+          <ul class="row-list">
+            <li class="row">
+              <span class="avatar avatar-cyan">LE</span>
+              <div class="row-meta">
+                <div class="row-name">Leo</div>
+                <div class="row-sub">Feb 10, 2026</div>
+              </div>
+              <button type="button" class="btn-pill btn-red">Assessment</button>
+            </li>
+            <li class="row">
+              <span class="avatar avatar-cyan">AM</span>
+              <div class="row-meta">
+                <div class="row-name">amosaxe</div>
+                <div class="row-sub">Mar 28, 2026</div>
+              </div>
+              <button type="button" class="btn-pill btn-red">Assessment</button>
+            </li>
+            <li class="row">
+              <span class="avatar avatar-red">MM</span>
+              <div class="row-meta">
+                <div class="row-name">Mitsuha miyamizu</div>
+                <div class="row-sub">Jan 7, 2026</div>
+              </div>
+              <button type="button" class="btn-pill btn-red">Assessment</button>
+            </li>
+            <li class="row">
+              <span class="avatar avatar-green">AN</span>
+              <div class="row-meta">
+                <div class="row-name">Anuisiya</div>
+                <div class="row-sub">Mar 4, 2026</div>
+              </div>
+              <button type="button" class="btn-pill btn-red">Assessment</button>
+            </li>
+            <li class="row">
+              <span class="avatar avatar-purple">BI</span>
+              <div class="row-meta">
+                <div class="row-name">Bindiya</div>
+                <div class="row-sub">Mar 16, 2026</div>
+              </div>
+              <button type="button" class="btn-pill btn-red">Assessment</button>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Pending Exercise Plans -->
+        <section class="section">
+          <div class="section-head">
+            <h2 class="section-title section-title-inline">Pending Exercise Plans</h2>
+            <span class="clients-count">38 clients</span>
+          </div>
+          <ul class="row-list">
+            <li class="row">
+              <span class="avatar avatar-purple avatar-dot">AK</span>
+              <div class="row-meta">
+                <div class="row-name">Amanaaa Kumar</div>
+                <div class="row-sub">Dec 9, 2025</div>
+              </div>
+            </li>
+            <li class="row">
+              <span class="avatar avatar-cyan">RS</span>
+              <div class="row-meta">
+                <div class="row-name">Rohit S.</div>
+                <div class="row-sub">Jan 2, 2026</div>
+              </div>
+            </li>
+            <li class="row">
+              <span class="avatar avatar-green">PM</span>
+              <div class="row-meta">
+                <div class="row-name">Priya M.</div>
+                <div class="row-sub">Dec 15, 2025</div>
+              </div>
+            </li>
+            <li class="row">
+              <span class="avatar avatar-red">SG</span>
+              <div class="row-meta">
+                <div class="row-name">Sahil G.</div>
+                <div class="row-sub">Nov 20, 2025</div>
+              </div>
+            </li>
+          </ul>
+          <div class="screen-spacer" aria-hidden="true"></div>
+        </section>
+      </main>
+
+      <!-- ==================== Session detail screen ==================== -->
+      <section class="screen screen-detail" data-screen="detail" hidden>
+        <header class="screen-bar">
+          <button type="button" class="screen-back" data-back-to="home" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 6 9 12 15 18" />
+            </svg>
+          </button>
+          <h1 class="screen-bar-title">Session details</h1>
+        </header>
+
+        <div class="screen-content">
+          <div class="detail-head">
+            <h2 class="detail-name">Riya Sharma</h2>
+            <div class="detail-when">
+              <span>Wed, May 13, 2026</span>
+              <span class="detail-when-sep">·</span>
+              <span>10:30 AM</span>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <span class="detail-label">Service</span>
+            <span class="session-service-pill">Physiotherapy</span>
+          </div>
+
+          <div class="detail-section">
+            <span class="detail-label">Address</span>
+            <p class="detail-text">14, Indiranagar 5th Cross, Bengaluru — 560038</p>
+            <a class="detail-action-btn detail-action-directions"
+               href="https://www.google.com/maps/dir/?api=1&destination=14%20Indiranagar%205th%20Cross%20Bengaluru"
+               target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="3 11 22 2 13 21 11 13 3 11" />
+              </svg>
+              Get directions
+            </a>
+          </div>
+
+          <div class="detail-section">
+            <span class="detail-label">Phone</span>
+            <a class="detail-action-btn detail-action-call" href="tel:+919845612340">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57a1 1 0 0 0-1.02.24l-2.2 2.2a15.07 15.07 0 0 1-6.6-6.6l2.2-2.2a1 1 0 0 0 .24-1.02A11.36 11.36 0 0 1 8.5 4c0-.55-.45-1-1-1H4a1 1 0 0 0-1 1c0 9.39 7.61 17 17 17a1 1 0 0 0 1-1v-3.5c0-.55-.45-1-1-1z" />
+              </svg>
+              Call client
+            </a>
+          </div>
+
+          <div class="detail-section">
+            <span class="detail-label">Description</span>
+            <p class="detail-text">First-time assessment — chronic lower-back pain for 4 months. Wants posture review and a rehab plan.</p>
+          </div>
+
+          <div class="detail-section">
+            <span class="detail-label">
+              Documents
+              <span class="detail-label-optional">(optional)</span>
+            </span>
+            <div class="detail-docs">
+              <a class="detail-doc" href="#" onclick="return false;">
+                <span class="detail-doc-icon">PDF</span>
+                <span class="detail-doc-meta">
+                  <span class="detail-doc-name">spine-mri-report.pdf</span>
+                  <span class="detail-doc-size">1.4 MB</span>
+                </span>
+              </a>
+            </div>
+          </div>
+
+          <div class="detail-cta">
+            <button type="button" class="detail-cta-primary" data-open-start-otp>Start session</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== Start-OTP screen ==================== -->
+      <section class="screen screen-start-otp" data-screen="start-otp" hidden>
+        <header class="screen-bar">
+          <button type="button" class="screen-back" data-back-to="detail" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 6 9 12 15 18" />
+            </svg>
+          </button>
+          <h1 class="screen-bar-title">Start session</h1>
+        </header>
+
+        <div class="screen-content">
+          <div class="detail-head">
+            <h2 class="detail-name">Riya Sharma</h2>
+            <div class="detail-when">
+              <span>Wed, May 13, 2026</span>
+              <span class="detail-when-sep">·</span>
+              <span>10:30 AM</span>
+            </div>
+          </div>
+
+          <div class="otp-card" data-otp="start" data-verified="false">
+            <div class="otp-head">
+              <span class="otp-title">Start verification</span>
+              <span class="otp-status otp-status-pending">Pending</span>
+            </div>
+            <p class="otp-text">Ask the client for the 4-digit code they received and enter it below to start the session.</p>
+            <div class="otp-input-row">
+              <input type="tel" inputmode="numeric" maxlength="4" pattern="\d{4}" class="otp-input" placeholder="• • • •" />
+            </div>
+            <div class="otp-verified-msg" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="5 12 10 17 19 7" />
+              </svg>
+              <span>Session started</span>
+            </div>
+          </div>
+
+          <div class="detail-cta">
+            <button type="button" class="detail-cta-primary" data-verify-and-go="start" data-target="examination">
+              Verify &amp; start assessment
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== Session-runner screen ==================== -->
+      <section class="screen screen-session" data-screen="session" hidden>
+        <header class="screen-bar">
+          <button type="button" class="screen-back" data-back-to="examination" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 6 9 12 15 18" />
+            </svg>
+          </button>
+          <h1 class="screen-bar-title">Session</h1>
+        </header>
+
+        <div class="screen-content">
+          <div class="detail-head">
+            <h2 class="detail-name">Riya Sharma</h2>
+            <div class="detail-when">
+              <span>Wed, May 13, 2026</span>
+              <span class="detail-when-sep">·</span>
+              <span>10:30 AM</span>
+            </div>
+          </div>
+
+          <!-- Equipment -->
+          <div class="detail-section">
+            <span class="detail-label">Equipment</span>
+            <div class="equipment-list" id="equipment-list">
+              <span class="equipment-chip">
+                Resistance band
+                <button type="button" class="chip-remove" aria-label="Remove">&times;</button>
+              </span>
+              <span class="equipment-chip">
+                Foam roller
+                <button type="button" class="chip-remove" aria-label="Remove">&times;</button>
+              </span>
+            </div>
+            <div class="add-form add-form-row" data-form="equipment" hidden>
+              <input type="text" class="add-form-input" placeholder="e.g. Yoga mat" />
+              <button type="button" class="add-form-save" data-form-save="equipment">Add</button>
+              <button type="button" class="add-form-cancel" data-form-cancel="equipment">Cancel</button>
+            </div>
+            <button type="button" class="chip-add-btn" data-show-form="equipment">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              Add equipment
+            </button>
+          </div>
+
+          <!-- Exercises -->
+          <div class="detail-section">
+            <span class="detail-label">Exercises</span>
+            <div class="exercise-list" id="exercise-list">
+              <div class="exercise-item">
+                <div class="exercise-head">
+                  <span class="exercise-num">1</span>
+                  <span class="exercise-name">Cat-Cow stretch</span>
+                  <button type="button" class="exercise-remove" aria-label="Remove">&times;</button>
+                </div>
+                <div class="exercise-meta">
+                  <span class="exercise-type">Mobility</span>
+                  <span class="exercise-reps">3 sets × 10 reps</span>
+                </div>
+              </div>
+              <div class="exercise-item">
+                <div class="exercise-head">
+                  <span class="exercise-num">2</span>
+                  <span class="exercise-name">Bird Dog</span>
+                  <button type="button" class="exercise-remove" aria-label="Remove">&times;</button>
+                </div>
+                <div class="exercise-meta">
+                  <span class="exercise-type">Stability</span>
+                  <span class="exercise-reps">3 sets × 12 reps</span>
+                </div>
+              </div>
+              <div class="exercise-item">
+                <div class="exercise-head">
+                  <span class="exercise-num">3</span>
+                  <span class="exercise-name">Glute bridge</span>
+                  <button type="button" class="exercise-remove" aria-label="Remove">&times;</button>
+                </div>
+                <div class="exercise-meta">
+                  <span class="exercise-type">Strengthening</span>
+                  <span class="exercise-reps">3 sets × 15 reps</span>
+                </div>
+              </div>
+            </div>
+            <div class="add-form add-form-stack" data-form="exercise" hidden>
+              <input type="text" class="add-form-input exercise-form-name" placeholder="Exercise name (e.g. Plank)" />
+              <input type="text" class="add-form-input exercise-form-type" placeholder="Type (e.g. Stability)" />
+              <input type="text" class="add-form-input exercise-form-reps" placeholder="Reps (e.g. 3 sets × 30 s)" />
+              <div class="add-form-actions">
+                <button type="button" class="add-form-cancel" data-form-cancel="exercise">Cancel</button>
+                <button type="button" class="add-form-save" data-form-save="exercise">Add exercise</button>
+              </div>
+            </div>
+            <button type="button" class="chip-add-btn" data-show-form="exercise">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              Add exercise
+            </button>
+          </div>
+
+          <!-- Hands-on technique -->
+          <div class="detail-section">
+            <span class="detail-label">
+              Hands-on technique
+              <span class="detail-label-optional">(optional)</span>
+            </span>
+            <textarea class="session-textarea" rows="3" placeholder="Note any manual techniques applied during the session…">Soft-tissue release on quadratus lumborum (3 min each side). Trigger-point release on right glute medius. Gentle PA mobilisation at L4–L5.</textarea>
+          </div>
+
+          <!-- Recommendations -->
+          <div class="detail-section">
+            <span class="detail-label">
+              Recommendations
+              <span class="detail-label-optional">(optional)</span>
+            </span>
+            <textarea class="session-textarea" rows="3" placeholder="What should the client do at home before the next session?">Daily cat-cow and bird-dog (8 reps each). 20-minute walk every day. Avoid sitting > 45 min without a standing break. Heat pack on lower back at night for the next 3 days.</textarea>
+          </div>
+
+          <!-- End OTP — required before downloading the report -->
+          <div class="otp-card" data-otp="end" data-verified="false">
+            <div class="otp-head">
+              <span class="otp-title">End verification</span>
+              <span class="otp-status otp-status-pending">Pending</span>
+            </div>
+            <p class="otp-text">Ask the client for the 4-digit code they just received to confirm the session is complete.</p>
+            <div class="otp-input-row">
+              <input type="tel" inputmode="numeric" maxlength="4" pattern="\d{4}" class="otp-input" placeholder="• • • •" />
+              <button type="button" class="otp-verify-btn" data-otp-verify="end">Verify</button>
+            </div>
+            <div class="otp-verified-msg" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="5 12 10 17 19 7" />
+              </svg>
+              <span>Verified — session can be closed</span>
+            </div>
+          </div>
+
+          <div class="detail-cta">
+            <button type="button" class="detail-cta-primary" data-download-pdf data-needs-end-verify disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 4h13l5 5v11a2 2 0 0 1-2 2H3z" />
+                <path d="M16 4v5h5M9 13h6M9 17h4" />
+              </svg>
+              Send report
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== Examination screen ==================== -->
+      <section class="screen screen-examination" data-screen="examination" hidden>
+        <header class="screen-bar">
+          <button type="button" class="screen-back" data-back-to="start-otp" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 6 9 12 15 18" />
+            </svg>
+          </button>
+          <h1 class="screen-bar-title">Assessment</h1>
+        </header>
+
+        <div class="screen-content">
+          <div class="detail-head">
+            <h2 class="detail-name">Riya Sharma</h2>
+            <div class="detail-when">
+              <span>Wed, May 13, 2026</span>
+              <span class="detail-when-sep">·</span>
+              <span>10:30 AM</span>
+            </div>
+          </div>
+
+          <!-- Muscle power 0–5 (MRC scale) -->
+          <div class="detail-section">
+            <span class="detail-label">
+              Muscle power
+              <span class="muscle-power-value" id="muscle-power-value">· <strong>4</strong>/5</span>
+            </span>
+            <div class="muscle-power-row" id="muscle-power-row">
+              <button type="button" class="muscle-power-btn" data-power="0">0</button>
+              <button type="button" class="muscle-power-btn" data-power="1">1</button>
+              <button type="button" class="muscle-power-btn" data-power="2">2</button>
+              <button type="button" class="muscle-power-btn" data-power="3">3</button>
+              <button type="button" class="muscle-power-btn active" data-power="4">4</button>
+              <button type="button" class="muscle-power-btn" data-power="5">5</button>
+            </div>
+          </div>
+
+          <!-- Additional findings -->
+          <div class="detail-section">
+            <span class="detail-label">
+              Additional findings
+              <span class="detail-label-optional">(optional)</span>
+            </span>
+            <textarea class="session-textarea" rows="3" placeholder="Note observed swelling, tenderness, ROM limitations, posture asymmetry…">Mild swelling at L4–L5 region with tenderness on palpation. Forward flexion limited to ~40°. Standing posture shows a mild anterior pelvic tilt; right-side paraspinal muscle guarding.</textarea>
+          </div>
+
+          <!-- Special test -->
+          <div class="detail-section">
+            <span class="detail-label">
+              Special test
+              <span class="detail-label-optional">(optional)</span>
+            </span>
+            <textarea class="session-textarea" rows="3" placeholder="Tests performed (e.g. SLR, McMurray) and findings…">Straight Leg Raise: positive at 65° on the right side. Slump test: negative bilaterally. Lumbar quadrant test: positive on right rotation + extension.</textarea>
+          </div>
+
+          <div class="detail-cta">
+            <button type="button" class="detail-cta-primary" data-go-to="session">Continue to session</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Floating action button -->
+      <button type="button" class="fab" aria-label="Add">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+      </button>
+
+      <!-- Bottom navigation -->
+      <nav class="bottom-nav" role="tablist">
+        <button type="button" class="nav-item active" data-nav="home" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 3 3 10.5V21h6v-6h6v6h6V10.5z" />
+          </svg>
+          <span>Home</span>
+        </button>
+        <button type="button" class="nav-item" data-nav="clients">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="9" cy="9" r="3.2" />
+            <path d="M2.8 19c.6-3 3.3-4.5 6.2-4.5s5.6 1.5 6.2 4.5" />
+            <circle cx="17" cy="8" r="2.6" />
+            <path d="M15.5 13.8c2.4 0 4.8 1.2 5.4 3.6" />
+          </svg>
+          <span>Clients</span>
+        </button>
+        <button type="button" class="nav-item" data-nav="schedule">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3.5" y="5" width="17" height="15.5" rx="2" />
+            <path d="M3.5 10h17M8 3.5v3M16 3.5v3" />
+          </svg>
+          <span>Schedule</span>
+        </button>
+        <button type="button" class="nav-item" data-nav="profile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.6" />
+            <path d="M4.5 20c.8-3.6 4.1-5.4 7.5-5.4s6.7 1.8 7.5 5.4" />
+          </svg>
+          <span>Profile</span>
+        </button>
+      </nav>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    // Simple nav activation — wire to real pages later
+    document.querySelectorAll('.nav-item').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach((b) => {
+          b.classList.toggle('active', b === btn);
+          b.setAttribute('aria-pressed', String(b === btn));
+        });
+      });
+    });
+
+    // Screen routing (home ↔ detail ↔ session)
+    const phone = document.querySelector('.phone');
+    function showScreen(name) {
+      document.querySelectorAll('[data-screen]').forEach((s) => {
+        s.hidden = s.dataset.screen !== name;
+      });
+      if (phone) phone.dataset.activeScreen = name;
+      const target = document.querySelector(`[data-screen="${name}"]`);
+      if (target) {
+        const content = target.querySelector('.screen-content') || target;
+        content.scrollTop = 0;
+      }
+    }
+    document.querySelectorAll('[data-open-session]').forEach((btn) => {
+      btn.addEventListener('click', () => showScreen('detail'));
+    });
+    document.querySelectorAll('[data-back-to]').forEach((btn) => {
+      btn.addEventListener('click', () => showScreen(btn.dataset.backTo));
+    });
+    document.querySelectorAll('[data-open-start-otp]').forEach((btn) => {
+      btn.addEventListener('click', () => showScreen('start-otp'));
+    });
+    document.querySelectorAll('[data-go-to]').forEach((btn) => {
+      btn.addEventListener('click', () => showScreen(btn.dataset.goTo));
+    });
+
+    // Muscle-power picker (single selection 0–5)
+    document.querySelectorAll('.muscle-power-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const row = btn.closest('.muscle-power-row');
+        row?.querySelectorAll('.muscle-power-btn').forEach((b) => b.classList.toggle('active', b === btn));
+        const valueEl = document.getElementById('muscle-power-value');
+        if (valueEl) {
+          valueEl.hidden = false;
+          const strong = valueEl.querySelector('strong');
+          if (strong) strong.textContent = btn.dataset.power;
+        }
+      });
+    });
+
+    // ---------- PDF generation ----------
+    function getSessionTextarea(idx) {
+      const area = document.querySelectorAll('[data-screen="session"] .session-textarea')[idx];
+      return (area?.value || '').trim();
+    }
+    function getExamTextarea(idx) {
+      const area = document.querySelectorAll('[data-screen="examination"] .session-textarea')[idx];
+      return (area?.value || '').trim();
+    }
+    function generateSessionPDF() {
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        alert('PDF library still loading — please try again in a second.');
+        return;
+      }
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const margin = 16;
+      const maxWidth = 178;
+      let y = 20;
+
+      function ensure(h) { if (y + h > 285) { doc.addPage(); y = 20; } }
+      function section(label) {
+        ensure(10);
+        doc.setFont(undefined, 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(120);
+        doc.text(label.toUpperCase(), margin, y);
+        doc.setTextColor(0);
+        y += 5;
+      }
+      function body(text) {
+        doc.setFont(undefined, 'normal');
+        doc.setFontSize(11);
+        const lines = doc.splitTextToSize(text || '—', maxWidth);
+        lines.forEach((line) => { ensure(6); doc.text(line, margin, y); y += 5.5; });
+        y += 2;
+      }
+      function rule() {
+        doc.setDrawColor(220);
+        doc.setLineWidth(0.3);
+        doc.line(margin, y, margin + maxWidth, y);
+        y += 4;
+      }
+
+      // Title
+      doc.setFont(undefined, 'bold');
+      doc.setFontSize(16);
+      doc.text('Kinetic Age — Session Report', margin, y);
+      y += 7;
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(120);
+      doc.text('Generated ' + new Date().toLocaleString(), margin, y);
+      doc.setTextColor(0);
+      y += 6;
+      rule();
+
+      // Patient header
+      doc.setFont(undefined, 'bold');
+      doc.setFontSize(14);
+      doc.text('Riya Sharma', margin, y); y += 6;
+      doc.setFont(undefined, 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(110);
+      doc.text('Wed, May 13, 2026  ·  10:30 AM', margin, y);
+      doc.setTextColor(0);
+      y += 8;
+
+      // Session timing (start, end, duration)
+      const phoneEl = document.querySelector('.phone');
+      const startISO = phoneEl?.dataset.sessionStartIso;
+      const endISO = phoneEl?.dataset.sessionEndIso;
+      if (startISO || endISO) {
+        section('Session timing');
+        const lines = [];
+        if (startISO) lines.push('Started: ' + formatClock(new Date(startISO)));
+        if (endISO)   lines.push('Ended:   ' + formatClock(new Date(endISO)));
+        if (startISO && endISO) {
+          const mins = durationMinutes(new Date(startISO), new Date(endISO));
+          lines.push('Duration: ' + durationLabel(mins));
+        }
+        body(lines.join('\n'));
+      }
+
+      // Static fields
+      section('Service'); body('Physiotherapy');
+      section('Address'); body('14, Indiranagar 5th Cross, Bengaluru — 560038');
+      section('Description'); body('First-time assessment — chronic lower-back pain for 4 months. Wants posture review and a rehab plan.');
+
+      // Equipment
+      const eqChips = Array.from(document.querySelectorAll('#equipment-list .equipment-chip'));
+      const eqItems = eqChips.map((c) => (c.firstChild?.textContent || '').trim()).filter(Boolean);
+      section('Equipment'); body(eqItems.length ? eqItems.map((e) => '• ' + e).join('\n') : '—');
+
+      // Exercises
+      const exItems = Array.from(document.querySelectorAll('#exercise-list .exercise-item'));
+      section('Exercises');
+      if (exItems.length) {
+        exItems.forEach((item, i) => {
+          const name = item.querySelector('.exercise-name')?.textContent.trim() || '';
+          const type = item.querySelector('.exercise-type')?.textContent.trim() || '';
+          const reps = item.querySelector('.exercise-reps')?.textContent.trim() || '';
+          const line = `${i + 1}. ${name}${type ? '  (' + type + ')' : ''}${reps ? '  —  ' + reps : ''}`;
+          body(line);
+        });
+      } else {
+        body('—');
+      }
+
+      section('Hands-on technique'); body(getSessionTextarea(0));
+      section('Recommendations'); body(getSessionTextarea(1));
+
+      rule();
+
+      // Examination block
+      doc.setFont(undefined, 'bold');
+      doc.setFontSize(13);
+      doc.text('Examination', margin, y); y += 7;
+
+      const mp = document.querySelector('.muscle-power-btn.active');
+      section('Muscle power'); body(mp ? mp.dataset.power + ' / 5' : '—');
+
+      section('Additional findings'); body(getExamTextarea(0));
+      section('Special test'); body(getExamTextarea(1));
+
+      doc.save('session-report-riya-sharma.pdf');
+    }
+
+    document.querySelectorAll('[data-download-pdf]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        generateSessionPDF();
+        showScreen('home');
+      });
+    });
+
+    // ---------- OTP verification ----------
+    function formatClock(d) {
+      return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    }
+    function durationMinutes(start, end) {
+      return Math.max(0, Math.round((end - start) / 60000));
+    }
+    function durationLabel(min) {
+      if (min < 60) return `${min} min`;
+      const h = Math.floor(min / 60);
+      const m = min % 60;
+      return m ? `${h} hr ${m} min` : `${h} hr`;
+    }
+
+    function verifyOTP(scope, inputEl) {
+      const value = (inputEl?.value || '').trim();
+      if (!/^\d{4}$/.test(value)) {
+        inputEl?.classList.add('otp-error');
+        setTimeout(() => inputEl?.classList.remove('otp-error'), 700);
+        inputEl?.focus();
+        return;
+      }
+      const card = inputEl.closest('.otp-card');
+      const phoneEl = document.querySelector('.phone');
+      const now = new Date();
+
+      if (card) {
+        card.dataset.verified = 'true';
+        const status = card.querySelector('.otp-status');
+        if (status) {
+          status.textContent = 'Verified';
+          status.classList.remove('otp-status-pending');
+          status.classList.add('otp-status-verified');
+        }
+        card.querySelector('.otp-input-row')?.setAttribute('hidden', '');
+        card.querySelector('.otp-text')?.setAttribute('hidden', '');
+        card.querySelector('.otp-verified-msg')?.removeAttribute('hidden');
+
+        // Capture timestamp and write a friendly verified message
+        const msgSpan = card.querySelector('.otp-verified-msg span');
+        if (scope === 'start') {
+          phoneEl.dataset.sessionStartIso = now.toISOString();
+          phoneEl.dataset.sessionStart = formatClock(now);
+          if (msgSpan) msgSpan.textContent = `Session started at ${formatClock(now)}`;
+        } else if (scope === 'end') {
+          phoneEl.dataset.sessionEndIso = now.toISOString();
+          phoneEl.dataset.sessionEnd = formatClock(now);
+          const startISO = phoneEl.dataset.sessionStartIso;
+          if (startISO) {
+            const mins = durationMinutes(new Date(startISO), now);
+            phoneEl.dataset.sessionDuration = String(mins);
+            if (msgSpan) msgSpan.textContent = `Ended at ${formatClock(now)} · ${durationLabel(mins)}`;
+          } else if (msgSpan) {
+            msgSpan.textContent = `Ended at ${formatClock(now)}`;
+          }
+        }
+      }
+
+      const selector = scope === 'start' ? '[data-needs-start-verify]' : '[data-needs-end-verify]';
+      document.querySelectorAll(selector).forEach((b) => { b.disabled = false; });
+    }
+
+    document.querySelectorAll('[data-otp-verify]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.otp-card');
+        const input = card?.querySelector('.otp-input');
+        verifyOTP(btn.dataset.otpVerify, input);
+      });
+    });
+
+    // Combined verify-and-advance buttons
+    document.querySelectorAll('[data-verify-and-go]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const scope = btn.dataset.verifyAndGo;
+        const target = btn.dataset.target;
+        const card = document.querySelector(`.otp-card[data-otp="${scope}"]`);
+        const input = card?.querySelector('.otp-input');
+        if (!input) return;
+        verifyOTP(scope, input);
+        if (card?.dataset.verified === 'true' && target) {
+          showScreen(target);
+        }
+      });
+    });
+
+    document.querySelectorAll('.otp-input').forEach((input) => {
+      input.addEventListener('input', () => {
+        input.value = input.value.replace(/\D/g, '').slice(0, 4);
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        const card = input.closest('.otp-card');
+        const scope = card?.dataset.otp;
+        const screen = card?.closest('.screen');
+        const combined = screen?.querySelector(`[data-verify-and-go="${scope}"]`);
+        if (combined) {
+          combined.click();
+        } else {
+          verifyOTP(scope, input);
+        }
+      });
+    });
+
+    // ---------- Session runner interactions ----------
+    document.addEventListener('click', (e) => {
+      // Consent toggle
+      const consentBtn = e.target.closest('[data-consent-toggle]');
+      if (consentBtn) {
+        const section = consentBtn.closest('.session-consent');
+        const label = consentBtn.querySelector('.consent-btn-text');
+        if (!section) return;
+        const consented = section.dataset.consentState === 'consented';
+        section.dataset.consentState = consented ? 'pending' : 'consented';
+        if (label) label.textContent = consented ? 'Mark as consented' : 'Consented';
+        return;
+      }
+
+      // Show add-form (equipment / exercise)
+      const showBtn = e.target.closest('[data-show-form]');
+      if (showBtn) {
+        const name = showBtn.dataset.showForm;
+        const form = showBtn.parentElement.querySelector(`[data-form="${name}"]`);
+        if (form) {
+          form.hidden = false;
+          showBtn.hidden = true;
+          form.querySelector('input')?.focus();
+        }
+        return;
+      }
+
+      // Cancel add-form
+      const cancelBtn = e.target.closest('[data-form-cancel]');
+      if (cancelBtn) {
+        const name = cancelBtn.dataset.formCancel;
+        const form = cancelBtn.closest(`[data-form="${name}"]`);
+        if (form) {
+          form.hidden = true;
+          form.querySelectorAll('input').forEach((i) => (i.value = ''));
+          const sBtn = form.parentElement.querySelector(`[data-show-form="${name}"]`);
+          if (sBtn) sBtn.hidden = false;
+        }
+        return;
+      }
+
+      // Save equipment
+      const eqSave = e.target.closest('[data-form-save="equipment"]');
+      if (eqSave) {
+        const form = eqSave.closest('[data-form="equipment"]');
+        const input = form.querySelector('input');
+        const value = (input.value || '').trim();
+        if (!value) { input.focus(); return; }
+        const list = form.parentElement.querySelector('#equipment-list');
+        const chip = document.createElement('span');
+        chip.className = 'equipment-chip';
+        chip.innerHTML = `${value} <button type="button" class="chip-remove" aria-label="Remove">&times;</button>`;
+        list.appendChild(chip);
+        input.value = '';
+        form.hidden = true;
+        const sBtn = form.parentElement.querySelector('[data-show-form="equipment"]');
+        if (sBtn) sBtn.hidden = false;
+        return;
+      }
+
+      // Save exercise
+      const exSave = e.target.closest('[data-form-save="exercise"]');
+      if (exSave) {
+        const form = exSave.closest('[data-form="exercise"]');
+        const name = form.querySelector('.exercise-form-name').value.trim();
+        const type = form.querySelector('.exercise-form-type').value.trim();
+        const reps = form.querySelector('.exercise-form-reps').value.trim();
+        if (!name) { form.querySelector('.exercise-form-name').focus(); return; }
+        const list = form.parentElement.querySelector('#exercise-list');
+        const num = list.children.length + 1;
+        const item = document.createElement('div');
+        item.className = 'exercise-item';
+        item.innerHTML = `
+          <div class="exercise-head">
+            <span class="exercise-num">${num}</span>
+            <span class="exercise-name"></span>
+            <button type="button" class="exercise-remove" aria-label="Remove">&times;</button>
+          </div>
+          <div class="exercise-meta"></div>
+        `;
+        item.querySelector('.exercise-name').textContent = name;
+        const meta = item.querySelector('.exercise-meta');
+        if (type) {
+          const t = document.createElement('span'); t.className = 'exercise-type'; t.textContent = type; meta.appendChild(t);
+        }
+        if (reps) {
+          const r = document.createElement('span'); r.className = 'exercise-reps'; r.textContent = reps; meta.appendChild(r);
+        }
+        list.appendChild(item);
+        form.querySelectorAll('input').forEach((i) => (i.value = ''));
+        form.hidden = true;
+        const sBtn = form.parentElement.querySelector('[data-show-form="exercise"]');
+        if (sBtn) sBtn.hidden = false;
+        return;
+      }
+
+      // Remove equipment chip
+      const chipRem = e.target.closest('.chip-remove');
+      if (chipRem) {
+        chipRem.closest('.equipment-chip')?.remove();
+        return;
+      }
+
+      // Remove exercise + renumber
+      const exRem = e.target.closest('.exercise-remove');
+      if (exRem) {
+        const list = exRem.closest('#exercise-list');
+        exRem.closest('.exercise-item')?.remove();
+        list?.querySelectorAll('.exercise-item').forEach((it, i) => {
+          const n = it.querySelector('.exercise-num');
+          if (n) n.textContent = String(i + 1);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
