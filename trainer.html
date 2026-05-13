@@ -349,7 +349,35 @@
               </div>
             </div>
             <div class="add-form add-form-stack" data-form="exercise" hidden>
-              <input type="text" class="add-form-input exercise-form-name" placeholder="Exercise name (e.g. Plank)" />
+              <select class="add-form-input exercise-form-name-select">
+                <option value="" disabled selected>Choose an exercise…</option>
+                <optgroup label="Mobility">
+                  <option value="Cat-Cow stretch">Cat-Cow stretch</option>
+                  <option value="Bird Dog">Bird Dog</option>
+                  <option value="Thread the Needle">Thread the Needle</option>
+                  <option value="Hip CARs">Hip CARs</option>
+                </optgroup>
+                <optgroup label="Strengthening">
+                  <option value="Glute bridge">Glute bridge</option>
+                  <option value="Plank">Plank</option>
+                  <option value="Dead bug">Dead bug</option>
+                  <option value="Wall sit">Wall sit</option>
+                  <option value="Clamshell">Clamshell</option>
+                </optgroup>
+                <optgroup label="Stretching">
+                  <option value="Hamstring stretch">Hamstring stretch</option>
+                  <option value="Piriformis stretch">Piriformis stretch</option>
+                  <option value="Child's pose">Child's pose</option>
+                  <option value="Cobra">Cobra</option>
+                </optgroup>
+                <optgroup label="Balance">
+                  <option value="Single-leg stand">Single-leg stand</option>
+                  <option value="Heel-to-toe walk">Heel-to-toe walk</option>
+                  <option value="Bosu squat">Bosu squat</option>
+                </optgroup>
+                <option value="__other__">Other…</option>
+              </select>
+              <input type="text" class="add-form-input exercise-form-name-other" placeholder="Exercise name" hidden />
               <input type="text" class="add-form-input exercise-form-type" placeholder="Type (e.g. Stability)" />
               <input type="text" class="add-form-input exercise-form-reps" placeholder="Reps (e.g. 3 sets × 30 s)" />
               <div class="add-form-actions">
@@ -527,6 +555,29 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
+    // Preset exercise → type lookup
+    const EXERCISE_PRESETS = {
+      'Cat-Cow stretch': 'Mobility',
+      'Bird Dog': 'Mobility',
+      'Thread the Needle': 'Mobility',
+      'Hip CARs': 'Mobility',
+      'Glute bridge': 'Strengthening',
+      'Plank': 'Strengthening',
+      'Dead bug': 'Strengthening',
+      'Wall sit': 'Strengthening',
+      'Clamshell': 'Strengthening',
+      'Hamstring stretch': 'Stretching',
+      'Piriformis stretch': 'Stretching',
+      "Child's pose": 'Stretching',
+      'Cobra': 'Stretching',
+      'Single-leg stand': 'Balance',
+      'Heel-to-toe walk': 'Balance',
+      'Bosu squat': 'Balance',
+    };
+
+    // Forward stub — real implementation in the gating section below
+    function refreshSendReportEnabled() { /* implemented later */ }
+
     // Simple nav activation — wire to real pages later
     document.querySelectorAll('.nav-item').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -880,10 +931,15 @@
       const exSave = e.target.closest('[data-form-save="exercise"]');
       if (exSave) {
         const form = exSave.closest('[data-form="exercise"]');
-        const name = form.querySelector('.exercise-form-name').value.trim();
+        const sel = form.querySelector('.exercise-form-name-select');
+        const otherInput = form.querySelector('.exercise-form-name-other');
+        const name = (sel.value === '__other__' ? otherInput.value : sel.value).trim();
         const type = form.querySelector('.exercise-form-type').value.trim();
         const reps = form.querySelector('.exercise-form-reps').value.trim();
-        if (!name) { form.querySelector('.exercise-form-name').focus(); return; }
+        if (!name) {
+          if (sel.value === '__other__') otherInput.focus(); else sel.focus();
+          return;
+        }
         const list = form.parentElement.querySelector('#exercise-list');
         const num = list.children.length + 1;
         const item = document.createElement('div');
@@ -906,6 +962,9 @@
         }
         list.appendChild(item);
         form.querySelectorAll('input').forEach((i) => (i.value = ''));
+        sel.value = '';
+        otherInput.hidden = true;
+        form.querySelector('.exercise-form-type').readOnly = false;
         form.hidden = true;
         const sBtn = form.parentElement.querySelector('[data-show-form="exercise"]');
         if (sBtn) sBtn.hidden = false;
@@ -928,6 +987,27 @@
           const n = it.querySelector('.exercise-num');
           if (n) n.textContent = String(i + 1);
         });
+      }
+    });
+
+    // Exercise dropdown: auto-fill Type, or reveal Other input
+    document.addEventListener('change', (e) => {
+      const sel = e.target.closest('.exercise-form-name-select');
+      if (!sel) return;
+      const form = sel.closest('[data-form="exercise"]');
+      const otherInput = form.querySelector('.exercise-form-name-other');
+      const typeInput = form.querySelector('.exercise-form-type');
+      if (sel.value === '__other__') {
+        otherInput.hidden = false;
+        otherInput.value = '';
+        otherInput.focus();
+        typeInput.readOnly = false;
+        typeInput.value = '';
+      } else {
+        otherInput.hidden = true;
+        otherInput.value = '';
+        typeInput.value = EXERCISE_PRESETS[sel.value] || '';
+        typeInput.readOnly = true;
       }
     });
   </script>
