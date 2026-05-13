@@ -820,8 +820,37 @@
       const mp = document.querySelector('.muscle-power-btn.active');
       section('Muscle power'); body(mp ? mp.dataset.power + ' / 5' : '—');
 
-      section('Additional findings'); body(getExamTextarea(0));
-      section('Special test'); body(getExamTextarea(1));
+      // Goal block was added at the top of Assessment, shifting the textarea indices by 1.
+      section('Goal'); body(getExamTextarea(0));
+      section('Additional findings'); body(getExamTextarea(1));
+      section('Special test'); body(getExamTextarea(2));
+
+      rule();
+
+      // Conclusion (outcome + notes)
+      const outcomeBtn = document.querySelector('#outcome-pill-row .outcome-pill.active');
+      const outcomeLabel = {
+        achieved: 'Achieved',
+        partial: 'Partially achieved',
+        not: 'Not achieved',
+      }[outcomeBtn?.dataset.outcome] || '—';
+      const conclusionNotes = (document.getElementById('conclusion-notes')?.value || '').trim();
+      section('Conclusion');
+      body('Goal outcome: ' + outcomeLabel + (conclusionNotes ? '\n\nNotes: ' + conclusionNotes : ''));
+
+      // Trainer rating + feedback
+      const ratingRow = document.getElementById('rating-stars');
+      const ratingValue = Number(ratingRow?.dataset.rating || '0');
+      const feedbackText = (document.getElementById('trainer-feedback')?.value || '').trim();
+      section('Trainer rating');
+      body(ratingValue ? `${ratingValue} / 5` + (feedbackText ? '\n\nFeedback: ' + feedbackText : '') : '—');
+
+      // Conversion flag (only if set)
+      const flagBtnEl = document.getElementById('conversion-flag');
+      if (flagBtnEl?.dataset.flagged === 'true') {
+        section('Internal flag');
+        body('Flagged as potential subscription lead.');
+      }
 
       doc.save('session-report-riya-sharma.pdf');
     }
