@@ -297,10 +297,28 @@
                 <button type="button" class="chip-remove" aria-label="Remove">&times;</button>
               </span>
             </div>
-            <div class="add-form add-form-row" data-form="equipment" hidden>
-              <input type="text" class="add-form-input" placeholder="e.g. Yoga mat" />
-              <button type="button" class="add-form-save" data-form-save="equipment">Add</button>
-              <button type="button" class="add-form-cancel" data-form-cancel="equipment">Cancel</button>
+            <div class="add-form add-form-stack" data-form="equipment" hidden>
+              <select class="add-form-input equipment-form-select">
+                <option value="" disabled selected>Choose equipment…</option>
+                <option value="Resistance band">Resistance band</option>
+                <option value="Foam roller">Foam roller</option>
+                <option value="Yoga mat">Yoga mat</option>
+                <option value="Theraband">Theraband</option>
+                <option value="Massage ball">Massage ball</option>
+                <option value="Trigger point ball">Trigger point ball</option>
+                <option value="Stability ball">Stability ball</option>
+                <option value="Wobble board">Wobble board</option>
+                <option value="Bosu ball">Bosu ball</option>
+                <option value="Kettlebell">Kettlebell</option>
+                <option value="Dumbbell">Dumbbell</option>
+                <option value="Ankle weights">Ankle weights</option>
+                <option value="__other__">Other…</option>
+              </select>
+              <input type="text" class="add-form-input equipment-form-other" placeholder="Equipment name" hidden />
+              <div class="add-form-actions">
+                <button type="button" class="add-form-cancel" data-form-cancel="equipment">Cancel</button>
+                <button type="button" class="add-form-save" data-form-save="equipment">Add</button>
+              </div>
             </div>
             <button type="button" class="chip-add-btn" data-show-form="equipment">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
@@ -378,7 +396,16 @@
                 <option value="__other__">Other…</option>
               </select>
               <input type="text" class="add-form-input exercise-form-name-other" placeholder="Exercise name" hidden />
-              <input type="text" class="add-form-input exercise-form-type" placeholder="Type (e.g. Stability)" />
+              <select class="add-form-input exercise-form-type-select">
+                <option value="" disabled selected>Choose type…</option>
+                <option value="Mobility">Mobility</option>
+                <option value="Strengthening">Strengthening</option>
+                <option value="Stretching">Stretching</option>
+                <option value="Balance">Balance</option>
+                <option value="Stability">Stability</option>
+                <option value="__other__">Other…</option>
+              </select>
+              <input type="text" class="add-form-input exercise-form-type-other" placeholder="Type" hidden />
               <input type="text" class="add-form-input exercise-form-reps" placeholder="Reps (e.g. 3 sets × 30 s)" />
               <div class="add-form-actions">
                 <button type="button" class="add-form-cancel" data-form-cancel="exercise">Cancel</button>
@@ -504,12 +531,28 @@
               Muscle power
               <span class="muscle-power-value" id="muscle-power-value">· <strong>4</strong>/5</span>
             </span>
-            <div class="muscle-power-row" id="muscle-power-row">
+            <div class="muscle-power-row" id="muscle-power-row" data-value-id="muscle-power-value">
               <button type="button" class="muscle-power-btn" data-power="0">0</button>
               <button type="button" class="muscle-power-btn" data-power="1">1</button>
               <button type="button" class="muscle-power-btn" data-power="2">2</button>
               <button type="button" class="muscle-power-btn" data-power="3">3</button>
               <button type="button" class="muscle-power-btn active" data-power="4">4</button>
+              <button type="button" class="muscle-power-btn" data-power="5">5</button>
+            </div>
+          </div>
+
+          <!-- Pain level 0–5 -->
+          <div class="detail-section">
+            <span class="detail-label">
+              Pain level
+              <span class="muscle-power-value" id="pain-level-value" hidden>· <strong>0</strong>/5</span>
+            </span>
+            <div class="muscle-power-row" id="pain-level-row" data-value-id="pain-level-value">
+              <button type="button" class="muscle-power-btn" data-power="0">0</button>
+              <button type="button" class="muscle-power-btn" data-power="1">1</button>
+              <button type="button" class="muscle-power-btn" data-power="2">2</button>
+              <button type="button" class="muscle-power-btn" data-power="3">3</button>
+              <button type="button" class="muscle-power-btn" data-power="4">4</button>
               <button type="button" class="muscle-power-btn" data-power="5">5</button>
             </div>
           </div>
@@ -651,12 +694,14 @@
       btn.addEventListener('click', () => showScreen(btn.dataset.goTo));
     });
 
-    // Muscle-power picker (single selection 0–5)
+    // 0–5 scale picker (Muscle power, Pain level, etc.) — single selection per row
     document.querySelectorAll('.muscle-power-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const row = btn.closest('.muscle-power-row');
-        row?.querySelectorAll('.muscle-power-btn').forEach((b) => b.classList.toggle('active', b === btn));
-        const valueEl = document.getElementById('muscle-power-value');
+        if (!row) return;
+        row.querySelectorAll('.muscle-power-btn').forEach((b) => b.classList.toggle('active', b === btn));
+        const valueId = row.dataset.valueId;
+        const valueEl = valueId ? document.getElementById(valueId) : null;
         if (valueEl) {
           valueEl.hidden = false;
           const strong = valueEl.querySelector('strong');
@@ -817,8 +862,11 @@
       doc.setFontSize(13);
       doc.text('Examination', margin, y); y += 7;
 
-      const mp = document.querySelector('.muscle-power-btn.active');
+      const mp = document.querySelector('#muscle-power-row .muscle-power-btn.active');
       section('Muscle power'); body(mp ? mp.dataset.power + ' / 5' : '—');
+
+      const pl = document.querySelector('#pain-level-row .muscle-power-btn.active');
+      section('Pain level'); body(pl ? pl.dataset.power + ' / 5' : '—');
 
       // Goal block was added at the top of Assessment, shifting the textarea indices by 1.
       section('Goal'); body(getExamTextarea(0));
@@ -1014,15 +1062,28 @@
       const eqSave = e.target.closest('[data-form-save="equipment"]');
       if (eqSave) {
         const form = eqSave.closest('[data-form="equipment"]');
-        const input = form.querySelector('input');
-        const value = (input.value || '').trim();
-        if (!value) { input.focus(); return; }
+        const sel = form.querySelector('.equipment-form-select');
+        const otherEq = form.querySelector('.equipment-form-other');
+        const value = (sel.value === '__other__' ? otherEq.value : sel.value).trim();
+        if (!value) {
+          if (sel.value === '__other__') otherEq.focus(); else sel.focus();
+          return;
+        }
         const list = form.parentElement.querySelector('#equipment-list');
         const chip = document.createElement('span');
         chip.className = 'equipment-chip';
-        chip.innerHTML = `${value} <button type="button" class="chip-remove" aria-label="Remove">&times;</button>`;
+        chip.innerHTML = '';
+        chip.appendChild(document.createTextNode(value + ' '));
+        const rm = document.createElement('button');
+        rm.type = 'button';
+        rm.className = 'chip-remove';
+        rm.setAttribute('aria-label', 'Remove');
+        rm.innerHTML = '&times;';
+        chip.appendChild(rm);
         list.appendChild(chip);
-        input.value = '';
+        sel.value = '';
+        otherEq.hidden = true;
+        otherEq.value = '';
         form.hidden = true;
         const sBtn = form.parentElement.querySelector('[data-show-form="equipment"]');
         if (sBtn) sBtn.hidden = false;
@@ -1035,8 +1096,10 @@
         const form = exSave.closest('[data-form="exercise"]');
         const sel = form.querySelector('.exercise-form-name-select');
         const otherInput = form.querySelector('.exercise-form-name-other');
+        const typeSel = form.querySelector('.exercise-form-type-select');
+        const otherType = form.querySelector('.exercise-form-type-other');
         const name = (sel.value === '__other__' ? otherInput.value : sel.value).trim();
-        const type = form.querySelector('.exercise-form-type').value.trim();
+        const type = (typeSel.value === '__other__' ? otherType.value : typeSel.value).trim();
         const reps = form.querySelector('.exercise-form-reps').value.trim();
         if (!name) {
           if (sel.value === '__other__') otherInput.focus(); else sel.focus();
@@ -1066,7 +1129,9 @@
         form.querySelectorAll('input').forEach((i) => (i.value = ''));
         sel.value = '';
         otherInput.hidden = true;
-        form.querySelector('.exercise-form-type').readOnly = false;
+        typeSel.value = '';
+        typeSel.disabled = false;
+        otherType.hidden = true;
         form.hidden = true;
         const sBtn = form.parentElement.querySelector('[data-show-form="exercise"]');
         if (sBtn) sBtn.hidden = false;
@@ -1092,24 +1157,69 @@
       }
     });
 
-    // Exercise dropdown: auto-fill Type, or reveal Other input
+    // Exercise Name dropdown: auto-fill Type, or reveal Other Name input
     document.addEventListener('change', (e) => {
-      const sel = e.target.closest('.exercise-form-name-select');
-      if (!sel) return;
-      const form = sel.closest('[data-form="exercise"]');
-      const otherInput = form.querySelector('.exercise-form-name-other');
-      const typeInput = form.querySelector('.exercise-form-type');
-      if (sel.value === '__other__') {
-        otherInput.hidden = false;
-        otherInput.value = '';
-        otherInput.focus();
-        typeInput.readOnly = false;
-        typeInput.value = '';
-      } else {
-        otherInput.hidden = true;
-        otherInput.value = '';
-        typeInput.value = EXERCISE_PRESETS[sel.value] || '';
-        typeInput.readOnly = true;
+      const nameSel = e.target.closest('.exercise-form-name-select');
+      if (nameSel) {
+        const form = nameSel.closest('[data-form="exercise"]');
+        const otherName = form.querySelector('.exercise-form-name-other');
+        const typeSel = form.querySelector('.exercise-form-type-select');
+        const otherType = form.querySelector('.exercise-form-type-other');
+        if (nameSel.value === '__other__') {
+          otherName.hidden = false;
+          otherName.value = '';
+          otherName.focus();
+          typeSel.disabled = false;
+          typeSel.value = '';
+          otherType.hidden = true;
+          otherType.value = '';
+        } else {
+          otherName.hidden = true;
+          otherName.value = '';
+          const matchedType = EXERCISE_PRESETS[nameSel.value] || '';
+          if (matchedType) {
+            typeSel.value = matchedType;
+            typeSel.disabled = true;
+            otherType.hidden = true;
+            otherType.value = '';
+          } else {
+            typeSel.disabled = false;
+            typeSel.value = '';
+          }
+        }
+        return;
+      }
+
+      // Exercise Type dropdown: reveal Other Type input
+      const typeSel = e.target.closest('.exercise-form-type-select');
+      if (typeSel) {
+        const form = typeSel.closest('[data-form="exercise"]');
+        const otherType = form.querySelector('.exercise-form-type-other');
+        if (typeSel.value === '__other__') {
+          otherType.hidden = false;
+          otherType.value = '';
+          otherType.focus();
+        } else {
+          otherType.hidden = true;
+          otherType.value = '';
+        }
+        return;
+      }
+
+      // Equipment dropdown: reveal Other input
+      const eqSel = e.target.closest('.equipment-form-select');
+      if (eqSel) {
+        const form = eqSel.closest('[data-form="equipment"]');
+        const otherEq = form.querySelector('.equipment-form-other');
+        if (eqSel.value === '__other__') {
+          otherEq.hidden = false;
+          otherEq.value = '';
+          otherEq.focus();
+        } else {
+          otherEq.hidden = true;
+          otherEq.value = '';
+        }
+        return;
       }
     });
   </script>

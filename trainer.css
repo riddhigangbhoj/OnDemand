@@ -307,6 +307,7 @@ button.session-card:active { transform: scale(0.995); }
   flex-direction: column;
   gap: 2px;
   padding: 2px 2px 6px;
+  position: relative;
 }
 .detail-name {
   font-size: 20px;
@@ -324,7 +325,9 @@ button.session-card:active { transform: scale(0.995); }
 }
 .detail-when-sep { opacity: 0.6; }
 .detail-bio {
-  margin-top: 2px;
+  position: absolute;
+  top: 4px;
+  right: 2px;
   color: #2b2b2b;
   font-size: 13px;
   font-weight: 600;
