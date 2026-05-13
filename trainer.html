@@ -429,15 +429,6 @@
             <textarea class="session-textarea" rows="3" placeholder="Note any manual techniques applied during the session…">Soft-tissue release on quadratus lumborum (3 min each side). Trigger-point release on right glute medius. Gentle PA mobilisation at L4–L5.</textarea>
           </div>
 
-          <!-- Recommendations -->
-          <div class="detail-section">
-            <span class="detail-label">
-              Recommendations
-              <span class="detail-label-optional">(optional)</span>
-            </span>
-            <textarea class="session-textarea" rows="3" placeholder="What should the client do at home before the next session?">Daily cat-cow and bird-dog (8 reps each). 20-minute walk every day. Avoid sitting > 45 min without a standing break. Heat pack on lower back at night for the next 3 days.</textarea>
-          </div>
-
           <!-- Conclusion -->
           <div class="detail-section">
             <span class="detail-label">Conclusion</span>
@@ -447,6 +438,17 @@
               <button type="button" class="outcome-pill" data-outcome="not">Not achieved</button>
             </div>
             <textarea class="session-textarea" id="conclusion-notes" rows="3" placeholder="What did the client manage today? Anything that affected progress?"></textarea>
+          </div>
+
+          <!-- Recommendations (required) -->
+          <div class="detail-section">
+            <span class="detail-label">Recommendations</span>
+            <span class="multi-session-question">Multiple sessions required?</span>
+            <div class="outcome-pill-row" id="multi-session-row">
+              <button type="button" class="outcome-pill" data-multi-session="yes">Yes</button>
+              <button type="button" class="outcome-pill" data-multi-session="no">No</button>
+            </div>
+            <textarea class="session-textarea" id="recommendations-notes" rows="3" placeholder="What should the client do at home before the next session?"></textarea>
           </div>
 
           <!-- End OTP — required before downloading the report -->
@@ -468,7 +470,7 @@
             </div>
           </div>
 
-          <!-- Trainer rating, feedback, and conversion flag -->
+          <!-- Trainer rating + feedback -->
           <div class="detail-section" id="trainer-rating-block">
             <span class="detail-label">How was the client today?</span>
             <div class="rating-stars" id="rating-stars" data-rating="0">
@@ -479,10 +481,6 @@
               <button type="button" class="rating-star" data-star="5" aria-label="5 stars">★</button>
             </div>
             <textarea class="session-textarea" id="trainer-feedback" rows="3" placeholder="Anything to note? (Won't be shared with the client.)"></textarea>
-            <button type="button" class="conversion-flag-chip" id="conversion-flag" data-flagged="false">
-              <span class="conversion-flag-icon" aria-hidden="true">⚑</span>
-              <span class="conversion-flag-label">Mark as conversion lead</span>
-            </button>
           </div>
 
           <div class="detail-cta">
@@ -650,9 +648,11 @@
       const endCard = document.querySelector('.otp-card[data-otp="end"]');
       const endVerified = endCard?.dataset.verified === 'true';
       const outcomeChosen = !!document.querySelector('#outcome-pill-row .outcome-pill.active');
+      const multiSessionChosen = !!document.querySelector('#multi-session-row .outcome-pill.active');
+      const recommendations = (document.getElementById('recommendations-notes')?.value || '').trim();
       const ratingRow = document.getElementById('rating-stars');
       const ratingValue = Number(ratingRow?.dataset.rating || '0');
-      const ready = endVerified && outcomeChosen && ratingValue >= 1;
+      const ready = endVerified && outcomeChosen && multiSessionChosen && recommendations.length > 0 && ratingValue >= 1;
       document.querySelectorAll('[data-download-pdf]').forEach((btn) => {
         btn.disabled = !ready;
       });
@@ -732,16 +732,8 @@
       });
     });
 
-    // Conversion-lead flag toggle
-    const flagBtn = document.getElementById('conversion-flag');
-    if (flagBtn) {
-      flagBtn.addEventListener('click', () => {
-        const flagged = flagBtn.dataset.flagged === 'true';
-        flagBtn.dataset.flagged = flagged ? 'false' : 'true';
-        const label = flagBtn.querySelector('.conversion-flag-label');
-        if (label) label.textContent = flagged ? 'Mark as conversion lead' : 'Flagged as conversion lead ✓';
-      });
-    }
+    // Recommendations textarea — refresh gating on input
+    document.getElementById('recommendations-notes')?.addEventListener('input', refreshSendReportEnabled);
 
     // ---------- PDF generation ----------
     function getSessionTextarea(idx) {
@@ -853,7 +845,6 @@
       }
 
       section('Hands-on technique'); body(getSessionTextarea(0));
-      section('Recommendations'); body(getSessionTextarea(1));
 
       rule();
 
@@ -886,19 +877,19 @@
       section('Conclusion');
       body('Goal outcome: ' + outcomeLabel + (conclusionNotes ? '\n\nNotes: ' + conclusionNotes : ''));
 
+      // Recommendations (multi-session answer + notes)
+      const multiBtn = document.querySelector('#multi-session-row .outcome-pill.active');
+      const multiLabel = multiBtn?.dataset.multiSession === 'yes' ? 'Yes' : multiBtn?.dataset.multiSession === 'no' ? 'No' : '—';
+      const recNotes = (document.getElementById('recommendations-notes')?.value || '').trim();
+      section('Recommendations');
+      body('Multiple sessions required: ' + multiLabel + (recNotes ? '\n\n' + recNotes : ''));
+
       // Trainer rating + feedback
       const ratingRow = document.getElementById('rating-stars');
       const ratingValue = Number(ratingRow?.dataset.rating || '0');
       const feedbackText = (document.getElementById('trainer-feedback')?.value || '').trim();
       section('Trainer rating');
       body(ratingValue ? `${ratingValue} / 5` + (feedbackText ? '\n\nFeedback: ' + feedbackText : '') : '—');
-
-      // Conversion flag (only if set)
-      const flagBtnEl = document.getElementById('conversion-flag');
-      if (flagBtnEl?.dataset.flagged === 'true') {
-        section('Internal flag');
-        body('Flagged as potential subscription lead.');
-      }
 
       doc.save('session-report-riya-sharma.pdf');
     }
