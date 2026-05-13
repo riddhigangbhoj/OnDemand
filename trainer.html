@@ -411,6 +411,17 @@
             <textarea class="session-textarea" rows="3" placeholder="What should the client do at home before the next session?">Daily cat-cow and bird-dog (8 reps each). 20-minute walk every day. Avoid sitting > 45 min without a standing break. Heat pack on lower back at night for the next 3 days.</textarea>
           </div>
 
+          <!-- Conclusion -->
+          <div class="detail-section">
+            <span class="detail-label">Conclusion</span>
+            <div class="outcome-pill-row" id="outcome-pill-row">
+              <button type="button" class="outcome-pill" data-outcome="achieved">Achieved</button>
+              <button type="button" class="outcome-pill" data-outcome="partial">Partially achieved</button>
+              <button type="button" class="outcome-pill" data-outcome="not">Not achieved</button>
+            </div>
+            <textarea class="session-textarea" id="conclusion-notes" rows="3" placeholder="What did the client manage today? Anything that affected progress?"></textarea>
+          </div>
+
           <!-- End OTP — required before downloading the report -->
           <div class="otp-card" data-otp="end" data-verified="false">
             <div class="otp-head">
@@ -625,6 +636,15 @@
           const strong = valueEl.querySelector('strong');
           if (strong) strong.textContent = btn.dataset.power;
         }
+      });
+    });
+
+    // Conclusion outcome picker (single selection)
+    document.querySelectorAll('.outcome-pill').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const row = btn.closest('.outcome-pill-row');
+        row?.querySelectorAll('.outcome-pill').forEach((b) => b.classList.toggle('active', b === btn));
+        refreshSendReportEnabled();
       });
     });
 

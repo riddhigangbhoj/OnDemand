@@ -1043,3 +1043,78 @@ button.session-card:active { transform: scale(0.995); }
 }
 .nav-item:hover { color: #4b5563; }
 .nav-item.active { color: var(--text); }
+
+/* Conclusion outcome pills */
+.outcome-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+.outcome-pill {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 9px 12px;
+  border-radius: 999px;
+  border: 1px solid #d6d6d6;
+  background: #fff;
+  color: #2b2b2b;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.outcome-pill:hover { border-color: #b9b9b9; }
+.outcome-pill.active {
+  background: #111;
+  border-color: #111;
+  color: #fff;
+}
+
+/* Trainer rating: 5 stars */
+.rating-stars {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+}
+.rating-star {
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  cursor: pointer;
+  font-size: 28px;
+  line-height: 1;
+  color: #d6d6d6;
+  transition: color 120ms ease, transform 80ms ease;
+}
+.rating-star:hover { transform: scale(1.05); }
+.rating-star.filled { color: #f5a524; }
+
+/* Conversion-lead flag chip */
+.conversion-flag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid #d6d6d6;
+  background: #fff;
+  color: #2b2b2b;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+.conversion-flag-chip:hover { border-color: #b9b9b9; }
+.conversion-flag-chip[data-flagged="true"] {
+  background: #fff5e6;
+  border-color: #f5a524;
+  color: #8a4f00;
+}
+.conversion-flag-icon { font-size: 14px; line-height: 1; }
