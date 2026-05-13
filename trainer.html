@@ -603,8 +603,17 @@
       'Bosu squat': 'Balance',
     };
 
-    // Forward stub — real implementation in the gating section below
-    function refreshSendReportEnabled() { /* implemented later */ }
+    function refreshSendReportEnabled() {
+      const endCard = document.querySelector('.otp-card[data-otp="end"]');
+      const endVerified = endCard?.dataset.verified === 'true';
+      const outcomeChosen = !!document.querySelector('#outcome-pill-row .outcome-pill.active');
+      const ratingRow = document.getElementById('rating-stars');
+      const ratingValue = Number(ratingRow?.dataset.rating || '0');
+      const ready = endVerified && outcomeChosen && ratingValue >= 1;
+      document.querySelectorAll('[data-download-pdf]').forEach((btn) => {
+        btn.disabled = !ready;
+      });
+    }
 
     // Simple nav activation — wire to real pages later
     document.querySelectorAll('.nav-item').forEach((btn) => {
@@ -882,8 +891,11 @@
         }
       }
 
-      const selector = scope === 'start' ? '[data-needs-start-verify]' : '[data-needs-end-verify]';
-      document.querySelectorAll(selector).forEach((b) => { b.disabled = false; });
+      const selector = scope === 'start' ? '[data-needs-start-verify]' : null;
+      if (selector) {
+        document.querySelectorAll(selector).forEach((b) => { b.disabled = false; });
+      }
+      refreshSendReportEnabled();
     }
 
     document.querySelectorAll('[data-otp-verify]').forEach((btn) => {
