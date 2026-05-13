@@ -441,6 +441,23 @@
             </div>
           </div>
 
+          <!-- Trainer rating, feedback, and conversion flag -->
+          <div class="detail-section" id="trainer-rating-block">
+            <span class="detail-label">How was the client today?</span>
+            <div class="rating-stars" id="rating-stars" data-rating="0">
+              <button type="button" class="rating-star" data-star="1" aria-label="1 star">★</button>
+              <button type="button" class="rating-star" data-star="2" aria-label="2 stars">★</button>
+              <button type="button" class="rating-star" data-star="3" aria-label="3 stars">★</button>
+              <button type="button" class="rating-star" data-star="4" aria-label="4 stars">★</button>
+              <button type="button" class="rating-star" data-star="5" aria-label="5 stars">★</button>
+            </div>
+            <textarea class="session-textarea" id="trainer-feedback" rows="3" placeholder="Anything to note? (Won't be shared with the client.)"></textarea>
+            <button type="button" class="conversion-flag-chip" id="conversion-flag" data-flagged="false">
+              <span class="conversion-flag-icon" aria-hidden="true">⚑</span>
+              <span class="conversion-flag-label">Mark as conversion lead</span>
+            </button>
+          </div>
+
           <div class="detail-cta">
             <button type="button" class="detail-cta-primary" data-download-pdf data-needs-end-verify disabled>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -647,6 +664,30 @@
         refreshSendReportEnabled();
       });
     });
+
+    // Star rating (1–5)
+    document.querySelectorAll('#rating-stars .rating-star').forEach((star) => {
+      star.addEventListener('click', () => {
+        const row = star.closest('#rating-stars');
+        const value = Number(star.dataset.star);
+        row.dataset.rating = String(value);
+        row.querySelectorAll('.rating-star').forEach((s) => {
+          s.classList.toggle('filled', Number(s.dataset.star) <= value);
+        });
+        refreshSendReportEnabled();
+      });
+    });
+
+    // Conversion-lead flag toggle
+    const flagBtn = document.getElementById('conversion-flag');
+    if (flagBtn) {
+      flagBtn.addEventListener('click', () => {
+        const flagged = flagBtn.dataset.flagged === 'true';
+        flagBtn.dataset.flagged = flagged ? 'false' : 'true';
+        const label = flagBtn.querySelector('.conversion-flag-label');
+        if (label) label.textContent = flagged ? 'Mark as conversion lead' : 'Flagged as conversion lead ✓';
+      });
+    }
 
     // ---------- PDF generation ----------
     function getSessionTextarea(idx) {
