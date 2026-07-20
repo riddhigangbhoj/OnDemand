@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Kinetic Age — Trainer</title>
+  <title>OnDemand</title>
   <link rel="stylesheet" href="trainer.css?v=1" />
 </head>
 <body>
@@ -19,49 +19,16 @@
         <!-- Schedule -->
         <section class="section">
           <h2 class="section-title">Schedule</h2>
-          <div class="session-card session-card-new" data-confirmed="false">
-            <button type="button" class="session-card-main" data-open-session="riya">
-            <div class="session-card-head">
-              <div class="session-id">
-                <div class="session-name">Riya Sharma</div>
-                <div class="session-source">
-                  <span class="session-source-dot" aria-hidden="true"></span>
-                  via OnDemand
-                </div>
-              </div>
-              <span class="session-tag">
-                <span class="session-tag-dot" aria-hidden="true"></span>
-                New client
-              </span>
-            </div>
-            <div class="session-card-service">
-              <span class="session-service-pill">Physiotherapy<span class="session-service-sub">Orthopaedic</span></span>
-            </div>
-            <div class="session-when">
-              <div class="session-date">Wed, May 13, 2026</div>
-              <div class="session-time">
-                <svg class="session-time-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M12 7v5l3 2" />
-                </svg>
-                10:30 AM
-              </div>
-            </div>
-            <span class="session-card-chev" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 6 15 12 9 18" />
+          <div class="schedule-empty">
+            <span class="schedule-empty-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="4" rx="2" />
+                <path d="M3 10h18" />
+                <path d="M8 2v4" />
+                <path d="M16 2v4" />
               </svg>
             </span>
-            </button>
-            <div class="session-confirm">
-              <span class="session-confirm-label">Lead confirmation</span>
-              <button type="button" class="session-confirm-btn" data-confirm-session>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <polyline points="5 12 10 17 19 7" />
-                </svg>
-                <span class="session-confirm-text">Confirm</span>
-              </button>
-            </div>
+            <span class="schedule-empty-text">No sessions scheduled yet.</span>
           </div>
         </section>
 
@@ -155,7 +122,7 @@
       <!-- ==================== Session detail screen ==================== -->
       <section class="screen screen-detail" data-screen="detail" hidden>
         <header class="screen-bar">
-          <button type="button" class="screen-back" data-back-to="home" aria-label="Back">
+          <button type="button" class="screen-back" data-back-to="confirm" aria-label="Back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polyline points="15 6 9 12 15 18" />
             </svg>
@@ -181,7 +148,7 @@
 
           <div class="detail-section">
             <span class="detail-label">Address</span>
-            <p class="detail-text">14, Indiranagar 5th Cross, Bengaluru — 560038</p>
+            <p class="detail-text" id="detail-address">14, Indiranagar 5th Cross, Bengaluru — 560038</p>
             <a class="detail-action-btn detail-action-directions"
                href="https://www.google.com/maps/dir/?api=1&destination=14%20Indiranagar%205th%20Cross%20Bengaluru"
                target="_blank" rel="noopener">
@@ -298,50 +265,6 @@
             </div>
           </div>
 
-          <!-- Equipment -->
-          <div class="detail-section">
-            <span class="detail-label">Equipment</span>
-            <div class="equipment-list" id="equipment-list">
-              <span class="equipment-chip">
-                Resistance band
-                <button type="button" class="chip-remove" aria-label="Remove">&times;</button>
-              </span>
-              <span class="equipment-chip">
-                Foam roller
-                <button type="button" class="chip-remove" aria-label="Remove">&times;</button>
-              </span>
-            </div>
-            <div class="add-form add-form-stack" data-form="equipment" hidden>
-              <select class="add-form-input equipment-form-select">
-                <option value="" disabled selected>Choose equipment…</option>
-                <option value="Resistance band">Resistance band</option>
-                <option value="Foam roller">Foam roller</option>
-                <option value="Yoga mat">Yoga mat</option>
-                <option value="Theraband">Theraband</option>
-                <option value="Massage ball">Massage ball</option>
-                <option value="Trigger point ball">Trigger point ball</option>
-                <option value="Stability ball">Stability ball</option>
-                <option value="Wobble board">Wobble board</option>
-                <option value="Bosu ball">Bosu ball</option>
-                <option value="Kettlebell">Kettlebell</option>
-                <option value="Dumbbell">Dumbbell</option>
-                <option value="Ankle weights">Ankle weights</option>
-                <option value="__other__">Other…</option>
-              </select>
-              <input type="text" class="add-form-input equipment-form-other" placeholder="Equipment name" hidden />
-              <div class="add-form-actions">
-                <button type="button" class="add-form-cancel" data-form-cancel="equipment">Cancel</button>
-                <button type="button" class="add-form-save" data-form-save="equipment">Add</button>
-              </div>
-            </div>
-            <button type="button" class="chip-add-btn" data-show-form="equipment">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-              Add equipment
-            </button>
-          </div>
-
           <!-- Exercises -->
           <div class="detail-section">
             <span class="detail-label">Exercises</span>
@@ -434,41 +357,44 @@
             </button>
           </div>
 
-          <!-- Hands-on technique -->
+          <!-- How did it go -->
+          <div class="detail-section">
+            <span class="detail-label">How did today go?</span>
+            <div class="star-rate" id="outcome-stars" data-rating="0">
+              <div class="star-rate-row" role="radiogroup" aria-label="Session rating out of 5">
+                <button type="button" class="star-btn" data-star="1" role="radio" aria-checked="false" aria-label="1 star">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.9z"/></svg>
+                </button>
+                <button type="button" class="star-btn" data-star="2" role="radio" aria-checked="false" aria-label="2 stars">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.9z"/></svg>
+                </button>
+                <button type="button" class="star-btn" data-star="3" role="radio" aria-checked="false" aria-label="3 stars">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.9z"/></svg>
+                </button>
+                <button type="button" class="star-btn" data-star="4" role="radio" aria-checked="false" aria-label="4 stars">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.9z"/></svg>
+                </button>
+                <button type="button" class="star-btn" data-star="5" role="radio" aria-checked="false" aria-label="5 stars">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.9z"/></svg>
+                </button>
+              </div>
+              <span class="star-rate-label" id="outcome-stars-label">Tap to rate</span>
+            </div>
+            <textarea class="session-textarea" id="conclusion-notes" rows="3" placeholder="What did the client manage today? Anything that got in the way?"></textarea>
+          </div>
+
+          <!-- Recommendations -->
           <div class="detail-section">
             <span class="detail-label">
-              Hands-on technique
+              Recommendations
               <span class="detail-label-optional">(optional)</span>
             </span>
-            <textarea class="session-textarea" rows="3" placeholder="Note any manual techniques applied during the session…">Soft-tissue release on quadratus lumborum (3 min each side). Trigger-point release on right glute medius. Gentle PA mobilisation at L4–L5.</textarea>
-          </div>
-
-          <!-- Conclusion -->
-          <div class="detail-section">
-            <span class="detail-label">Conclusion</span>
-            <div class="outcome-pill-row" id="outcome-pill-row">
-              <button type="button" class="outcome-pill" data-outcome="achieved">Achieved</button>
-              <button type="button" class="outcome-pill" data-outcome="partial">Partially achieved</button>
-              <button type="button" class="outcome-pill" data-outcome="not">Not achieved</button>
-            </div>
-            <textarea class="session-textarea" id="conclusion-notes" rows="3" placeholder="What did the client manage today? Anything that affected progress?"></textarea>
-          </div>
-
-          <!-- Recommendations (required) -->
-          <div class="detail-section">
-            <span class="detail-label">Recommendations</span>
             <span class="multi-session-question">Multiple sessions required?</span>
             <div class="outcome-pill-row" id="multi-session-row">
               <button type="button" class="outcome-pill" data-multi-session="yes">Yes</button>
               <button type="button" class="outcome-pill" data-multi-session="no">No</button>
             </div>
             <textarea class="session-textarea" id="recommendations-notes" rows="3" placeholder="What should the client do at home before the next session?"></textarea>
-          </div>
-
-          <!-- Trainer notes -->
-          <div class="detail-section" id="trainer-feedback-block">
-            <span class="detail-label">How was the client today?</span>
-            <textarea class="session-textarea" id="trainer-feedback" rows="3" placeholder="Anything to note? (Won't be shared with the client.)"></textarea>
           </div>
 
           <div class="detail-cta">
@@ -505,10 +431,13 @@
             </div>
           </div>
 
-          <!-- Goal -->
+          <!-- Focus -->
           <div class="detail-section">
-            <span class="detail-label">Goal</span>
-            <textarea class="session-textarea" rows="3" placeholder="What does the client want to achieve from this rehab plan?">Walk pain-free for 30 minutes within 6 weeks; reduce morning back stiffness.</textarea>
+            <span class="detail-label">
+              Focus
+              <span class="detail-label-optional">(optional)</span>
+            </span>
+            <textarea class="session-textarea" id="focus-notes" rows="3" placeholder="What are you and the client hoping to get out of today&rsquo;s session?">Walk pain-free for 30 minutes within 6 weeks; reduce morning back stiffness.</textarea>
           </div>
 
           <!-- Muscle power 0–5 (MRC scale) -->
@@ -549,7 +478,7 @@
               Additional findings
               <span class="detail-label-optional">(optional)</span>
             </span>
-            <textarea class="session-textarea" rows="3" placeholder="Note observed swelling, tenderness, ROM limitations, posture asymmetry…">Mild swelling at L4–L5 region with tenderness on palpation. Forward flexion limited to ~40°. Standing posture shows a mild anterior pelvic tilt; right-side paraspinal muscle guarding.</textarea>
+            <textarea class="session-textarea" id="findings-notes" rows="3" placeholder="Note observed swelling, tenderness, ROM limitations, posture asymmetry…">Mild swelling at L4–L5 region with tenderness on palpation. Forward flexion limited to ~40°. Standing posture shows a mild anterior pelvic tilt; right-side paraspinal muscle guarding.</textarea>
           </div>
 
           <!-- Special test -->
@@ -558,7 +487,7 @@
               Special test
               <span class="detail-label-optional">(optional)</span>
             </span>
-            <textarea class="session-textarea" rows="3" placeholder="Tests performed (e.g. SLR, McMurray) and findings…">Straight Leg Raise: positive at 65° on the right side. Slump test: negative bilaterally. Lumbar quadrant test: positive on right rotation + extension.</textarea>
+            <textarea class="session-textarea" id="special-test-notes" rows="3" placeholder="Tests performed (e.g. SLR, McMurray) and findings…">Straight Leg Raise: positive at 65° on the right side. Slump test: negative bilaterally. Lumbar quadrant test: positive on right rotation + extension.</textarea>
           </div>
 
           <div class="detail-cta">
@@ -573,6 +502,36 @@
           <path d="M12 5v14M5 12h14" />
         </svg>
       </button>
+
+      <!-- ==================== Confirmations screen ==================== -->
+      <section class="screen screen-confirm" data-screen="confirm" hidden>
+        <header class="screen-bar">
+          <button type="button" class="screen-back" data-back-to="home" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 6 9 12 15 18" />
+            </svg>
+          </button>
+          <h1 class="screen-bar-title">OnDemand</h1>
+        </header>
+
+        <div class="screen-content">
+          <div class="confirm-list" id="confirm-list"></div>
+          <div class="confirm-empty" id="confirm-empty" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="5 12 10 17 19 7" />
+            </svg>
+            <p>All confirmed. Nothing waiting on you.</p>
+          </div>
+
+          <section class="done-section">
+            <div class="done-head">
+              <h2 class="done-title">Completed sessions</h2>
+              <span class="done-count" id="done-count">0</span>
+            </div>
+            <div class="done-list" id="done-list"></div>
+          </section>
+        </div>
+      </section>
 
       <!-- Bottom navigation -->
       <nav class="bottom-nav" role="tablist">
@@ -590,6 +549,16 @@
             <path d="M15.5 13.8c2.4 0 4.8 1.2 5.4 3.6" />
           </svg>
           <span>Clients</span>
+        </button>
+        <button type="button" class="nav-item" data-nav="confirm">
+          <span class="nav-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20.5 11.3V12a8.5 8.5 0 1 1-5-7.8" />
+              <polyline points="21 5 12 14 9.5 11.5" />
+            </svg>
+            <span class="nav-badge" id="confirm-badge" hidden>0</span>
+          </span>
+          <span>OnDemand</span>
         </button>
         <button type="button" class="nav-item" data-nav="schedule">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -633,12 +602,12 @@
     };
 
     function refreshSendReportEnabled() {
-      const outcomeChosen = !!document.querySelector('#outcome-pill-row .outcome-pill.active');
+      // Every free-text box is optional — only the rating and the
+      // multiple-sessions answer gate the report.
+      const outcomeChosen = Number(document.getElementById('outcome-stars')?.dataset.rating) > 0;
       const multiSessionChosen = !!document.querySelector('#multi-session-row .outcome-pill.active');
-      const recommendations = (document.getElementById('recommendations-notes')?.value || '').trim();
-      const ready = outcomeChosen && multiSessionChosen && recommendations.length > 0;
       document.querySelectorAll('[data-download-pdf]').forEach((btn) => {
-        btn.disabled = !ready;
+        btn.disabled = !(outcomeChosen && multiSessionChosen);
       });
     }
 
@@ -649,6 +618,8 @@
           b.classList.toggle('active', b === btn);
           b.setAttribute('aria-pressed', String(b === btn));
         });
+        const nav = btn.dataset.nav;
+        if (nav === 'home' || nav === 'confirm') showScreen(nav);
       });
     });
 
@@ -694,7 +665,28 @@
       });
     });
 
-    // Conclusion outcome picker (single selection)
+    // Session rating — 1 to 5 stars, re-tapping the current score clears it
+    const STAR_LABELS = { 1: 'Poor', 2: 'Below par', 3: 'Okay', 4: 'Good', 5: 'Excellent' };
+    const starWrap = document.getElementById('outcome-stars');
+    if (starWrap) {
+      const label = document.getElementById('outcome-stars-label');
+      starWrap.querySelectorAll('.star-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const value = Number(btn.dataset.star);
+          const rating = Number(starWrap.dataset.rating) === value ? 0 : value;
+          starWrap.dataset.rating = String(rating);
+          starWrap.querySelectorAll('.star-btn').forEach((b) => {
+            const on = Number(b.dataset.star) <= rating;
+            b.classList.toggle('star-on', on);
+            b.setAttribute('aria-checked', String(Number(b.dataset.star) === rating));
+          });
+          label.textContent = rating ? `${rating} of 5 · ${STAR_LABELS[rating]}` : 'Tap to rate';
+          refreshSendReportEnabled();
+        });
+      });
+    }
+
+    // Outcome picker (single selection)
     document.querySelectorAll('.outcome-pill').forEach((btn) => {
       btn.addEventListener('click', () => {
         const row = btn.closest('.outcome-pill-row');
@@ -703,29 +695,190 @@
       });
     });
 
-    // Lead confirmation on the session card — mirrors the trainer-app side
-    // of the ops panel's lead flag. Reversible, so a mis-tap is recoverable.
-    document.querySelectorAll('[data-confirm-session]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const card = btn.closest('.session-card');
-        const confirmed = card.dataset.confirmed !== 'true';
-        card.dataset.confirmed = String(confirmed);
-        btn.querySelector('.session-confirm-text').textContent = confirmed ? 'Confirmed' : 'Confirm';
+    // ---------- Lead confirmations ----------
+    // One record per session. Home and the Confirm screen both read and write
+    // this list, so a session can never look confirmed on one and not the other.
+    const PENDING_SESSIONS = [
+      { id: 'riya',  name: 'Riya Sharma',   initials: 'RS', service: 'Physiotherapy',    sub: 'Orthopaedic',
+        date: 'Wed, May 13', time: '10:30 AM', address: '14, Indiranagar 5th Cross, Bengaluru',
+        waiting: '2h 45m', urgent: true,  confirmed: false },
+      { id: 'devan', name: 'Devan Rao',     initials: 'DR', service: 'Physical Trainer', sub: 'Strength & Conditioning',
+        date: 'Wed, May 13', time: '1:00 PM', address: '22, Koramangala 4th Block, Bengaluru',
+        waiting: '55m', urgent: false, confirmed: false },
+      { id: 'meera', name: 'Meera Nair',    initials: 'MN', service: 'Physiotherapy',    sub: 'Post-surgical Rehab',
+        date: 'Thu, May 14', time: '9:00 AM', address: '7, HSR Layout Sector 3, Bengaluru',
+        waiting: '20m', urgent: false, confirmed: false },
+      { id: 'arjun', name: 'Arjun Bhat',    initials: 'AB', service: 'Physical Trainer', sub: 'Mobility & Stretching',
+        date: 'Thu, May 14', time: '6:15 PM', address: '3, Whitefield Main Road, Bengaluru',
+        waiting: '8m',  urgent: false, confirmed: false },
+    ];
+
+    // Sessions already delivered — the report is the PDF filed at the end of each one.
+    const DONE_SESSIONS = [
+      { id: 'meera', name: 'Meera Nair', initials: 'MN', service: 'Physiotherapy', sub: 'Post-surgical Rehab',
+        date: 'Tue, May 12', time: '9:00 AM', address: '22, HSR Layout Sector 2, Bengaluru',
+        duration: '60 min', report: 'session-report-meera-nair-2026-05-12.pdf' },
+      { id: 'devansh', name: 'Devansh Rao', initials: 'DR', service: 'Physical Trainer', sub: 'Strength & Conditioning',
+        date: 'Mon, May 11', time: '7:30 AM', address: '5th Block, Jayanagar, Bengaluru',
+        duration: '45 min', report: 'session-report-devansh-rao-2026-05-11.pdf' },
+      { id: 'fatima', name: 'Fatima Sheikh', initials: 'FS', service: 'Physiotherapy', sub: 'Sports Injury',
+        date: 'Mon, May 11', time: '5:00 PM', address: '18, Cooke Town, Bengaluru',
+        duration: '60 min', report: 'session-report-fatima-sheikh-2026-05-11.pdf' },
+    ];
+
+    function doneCardHTML(s) {
+      return `
+        <article class="done-card">
+          <div class="confirm-card-top">
+            <span class="done-pill">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="5 12 10 17 19 7" />
+              </svg>
+              Done
+            </span>
+            <span class="done-duration">${s.duration}</span>
+          </div>
+          <div class="confirm-who">
+            <span class="confirm-avatar done-avatar">${s.initials}</span>
+            <div class="confirm-who-text">
+              <div class="confirm-name">${s.name}</div>
+              <span class="session-service-pill">${s.service}<span class="session-service-sub">${s.sub}</span></span>
+            </div>
+          </div>
+          <div class="fact-grid">
+            <div class="fact-row fact-row-split">
+              <div class="fact-cell"><span class="fact-label">Date</span><span class="fact-value">${s.date}</span></div>
+              <div class="fact-cell"><span class="fact-label">Time</span><span class="fact-value">${s.time}</span></div>
+            </div>
+            <div class="fact-row">
+              <div class="fact-cell"><span class="fact-label">Address</span><span class="fact-value">${s.address}</span></div>
+            </div>
+          </div>
+          <a class="done-report" href="#" onclick="return false;">
+            <span class="done-report-ext">PDF</span>
+            <span class="done-report-name">${s.report}</span>
+            <span class="done-report-open">Open</span>
+          </a>
+        </article>`;
+    }
+
+    function renderDoneSessions() {
+      const list = document.getElementById('done-list');
+      if (!list) return;
+      list.innerHTML = DONE_SESSIONS.map(doneCardHTML).join('');
+      document.getElementById('done-count').textContent = String(DONE_SESSIONS.length);
+    }
+
+    function confirmCardHTML(s) {
+      return `
+        <article class="confirm-card" data-confirm-id="${s.id}" data-confirmed="${s.confirmed}">
+          <div class="confirm-card-top">
+            ${s.confirmed
+              ? `<span class="confirm-done">Confirmed</span>`
+              : `<span class="confirm-wait${s.urgent ? ' confirm-wait-urgent' : ''}">Waiting ${s.waiting}</span>`}
+          </div>
+          <div class="confirm-who">
+            <span class="confirm-avatar">${s.initials}</span>
+            <div class="confirm-who-text">
+              <div class="confirm-name">${s.name}</div>
+              <span class="session-service-pill">${s.service}<span class="session-service-sub">${s.sub}</span></span>
+            </div>
+          </div>
+          <div class="fact-grid">
+            <div class="fact-row fact-row-split">
+              <div class="fact-cell"><span class="fact-label">Date</span><span class="fact-value">${s.date}</span></div>
+              <div class="fact-cell"><span class="fact-label">Time</span><span class="fact-value">${s.time}</span></div>
+            </div>
+            <div class="fact-row">
+              <div class="fact-cell"><span class="fact-label">Address</span><span class="fact-value">${s.address}</span></div>
+            </div>
+          </div>
+          ${s.confirmed
+            ? `<button type="button" class="confirm-action confirm-action-start" data-start-session="${s.id}">
+                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                   <polygon points="7 4 20 12 7 20 7 4" />
+                 </svg>
+                 <span class="confirm-action-text">Start session</span>
+               </button>`
+            : `<button type="button" class="confirm-action" data-confirm-toggle="${s.id}">
+                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                   <polyline points="5 12 10 17 19 7" />
+                 </svg>
+                 <span class="confirm-action-text">Confirm session</span>
+               </button>`}
+        </article>`;
+    }
+
+    function renderConfirmations() {
+      const list = document.getElementById('confirm-list');
+      if (!list) return;
+      list.innerHTML = PENDING_SESSIONS.map(confirmCardHTML).join('');
+
+      const pending = PENDING_SESSIONS.filter((s) => !s.confirmed).length;
+      const badge = document.getElementById('confirm-badge');
+      badge.hidden = pending === 0;
+      badge.textContent = String(pending);
+      document.getElementById('confirm-empty').hidden = pending > 0;
+    }
+
+    function setConfirmed(id, value) {
+      const rec = PENDING_SESSIONS.find((s) => s.id === id);
+      if (!rec) return;
+      rec.confirmed = value;
+      renderConfirmations();
+      // The pressed button is replaced by the re-render — hand focus to its successor.
+      document.querySelector(`.confirm-card[data-confirm-id="${id}"] .confirm-action`)?.focus();
+    }
+
+    // Detail and Start-OTP are a single pair of screens reused for whichever
+    // session was picked, so they have to be filled from that record first.
+    function bindSession(rec) {
+      document.querySelectorAll('[data-screen="detail"], [data-screen="start-otp"]').forEach((scr) => {
+        const name = scr.querySelector('.detail-name');
+        if (name) name.textContent = rec.name;
+        const when = scr.querySelector('.detail-when');
+        if (when) {
+          when.innerHTML = `<span>${rec.date}, 2026</span>`
+            + '<span class="detail-when-sep">&middot;</span>'
+            + `<span>${rec.time}</span>`;
+        }
       });
+      const detail = document.querySelector('[data-screen="detail"]');
+      const pill = detail.querySelector('.session-service-pill');
+      if (pill) pill.innerHTML = `${rec.service}<span class="session-service-sub">${rec.sub}</span>`;
+      const addr = document.getElementById('detail-address');
+      if (addr) addr.textContent = rec.address;
+      const dir = detail.querySelector('.detail-action-directions');
+      if (dir) dir.href = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(rec.address);
+    }
+
+    function openSession(id, screen) {
+      const rec = PENDING_SESSIONS.find((s) => s.id === id);
+      if (!rec) return;
+      bindSession(rec);
+      showScreen(screen);
+    }
+
+    document.addEventListener('click', (e) => {
+      const confirmBtn = e.target.closest('[data-confirm-toggle]');
+      if (confirmBtn) { setConfirmed(confirmBtn.dataset.confirmToggle, true); return; }
+
+      const startBtn = e.target.closest('[data-start-session]');
+      if (startBtn) { openSession(startBtn.dataset.startSession, 'start-otp'); return; }
+
+      // Tapping the card body (not a button) opens the details to review first.
+      const card = e.target.closest('.confirm-card');
+      if (card && !e.target.closest('button')) openSession(card.dataset.confirmId, 'detail');
     });
 
+    renderConfirmations();
+    renderDoneSessions();
+
     // Recommendations textarea — refresh gating on input
-    document.getElementById('recommendations-notes')?.addEventListener('input', refreshSendReportEnabled);
 
     // ---------- PDF generation ----------
-    function getSessionTextarea(idx) {
-      const area = document.querySelectorAll('[data-screen="session"] .session-textarea')[idx];
-      return (area?.value || '').trim();
-    }
-    function getExamTextarea(idx) {
-      const area = document.querySelectorAll('[data-screen="examination"] .session-textarea')[idx];
-      return (area?.value || '').trim();
-    }
+
+
     function generateSessionPDF() {
       if (!window.jspdf || !window.jspdf.jsPDF) {
         alert('PDF library still loading — please try again in a second.');
@@ -806,10 +959,6 @@
       section('Address'); body('14, Indiranagar 5th Cross, Bengaluru — 560038');
       section('Description'); body('First-time assessment — chronic lower-back pain for 4 months. Wants posture review and a rehab plan.');
 
-      // Equipment
-      const eqChips = Array.from(document.querySelectorAll('#equipment-list .equipment-chip'));
-      const eqItems = eqChips.map((c) => (c.firstChild?.textContent || '').trim()).filter(Boolean);
-      section('Equipment'); body(eqItems.length ? eqItems.map((e) => '• ' + e).join('\n') : '—');
 
       // Exercises
       const exItems = Array.from(document.querySelectorAll('#exercise-list .exercise-item'));
@@ -826,7 +975,6 @@
         body('—');
       }
 
-      section('Hands-on technique'); body(getSessionTextarea(0));
 
       rule();
 
@@ -842,22 +990,19 @@
       section('Pain level'); body(pl ? pl.dataset.power + ' / 5' : '—');
 
       // Goal block was added at the top of Assessment, shifting the textarea indices by 1.
-      section('Goal'); body(getExamTextarea(0));
-      section('Additional findings'); body(getExamTextarea(1));
-      section('Special test'); body(getExamTextarea(2));
+      const val = (id) => (document.getElementById(id)?.value || '').trim() || '—';
+      section('Focus'); body(val('focus-notes'));
+      section('Additional findings'); body(val('findings-notes'));
+      section('Special test'); body(val('special-test-notes'));
 
       rule();
 
-      // Conclusion (outcome + notes)
-      const outcomeBtn = document.querySelector('#outcome-pill-row .outcome-pill.active');
-      const outcomeLabel = {
-        achieved: 'Achieved',
-        partial: 'Partially achieved',
-        not: 'Not achieved',
-      }[outcomeBtn?.dataset.outcome] || '—';
+      // How today went (outcome + notes)
+      const stars = Number(document.getElementById('outcome-stars')?.dataset.rating) || 0;
+      const outcomeLabel = stars ? `${stars} of 5 (${STAR_LABELS[stars]})` : '—';
       const conclusionNotes = (document.getElementById('conclusion-notes')?.value || '').trim();
-      section('Conclusion');
-      body('Goal outcome: ' + outcomeLabel + (conclusionNotes ? '\n\nNotes: ' + conclusionNotes : ''));
+      section('How today went');
+      body('Rating: ' + outcomeLabel + (conclusionNotes ? '\n\nNotes: ' + conclusionNotes : ''));
 
       // Recommendations (multi-session answer + notes)
       const multiBtn = document.querySelector('#multi-session-row .outcome-pill.active');
@@ -865,11 +1010,6 @@
       const recNotes = (document.getElementById('recommendations-notes')?.value || '').trim();
       section('Recommendations');
       body('Multiple sessions required: ' + multiLabel + (recNotes ? '\n\n' + recNotes : ''));
-
-      // Trainer notes
-      const feedbackText = (document.getElementById('trainer-feedback')?.value || '').trim();
-      section('Trainer notes');
-      body(feedbackText || '—');
 
       doc.save('session-report-riya-sharma.pdf');
     }
@@ -1002,7 +1142,7 @@
         return;
       }
 
-      // Show add-form (equipment / exercise)
+      // Show add-form (exercise)
       const showBtn = e.target.closest('[data-show-form]');
       if (showBtn) {
         const name = showBtn.dataset.showForm;
@@ -1026,38 +1166,6 @@
           const sBtn = form.parentElement.querySelector(`[data-show-form="${name}"]`);
           if (sBtn) sBtn.hidden = false;
         }
-        return;
-      }
-
-      // Save equipment
-      const eqSave = e.target.closest('[data-form-save="equipment"]');
-      if (eqSave) {
-        const form = eqSave.closest('[data-form="equipment"]');
-        const sel = form.querySelector('.equipment-form-select');
-        const otherEq = form.querySelector('.equipment-form-other');
-        const value = (sel.value === '__other__' ? otherEq.value : sel.value).trim();
-        if (!value) {
-          if (sel.value === '__other__') otherEq.focus(); else sel.focus();
-          return;
-        }
-        const list = form.parentElement.querySelector('#equipment-list');
-        const chip = document.createElement('span');
-        chip.className = 'equipment-chip';
-        chip.innerHTML = '';
-        chip.appendChild(document.createTextNode(value + ' '));
-        const rm = document.createElement('button');
-        rm.type = 'button';
-        rm.className = 'chip-remove';
-        rm.setAttribute('aria-label', 'Remove');
-        rm.innerHTML = '&times;';
-        chip.appendChild(rm);
-        list.appendChild(chip);
-        sel.value = '';
-        otherEq.hidden = true;
-        otherEq.value = '';
-        form.hidden = true;
-        const sBtn = form.parentElement.querySelector('[data-show-form="equipment"]');
-        if (sBtn) sBtn.hidden = false;
         return;
       }
 
@@ -1106,13 +1214,6 @@
         form.hidden = true;
         const sBtn = form.parentElement.querySelector('[data-show-form="exercise"]');
         if (sBtn) sBtn.hidden = false;
-        return;
-      }
-
-      // Remove equipment chip
-      const chipRem = e.target.closest('.chip-remove');
-      if (chipRem) {
-        chipRem.closest('.equipment-chip')?.remove();
         return;
       }
 
@@ -1177,21 +1278,6 @@
         return;
       }
 
-      // Equipment dropdown: reveal Other input
-      const eqSel = e.target.closest('.equipment-form-select');
-      if (eqSel) {
-        const form = eqSel.closest('[data-form="equipment"]');
-        const otherEq = form.querySelector('.equipment-form-other');
-        if (eqSel.value === '__other__') {
-          otherEq.hidden = false;
-          otherEq.value = '';
-          otherEq.focus();
-        } else {
-          otherEq.hidden = true;
-          otherEq.value = '';
-        }
-        return;
-      }
     });
   </script>
 </body>
