@@ -19,7 +19,8 @@
         <!-- Schedule -->
         <section class="section">
           <h2 class="section-title">Schedule</h2>
-          <button type="button" class="session-card session-card-new" data-open-session="riya">
+          <div class="session-card session-card-new" data-confirmed="false">
+            <button type="button" class="session-card-main" data-open-session="riya">
             <div class="session-card-head">
               <div class="session-id">
                 <div class="session-name">Riya Sharma</div>
@@ -32,6 +33,9 @@
                 <span class="session-tag-dot" aria-hidden="true"></span>
                 New client
               </span>
+            </div>
+            <div class="session-card-service">
+              <span class="session-service-pill">Physiotherapy<span class="session-service-sub">Orthopaedic</span></span>
             </div>
             <div class="session-when">
               <div class="session-date">Wed, May 13, 2026</div>
@@ -48,7 +52,17 @@
                 <polyline points="9 6 15 12 9 18" />
               </svg>
             </span>
-          </button>
+            </button>
+            <div class="session-confirm">
+              <span class="session-confirm-label">Lead confirmation</span>
+              <button type="button" class="session-confirm-btn" data-confirm-session>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="5 12 10 17 19 7" />
+                </svg>
+                <span class="session-confirm-text">Confirm</span>
+              </button>
+            </div>
+          </div>
         </section>
 
         <!-- Alerts -->
@@ -162,7 +176,7 @@
 
           <div class="detail-section">
             <span class="detail-label">Service</span>
-            <span class="session-service-pill">Physiotherapy</span>
+            <span class="session-service-pill">Physiotherapy<span class="session-service-sub">Orthopaedic</span></span>
           </div>
 
           <div class="detail-section">
@@ -451,40 +465,14 @@
             <textarea class="session-textarea" id="recommendations-notes" rows="3" placeholder="What should the client do at home before the next session?"></textarea>
           </div>
 
-          <!-- End OTP — required before downloading the report -->
-          <div class="otp-card" data-otp="end" data-verified="false">
-            <div class="otp-head">
-              <span class="otp-title">End verification</span>
-              <span class="otp-status otp-status-pending">Pending</span>
-            </div>
-            <p class="otp-text">Ask the client for the 4-digit code they just received to confirm the session is complete.</p>
-            <div class="otp-input-row">
-              <input type="tel" inputmode="numeric" maxlength="4" pattern="\d{4}" class="otp-input" placeholder="• • • •" />
-              <button type="button" class="otp-verify-btn" data-otp-verify="end">Verify</button>
-            </div>
-            <div class="otp-verified-msg" hidden>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <polyline points="5 12 10 17 19 7" />
-              </svg>
-              <span>Verified — session can be closed</span>
-            </div>
-          </div>
-
-          <!-- Trainer rating + feedback -->
-          <div class="detail-section" id="trainer-rating-block">
+          <!-- Trainer notes -->
+          <div class="detail-section" id="trainer-feedback-block">
             <span class="detail-label">How was the client today?</span>
-            <div class="rating-stars" id="rating-stars" data-rating="0">
-              <button type="button" class="rating-star" data-star="1" aria-label="1 star">★</button>
-              <button type="button" class="rating-star" data-star="2" aria-label="2 stars">★</button>
-              <button type="button" class="rating-star" data-star="3" aria-label="3 stars">★</button>
-              <button type="button" class="rating-star" data-star="4" aria-label="4 stars">★</button>
-              <button type="button" class="rating-star" data-star="5" aria-label="5 stars">★</button>
-            </div>
             <textarea class="session-textarea" id="trainer-feedback" rows="3" placeholder="Anything to note? (Won't be shared with the client.)"></textarea>
           </div>
 
           <div class="detail-cta">
-            <button type="button" class="detail-cta-primary" data-download-pdf data-needs-end-verify disabled>
+            <button type="button" class="detail-cta-primary" data-download-pdf disabled>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M3 4h13l5 5v11a2 2 0 0 1-2 2H3z" />
                 <path d="M16 4v5h5M9 13h6M9 17h4" />
@@ -645,14 +633,10 @@
     };
 
     function refreshSendReportEnabled() {
-      const endCard = document.querySelector('.otp-card[data-otp="end"]');
-      const endVerified = endCard?.dataset.verified === 'true';
       const outcomeChosen = !!document.querySelector('#outcome-pill-row .outcome-pill.active');
       const multiSessionChosen = !!document.querySelector('#multi-session-row .outcome-pill.active');
       const recommendations = (document.getElementById('recommendations-notes')?.value || '').trim();
-      const ratingRow = document.getElementById('rating-stars');
-      const ratingValue = Number(ratingRow?.dataset.rating || '0');
-      const ready = endVerified && outcomeChosen && multiSessionChosen && recommendations.length > 0 && ratingValue >= 1;
+      const ready = outcomeChosen && multiSessionChosen && recommendations.length > 0;
       document.querySelectorAll('[data-download-pdf]').forEach((btn) => {
         btn.disabled = !ready;
       });
@@ -719,16 +703,14 @@
       });
     });
 
-    // Star rating (1–5)
-    document.querySelectorAll('#rating-stars .rating-star').forEach((star) => {
-      star.addEventListener('click', () => {
-        const row = star.closest('#rating-stars');
-        const value = Number(star.dataset.star);
-        row.dataset.rating = String(value);
-        row.querySelectorAll('.rating-star').forEach((s) => {
-          s.classList.toggle('filled', Number(s.dataset.star) <= value);
-        });
-        refreshSendReportEnabled();
+    // Lead confirmation on the session card — mirrors the trainer-app side
+    // of the ops panel's lead flag. Reversible, so a mis-tap is recoverable.
+    document.querySelectorAll('[data-confirm-session]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.session-card');
+        const confirmed = card.dataset.confirmed !== 'true';
+        card.dataset.confirmed = String(confirmed);
+        btn.querySelector('.session-confirm-text').textContent = confirmed ? 'Confirmed' : 'Confirm';
       });
     });
 
@@ -820,7 +802,7 @@
       }
 
       // Static fields
-      section('Service'); body('Physiotherapy');
+      section('Service'); body('Physiotherapy — Orthopaedic');
       section('Address'); body('14, Indiranagar 5th Cross, Bengaluru — 560038');
       section('Description'); body('First-time assessment — chronic lower-back pain for 4 months. Wants posture review and a rehab plan.');
 
@@ -884,12 +866,10 @@
       section('Recommendations');
       body('Multiple sessions required: ' + multiLabel + (recNotes ? '\n\n' + recNotes : ''));
 
-      // Trainer rating + feedback
-      const ratingRow = document.getElementById('rating-stars');
-      const ratingValue = Number(ratingRow?.dataset.rating || '0');
+      // Trainer notes
       const feedbackText = (document.getElementById('trainer-feedback')?.value || '').trim();
-      section('Trainer rating');
-      body(ratingValue ? `${ratingValue} / 5` + (feedbackText ? '\n\nFeedback: ' + feedbackText : '') : '—');
+      section('Trainer notes');
+      body(feedbackText || '—');
 
       doc.save('session-report-riya-sharma.pdf');
     }

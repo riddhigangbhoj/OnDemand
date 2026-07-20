@@ -217,13 +217,34 @@ document.querySelectorAll('.nav-item').forEach((item) => {
   });
 });
 
-// ---------- Reassign Physiotherapist modal ----------
-const modal = document.getElementById('assign-modal');
-const listView = modal?.querySelector('[data-view="list"]');
-const scheduleView = modal?.querySelector('[data-view="schedule"]');
-const scheduleNameEl = document.getElementById('schedule-name');
-const scheduleSpecEl = document.getElementById('schedule-spec');
-const scheduleDateEl = document.getElementById('schedule-date');
+// ---------- Manage session popup (hosts every per-session action) ----------
+const modal = document.getElementById('manage-modal');
+const manageViews = modal ? Array.from(modal.querySelectorAll('.modal-view')) : [];
+const manageBackBtns = modal ? Array.from(modal.querySelectorAll('[data-manage-back]')) : [];
+const manageTitle = document.getElementById('manage-title');
+
+// Each view: the title it shows, and the view its Back button returns to (null = no Back).
+const MANAGE_VIEWS = {
+  main:       { title: 'Manage session',          back: null },
+  reschedule: { title: 'Reschedule session',      back: 'main' },
+  reassign:   { title: 'Reassign physiotherapist', back: 'main' },
+  cancel:     { title: 'Cancel session',          back: 'main' },
+};
+let manageView = 'main';
+
+function showManageView(name) {
+  manageView = name;
+  manageViews.forEach((v) => (v.hidden = v.dataset.view !== name));
+  const cfg = MANAGE_VIEWS[name];
+  if (manageTitle) manageTitle.textContent = cfg.title;
+  manageBackBtns.forEach((b) => {
+    if (b.classList.contains('back-btn')) b.hidden = !cfg.back;
+  });
+}
+function manageBack() {
+  const to = MANAGE_VIEWS[manageView].back;
+  if (to) showManageView(to);
+}
 const confirmBtn = document.getElementById('confirm-assign');
 
 let activeCard = null;
@@ -237,74 +258,10 @@ function getCurrentPhysioName(card) {
   return raw.includes('→') ? raw.split('→').pop().trim() : raw.trim();
 }
 
-function refreshCurrentlyAssignedTag(card) {
-  if (!modal) return;
-  const current = getCurrentPhysioName(card);
-  modal.querySelectorAll('.physio-row').forEach((row) => {
-    const inArea = !!row.closest('.physio-list-area');
-    const matches = (row.dataset.name || '').trim() === current;
-    let status = row.querySelector('.physio-status');
-    if (matches) {
-      if (!status) {
-        status = document.createElement('span');
-        row.appendChild(status);
-      }
-      status.textContent = 'Currently assigned';
-      status.className = 'physio-status physio-currently';
-    } else if (inArea) {
-      if (!status) {
-        status = document.createElement('span');
-        row.appendChild(status);
-      }
-      status.textContent = 'Available';
-      status.className = 'physio-status physio-available';
-    } else if (status) {
-      status.remove();
-    }
-  });
-}
-
-function openModal(card, cardDate) {
-  if (!modal) return;
-  activeCard = card;
-  if (!card.dataset.systemPhysio) {
-    card.dataset.systemPhysio = getCurrentPhysioName(card);
-  }
-  modal.hidden = false;
-  showListView();
-  // Collapse the "Other physios" section each time the modal opens
-  const otherList = document.getElementById('other-physios-list');
-  const otherLabel = document.getElementById('other-physios-label');
-  const seeAllBtn = document.getElementById('see-all-physios');
-  if (otherList) otherList.hidden = true;
-  if (otherLabel) otherLabel.hidden = true;
-  if (seeAllBtn) seeAllBtn.hidden = false;
-  refreshCurrentlyAssignedTag(card);
-  if (cardDate && scheduleDateEl) scheduleDateEl.textContent = cardDate;
-}
 function closeModal() {
   if (!modal) return;
   modal.hidden = true;
-  resetSelectedSlot();
   activeCard = null;
-}
-function showListView() {
-  if (!listView || !scheduleView) return;
-  listView.hidden = false;
-  scheduleView.hidden = true;
-}
-function showScheduleView(name, spec) {
-  if (!listView || !scheduleView) return;
-  activePhysio = { name, spec };
-  if (scheduleNameEl) scheduleNameEl.textContent = name;
-  if (scheduleSpecEl) scheduleSpecEl.textContent = spec;
-  resetSelectedSlot();
-  listView.hidden = true;
-  scheduleView.hidden = false;
-}
-function resetSelectedSlot() {
-  scheduleView?.querySelectorAll('.slot.slot-selected').forEach((s) => s.classList.remove('slot-selected'));
-  if (confirmBtn) confirmBtn.disabled = true;
 }
 
 if (modal) {
@@ -314,139 +271,97 @@ if (modal) {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !modal.hidden) closeModal();
   });
+  manageBackBtns.forEach((b) => b.addEventListener('click', manageBack));
+}
 
-  function bindPhysioRow(row) {
-    if (row.disabled) return;
-    row.addEventListener('click', () => {
-      showScheduleView(row.dataset.name || '', row.dataset.spec || '');
-    });
-  }
-  modal.querySelectorAll('.physio-row').forEach(bindPhysioRow);
+// Writes a physio onto a card, flagging it when the panel overrode the system pick.
+function applyPhysioAssignment(card, panelName) {
+  const info = card.querySelector('[data-physio-info]');
+  const systemName = card.dataset.systemPhysio || '';
+  const wasReassigned = systemName && panelName && systemName !== panelName;
 
-  const seeAllBtn = modal.querySelector('#see-all-physios');
-  if (seeAllBtn) {
-    const extraPhysios = [
-      { key: 'anjali',  name: 'Dr. Anjali Verma',     spec: 'Sports Rehab',      initials: 'AV' },
-      { key: 'vikram',  name: 'Dr. Vikram Singh',     spec: 'Geriatric Physio',  initials: 'VS' },
-      { key: 'kavya',   name: 'Dr. Kavya Reddy',      spec: 'Pediatric Physio',  initials: 'KR' },
-      { key: 'arjun',   name: 'Dr. Arjun Nair',       spec: 'Neuro Physio',      initials: 'AN' },
-      { key: 'meera',   name: 'Dr. Meera Kapoor',     spec: 'Post-Op Rehab',     initials: 'MK' },
-      { key: 'sanjay',  name: 'Dr. Sanjay Bose',      spec: 'Cardio Physio',     initials: 'SB' },
-      { key: 'ritu',    name: 'Dr. Ritu Joshi',       spec: "Women's Health",    initials: 'RJ' },
-      { key: 'karan',   name: 'Dr. Karan Malhotra',   spec: 'Sports Injury',     initials: 'KM' },
-      { key: 'pooja',   name: 'Dr. Pooja Desai',      spec: 'Manual Therapy',    initials: 'PD' },
-      { key: 'aditya',  name: 'Dr. Aditya Rao',       spec: 'Spine Specialist',  initials: 'AR' },
-    ];
-    seeAllBtn.addEventListener('click', () => {
-      const otherList = document.getElementById('other-physios-list');
-      const otherLabel = document.getElementById('other-physios-label');
-      if (!otherList) return;
-      if (!otherList.dataset.populated) {
-        extraPhysios.forEach((p) => {
-          const row = document.createElement('button');
-          row.type = 'button';
-          row.className = 'physio-row';
-          row.dataset.physio = p.key;
-          row.dataset.name = p.name;
-          row.dataset.spec = p.spec;
-          row.innerHTML = `
-            <div class="physio-avatar">${p.initials}</div>
-            <div class="physio-info"><div class="physio-name">${p.name}</div><div class="physio-spec">${p.spec}</div></div>
-          `;
-          otherList.appendChild(row);
-          bindPhysioRow(row);
-        });
-        otherList.dataset.populated = 'true';
-      }
-      otherList.hidden = false;
-      if (otherLabel) otherLabel.hidden = false;
-      if (activeCard) refreshCurrentlyAssignedTag(activeCard);
-      seeAllBtn.hidden = true;
-    });
+  if (info) {
+    info.classList.remove('cc-physio-assigned', 'cc-physio-changed', 'cc-time-rescheduled');
+    info.classList.add(wasReassigned ? 'cc-physio-changed' : 'cc-physio-assigned');
+    info.innerHTML = '';
+    const label = document.createElement('span');
+    label.className = 'cc-physio-label';
+    label.textContent = wasReassigned ? 'System → Panel' : 'System assigned';
+    const name = document.createElement('span');
+    name.className = 'cc-physio-name';
+    name.textContent = wasReassigned ? `${systemName} → ${panelName}` : panelName;
+    info.appendChild(label);
+    info.appendChild(name);
   }
 
-  modal.querySelector('[data-back]')?.addEventListener('click', showListView);
-
-  scheduleView?.querySelectorAll('.slot').forEach((slot) => {
-    slot.addEventListener('click', () => {
-      if (slot.classList.contains('slot-booked')) return;
-      resetSelectedSlot();
-      slot.classList.add('slot-selected');
-      if (confirmBtn) confirmBtn.disabled = false;
-    });
-  });
+  // Reflect reassignment in the card's status pill row
+  const header = card.querySelector('.cc-header');
+  if (!header) return;
+  let group = header.querySelector('.cc-status-group');
+  const originalStatus = group
+    ? group.querySelector('.cc-status:not(.status-reassigned)')
+    : header.querySelector('.cc-status');
+  if (wasReassigned) {
+    if (!group) {
+      group = document.createElement('span');
+      group.className = 'cc-status-group';
+      originalStatus.replaceWith(group);
+      const tag = document.createElement('span');
+      tag.className = 'cc-status status-reassigned';
+      tag.textContent = 'Reassigned';
+      group.appendChild(tag);
+      group.appendChild(originalStatus);
+    }
+  } else if (group && originalStatus) {
+    group.replaceWith(originalStatus);
+  }
 }
 
 if (confirmBtn) {
   confirmBtn.addEventListener('click', () => {
     if (!activeCard) return closeModal();
-
-    const info = activeCard.querySelector('[data-physio-info]');
-    const systemName = activeCard.dataset.systemPhysio || '';
-    const panelName = activePhysio.name;
-    const wasReassigned = systemName && panelName && systemName !== panelName;
-
-    if (info) {
-      info.classList.remove('cc-physio-assigned', 'cc-physio-changed', 'cc-time-rescheduled');
-      info.innerHTML = '';
-
-      if (wasReassigned) {
-        info.classList.add('cc-physio-changed');
-        const label = document.createElement('span');
-        label.className = 'cc-physio-label';
-        label.textContent = 'System → Panel';
-        const name = document.createElement('span');
-        name.className = 'cc-physio-name';
-        name.textContent = `${systemName} → ${panelName}`;
-        info.appendChild(label);
-        info.appendChild(name);
-      } else {
-        info.classList.add('cc-physio-assigned');
-        const label = document.createElement('span');
-        label.className = 'cc-physio-label';
-        label.textContent = 'Pre-assigned';
-        const name = document.createElement('span');
-        name.className = 'cc-physio-name';
-        name.textContent = panelName;
-        info.appendChild(label);
-        info.appendChild(name);
-      }
-    }
-
-    // Reflect reassignment in the card's status pill row
-    const header = activeCard.querySelector('.cc-header');
-    if (header) {
-      let group = header.querySelector('.cc-status-group');
-      const originalStatus = group
-        ? group.querySelector('.cc-status:not(.status-reassigned)')
-        : header.querySelector('.cc-status');
-      if (wasReassigned) {
-        if (!group) {
-          group = document.createElement('span');
-          group.className = 'cc-status-group';
-          originalStatus.replaceWith(group);
-          const tag = document.createElement('span');
-          tag.className = 'cc-status status-reassigned';
-          tag.textContent = 'Reassigned';
-          group.appendChild(tag);
-          group.appendChild(originalStatus);
-        }
-      } else if (group && originalStatus) {
-        group.replaceWith(originalStatus);
-      }
-    }
-
-    closeModal();
+    applyPhysioAssignment(activeCard, activePhysio.name);
+    renderManageSummary(activeCard);
+    showManageView('main');
   });
 }
 
-// ---------- Alert banner: initialize "Ongoing" chip count from DOM ----------
-(function initOngoingChip() {
-  const block = document.getElementById('block-ongoing');
-  const chip = document.getElementById('chip-ongoing-count');
-  if (!block || !chip) return;
-  const count = block.querySelectorAll(':scope > .ongoing-grid > .ongoing-box').length;
-  chip.textContent = String(count);
+// ---------- Alerts: counts, and clearing the unconfirmed alert once someone confirms ----------
+// A lead is "unconfirmed" only while BOTH the ops panel and the trainer app are unconfirmed.
+// Alerts sent to Slack today. Stub — swap for the real Slack integration count.
+const SLACK_ALERTS_TODAY = 7;
+
+function refreshAlertCounts() {
+  const total = document.querySelectorAll('#block-alerts .alert-card').length;
+  document.getElementById('block-alerts').hidden = total === 0;
+  document.getElementById('alerts-count').textContent = String(total);
+  document.getElementById('chip-alerts-count').textContent = String(total);
+
+  // The headline counts the sessions actually flagged, so it can never drift
+  // from the cards below it the way the hardcoded "5" did.
+  document.getElementById('attention-title').textContent = total === 1
+    ? '1 session needs your attention'
+    : `${total} sessions need your attention`;
+  document.getElementById('attention-num').textContent = String(total);
+  document.getElementById('chip-slack-count').textContent = String(SLACK_ALERTS_TODAY);
+}
+
+function refreshUnconfirmedAlert() {
+  document.querySelectorAll('.alert-card-moderate').forEach((alert) => {
+    const card = document.querySelector(`.client-card[data-card-id="${alert.dataset.cardId}"]`);
+    if (!card) return;
+    const confirmed = Array.from(card.querySelectorAll('.cc-lead-state'))
+      .some((st) => st.dataset.confirmed === 'true');
+    if (confirmed) alert.remove();
+  });
+  refreshAlertCounts();
+}
+
+(function initAlertChips() {
+  const ongoing = document.querySelectorAll('#block-ongoing .alert-card').length;
+  document.getElementById('chip-ongoing-count').textContent = String(ongoing);
+  document.getElementById('ongoing-count').textContent = String(ongoing);
+  refreshUnconfirmedAlert();
 })();
 
 // ---------- Alert banner chip click → scroll to block ----------
@@ -462,6 +377,20 @@ document.querySelectorAll('[data-scroll-to]').forEach((btn) => {
   });
 });
 
+// Prototype map button — opens the address in Google Maps.
+const MAP_PIN_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';
+function mapLink(address) {
+  const q = encodeURIComponent(address);
+  return `<a class="cc-map-btn" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener" aria-label="Locate on Maps" title="Locate on Maps">${MAP_PIN_SVG}<span>Map</span></a>`;
+}
+
+// ---------- Service taxonomy (main type -> sub-types) ----------
+const SERVICE_TYPES = {
+  'Physiotherapy': ['Orthopaedic', 'Neurological', 'Sports Injury', 'Post-surgical Rehab'],
+  'Physical Trainer': ['Strength & Conditioning', 'Weight Loss', 'Mobility & Stretching'],
+};
+
+
 // ---------- Upcoming sessions filters (Date + Service, combined) ----------
 const TODAY = '2026-05-08';
 const TOMORROW = '2026-05-09';
@@ -469,7 +398,7 @@ const upcomingGrid = document.getElementById('upcoming-grid');
 const upcomingCount = document.getElementById('upcoming-count');
 const dateFilterInput = document.getElementById('upcoming-date-filter');
 
-const upcomingFilterState = { date: 'all', dateCustom: null, service: 'all' };
+const upcomingFilterState = { date: 'all', dateCustom: null, service: 'all', sub: 'all' };
 
 function applyUpcomingFilters() {
   if (!upcomingGrid) return;
@@ -478,6 +407,7 @@ function applyUpcomingFilters() {
   cards.forEach((card) => {
     const dt = (card.dataset.datetime || '').split('T')[0];
     const service = card.dataset.service || '';
+    const sub = card.dataset.subservice || '';
     let dateOk = true;
     if (upcomingFilterState.date === 'today') dateOk = dt === TODAY;
     else if (upcomingFilterState.date === 'tomorrow') dateOk = dt === TOMORROW;
@@ -485,366 +415,127 @@ function applyUpcomingFilters() {
       dateOk = dt === upcomingFilterState.dateCustom;
     }
     const serviceOk = upcomingFilterState.service === 'all' || service === upcomingFilterState.service;
-    const show = dateOk && serviceOk;
+    const subOk = upcomingFilterState.sub === 'all' || sub === upcomingFilterState.sub;
+    const show = dateOk && serviceOk && subOk;
     card.hidden = !show;
     if (show) visible++;
   });
   if (upcomingCount) upcomingCount.textContent = String(visible);
 }
 
-// Date filter pills
-document.querySelectorAll('[data-filter-group="date"] .filter-pill').forEach((pill) => {
-  pill.addEventListener('click', () => {
-    pill.parentElement.querySelectorAll('.filter-pill').forEach((p) => p.classList.remove('active'));
-    pill.classList.add('active');
-    upcomingFilterState.date = pill.dataset.filter;
-    upcomingFilterState.dateCustom = null;
-    if (dateFilterInput) dateFilterInput.value = '';
-    applyUpcomingFilters();
-  });
+// Same split as the past bar: `date` stays on the bar, and the dependent
+// Service -> Type pair lives together behind "More filters" so changing one
+// never silently re-scopes the other out of sight.
+const UPCOMING_DEFAULTS = { date: 'all', service: 'all', sub: 'all' };
+const UPCOMING_DATE_LABELS = { today: 'Today', tomorrow: 'Tomorrow' };
+
+const upcomingWhen = document.getElementById('upcoming-when');
+const upcomingServiceSelect = document.getElementById('upcoming-service-select');
+const upcomingSubSelect = document.getElementById('upcoming-sub-select');
+const upcomingMoreBtn = document.getElementById('upcoming-more-btn');
+const upcomingMoreBadge = document.getElementById('upcoming-more-badge');
+const upcomingFilterPanel = document.getElementById('upcoming-filter-panel');
+const upcomingChips = document.getElementById('upcoming-chips');
+
+function upcomingChipLabel(key) {
+  const v = upcomingFilterState[key];
+  if (key === 'date') return v === 'custom' ? `On ${upcomingFilterState.dateCustom}` : UPCOMING_DATE_LABELS[v];
+  return v;
+}
+
+function populateUpcomingSubs() {
+  const subs = upcomingFilterState.service === 'all'
+    ? Object.values(SERVICE_TYPES).flat()
+    : SERVICE_TYPES[upcomingFilterState.service];
+  upcomingSubSelect.innerHTML = ['all', ...subs]
+    .map((x) => `<option value="${x}">${x === 'all' ? 'All types' : x}</option>`).join('');
+  upcomingSubSelect.value = upcomingFilterState.sub;
+}
+
+function syncUpcomingFilterBar() {
+  const active = Object.keys(UPCOMING_DEFAULTS).filter((k) => upcomingFilterState[k] !== UPCOMING_DEFAULTS[k]);
+
+  upcomingWhen.value = upcomingFilterState.date;
+  upcomingServiceSelect.value = upcomingFilterState.service;
+  dateFilterInput.hidden = upcomingFilterState.date !== 'custom';
+
+  const hidden = active.filter((k) => k !== 'date').length;
+  upcomingMoreBadge.hidden = hidden === 0;
+  upcomingMoreBadge.textContent = hidden;
+  upcomingMoreBtn.classList.toggle('has-active', hidden > 0);
+
+  upcomingChips.hidden = active.length === 0;
+  upcomingChips.innerHTML = active.map((k) =>
+    `<button type="button" class="filter-chip" data-clear-upcoming="${k}">
+       ${upcomingChipLabel(k)}<span class="filter-chip-x" aria-hidden="true">&times;</span>
+     </button>`).join('');
+}
+
+function updateUpcoming() {
+  syncUpcomingFilterBar();
+  applyUpcomingFilters();
+}
+
+upcomingWhen.addEventListener('change', () => {
+  upcomingFilterState.date = upcomingWhen.value;
+  upcomingFilterState.dateCustom = null;
+  dateFilterInput.value = '';
+  if (upcomingFilterState.date === 'custom') dateFilterInput.focus();
+  updateUpcoming();
+});
+dateFilterInput.addEventListener('change', () => {
+  if (!dateFilterInput.value) return;
+  upcomingFilterState.date = 'custom';
+  upcomingFilterState.dateCustom = dateFilterInput.value;
+  updateUpcoming();
+});
+upcomingServiceSelect.addEventListener('change', () => {
+  upcomingFilterState.service = upcomingServiceSelect.value;
+  upcomingFilterState.sub = 'all';
+  populateUpcomingSubs();
+  updateUpcoming();
+});
+upcomingSubSelect.addEventListener('change', () => {
+  upcomingFilterState.sub = upcomingSubSelect.value;
+  updateUpcoming();
 });
 
-if (dateFilterInput) {
-  dateFilterInput.addEventListener('change', () => {
-    if (!dateFilterInput.value) return;
-    document.querySelectorAll('[data-filter-group="date"] .filter-pill').forEach((p) => p.classList.remove('active'));
-    upcomingFilterState.date = 'custom';
-    upcomingFilterState.dateCustom = dateFilterInput.value;
-    applyUpcomingFilters();
-  });
-}
-
-// Service filter pills (upcoming)
-document.querySelectorAll('[data-filter-group="service"] .filter-pill').forEach((pill) => {
-  pill.addEventListener('click', () => {
-    pill.parentElement.querySelectorAll('.filter-pill').forEach((p) => p.classList.remove('active'));
-    pill.classList.add('active');
-    upcomingFilterState.service = pill.dataset.serviceFilter;
-    applyUpcomingFilters();
-  });
+upcomingChips.addEventListener('click', (e) => {
+  const chip = e.target.closest('[data-clear-upcoming]');
+  if (!chip) return;
+  const key = chip.dataset.clearUpcoming;
+  upcomingFilterState[key] = UPCOMING_DEFAULTS[key];
+  if (key === 'date') { upcomingFilterState.dateCustom = null; dateFilterInput.value = ''; }
+  if (key === 'service') { upcomingFilterState.sub = 'all'; populateUpcomingSubs(); }
+  updateUpcoming();
 });
 
-// ---------- Three-dot card menu (Add documents) ----------
-document.querySelectorAll('[data-menu-toggle]').forEach((btn) => {
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const wrap = btn.closest('.cc-menu-wrap');
-    const menu = wrap?.querySelector('.cc-menu');
-    if (!menu) return;
-    document.querySelectorAll('.cc-menu').forEach((m) => { if (m !== menu) m.hidden = true; });
-    menu.hidden = !menu.hidden;
-  });
-});
-document.addEventListener('click', () => {
-  document.querySelectorAll('.cc-menu').forEach((m) => (m.hidden = true));
+document.getElementById('upcoming-clear-all').addEventListener('click', () => {
+  Object.assign(upcomingFilterState, UPCOMING_DEFAULTS, { dateCustom: null });
+  dateFilterInput.value = '';
+  populateUpcomingSubs();
+  updateUpcoming();
 });
 
-// "Add documents" — opens hidden file input on the card, then renders attachments
-document.querySelectorAll('[data-add-docs]').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const card = btn.closest('.client-card');
-    const fileInput = card?.querySelector('.cc-file-input');
-    document.querySelectorAll('.cc-menu').forEach((m) => (m.hidden = true));
-    fileInput?.click();
-  });
-});
-
-// ---------- Reminder feature ----------
-// Inject an "Add reminder" item into every card's 3-dot menu, plus the
-// editor + banner the menu controls.
-document.querySelectorAll('.client-card').forEach((card) => {
-  const menu = card.querySelector('.cc-menu');
-  if (menu && !menu.querySelector('[data-add-reminder]')) {
-    const item = document.createElement('button');
-    item.className = 'cc-menu-item';
-    item.setAttribute('data-add-reminder', '');
-    item.textContent = 'Add reminder';
-    menu.appendChild(item);
-  }
-
-  // Anchor the reminder UI just below the address row so it's visible.
-  const anchor = card.querySelector('.cc-address-row');
-  if (!anchor) return;
-
-  const editor = document.createElement('div');
-  editor.className = 'cc-reminder-editor';
-  editor.hidden = true;
-  editor.innerHTML = `
-    <textarea class="cc-reminder-input" rows="2" placeholder="What do you want to be reminded about?"></textarea>
-    <div class="cc-reminder-when">
-      <span class="cc-reminder-when-label">Remind me on <span class="cc-reminder-optional">(optional)</span></span>
-      <div class="cc-reminder-when-inputs">
-        <input type="date" class="cc-reminder-date" />
-        <input type="time" class="cc-reminder-time" />
-        <button type="button" class="cc-reminder-when-clear" data-reminder-when-clear>Clear</button>
-      </div>
-    </div>
-    <div class="cc-reminder-actions">
-      <button type="button" class="btn btn-outline btn-sm" data-reminder-cancel>Cancel</button>
-      <button type="button" class="btn btn-primary btn-sm" data-reminder-save>Save reminder</button>
-    </div>
-  `;
-  anchor.insertAdjacentElement('afterend', editor);
-
-  const banner = document.createElement('div');
-  banner.className = 'cc-reminder-banner';
-  banner.hidden = true;
-  banner.innerHTML = `
-    <span class="cc-reminder-icon" aria-hidden="true">!</span>
-    <div class="cc-reminder-content">
-      <span class="cc-reminder-text"></span>
-      <span class="cc-reminder-due"></span>
-    </div>
-    <button type="button" class="cc-reminder-resolve">Resolve</button>
-  `;
-  editor.insertAdjacentElement('afterend', banner);
-});
-
-// "Now" pinned to the app's fake today (2026-05-08) with real time-of-day,
-// so reminder urgency makes sense against the rest of the mock data.
-function fakeNow() {
-  const now = new Date();
-  const fake = new Date(TODAY + 'T00:00:00');
-  fake.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), 0);
-  return fake;
+function setUpcomingPanel(open) {
+  upcomingFilterPanel.hidden = !open;
+  upcomingMoreBtn.setAttribute('aria-expanded', String(open));
 }
-
-function reminderUrgency(dueISO) {
-  if (!dueISO) return 'unscheduled';
-  const now = fakeNow();
-  const due = new Date(dueISO);
-  const diffMin = (due - now) / 60000;
-  if (diffMin <= 60) return 'urgent';      // overdue or due within 1 hour
-  const sameDay = due.toDateString() === now.toDateString();
-  if (sameDay) return 'soon';
-  return 'scheduled';
-}
-
-function dueLabel(dueISO, hasTime) {
-  if (!dueISO) return 'No due date';
-  const now = fakeNow();
-  const due = new Date(dueISO);
-  const diffMin = Math.round((due - now) / 60000);
-  if (hasTime && diffMin < 0)  return `Overdue · ${Math.abs(diffMin)} min ago`;
-  if (hasTime && diffMin <= 60) return `Due in ${diffMin} min`;
-  const timeStr = due.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-  const sameDay = due.toDateString() === now.toDateString();
-  if (sameDay && hasTime) return `Due today · ${timeStr}`;
-  const dateStr = due.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-  return hasTime ? `Due ${dateStr} · ${timeStr}` : `Due ${dateStr}`;
-}
-
-function applyReminderUrgencyClass(el, urgency) {
-  el.classList.remove('reminder-urgent', 'reminder-soon', 'reminder-scheduled', 'reminder-unscheduled');
-  el.classList.add('reminder-' + urgency);
-}
-
-function openReminderEditor(card) {
-  const editor = card.querySelector('.cc-reminder-editor');
-  const banner = card.querySelector('.cc-reminder-banner');
-  if (!editor) return;
-  const input = editor.querySelector('.cc-reminder-input');
-  const dateInput = editor.querySelector('.cc-reminder-date');
-  const timeInput = editor.querySelector('.cc-reminder-time');
-  if (input) input.value = card.dataset.reminderText || '';
-  if (dateInput) dateInput.value = card.dataset.reminderDate || '';
-  if (timeInput) timeInput.value = card.dataset.reminderTime || '';
-  editor.hidden = false;
-  if (banner) banner.hidden = true;
-  input?.focus();
-}
-
-function saveReminder(card) {
-  const editor = card.querySelector('.cc-reminder-editor');
-  const banner = card.querySelector('.cc-reminder-banner');
-  if (!editor || !banner) return;
-  const textEl  = editor.querySelector('.cc-reminder-input');
-  const dateVal = editor.querySelector('.cc-reminder-date')?.value || '';
-  const timeVal = editor.querySelector('.cc-reminder-time')?.value || '';
-  const rawText = (textEl?.value || '').trim();
-  // Require at least a note OR a date — otherwise flag the textarea.
-  if (!rawText && !dateVal) {
-    if (textEl) {
-      textEl.classList.add('cc-reminder-input-error');
-      textEl.placeholder = 'Add a note or pick a date to save a reminder.';
-      textEl.focus();
-      setTimeout(() => textEl.classList.remove('cc-reminder-input-error'), 1600);
-    }
-    return;
-  }
-  const text = rawText || '(no note)';
-  // Persist on the card
-  card.dataset.reminderText = text;
-  card.dataset.reminderDate = dateVal;
-  card.dataset.reminderTime = timeVal;
-  // Compose ISO due if date provided (use 09:00 default when no time)
-  let dueISO = '';
-  if (dateVal) dueISO = `${dateVal}T${timeVal || '09:00'}:00`;
-  card.dataset.reminderDue = dueISO;
-  card.dataset.reminderHasTime = timeVal ? 'true' : 'false';
-  // Update banner text + due + urgency tint
-  banner.querySelector('.cc-reminder-text').textContent = text;
-  banner.querySelector('.cc-reminder-due').textContent = dueLabel(dueISO, !!timeVal);
-  banner.hidden = false;
-  editor.hidden = true;
-  const urgency = reminderUrgency(dueISO);
-  card.classList.add('client-card-reminder');
-  applyReminderUrgencyClass(card, urgency);
-  applyReminderUrgencyClass(banner, urgency);
-  renderRemindersBlock();
-}
-
-function clearReminder(card) {
-  const editor = card.querySelector('.cc-reminder-editor');
-  const banner = card.querySelector('.cc-reminder-banner');
-  if (editor) editor.hidden = true;
-  if (banner) {
-    banner.hidden = true;
-    const t = banner.querySelector('.cc-reminder-text');
-    const d = banner.querySelector('.cc-reminder-due');
-    if (t) t.textContent = '';
-    if (d) d.textContent = '';
-    banner.classList.remove('reminder-urgent', 'reminder-soon', 'reminder-scheduled', 'reminder-unscheduled');
-  }
-  card.classList.remove('client-card-reminder', 'reminder-urgent', 'reminder-soon', 'reminder-scheduled', 'reminder-unscheduled');
-  delete card.dataset.reminderText;
-  delete card.dataset.reminderDate;
-  delete card.dataset.reminderTime;
-  delete card.dataset.reminderDue;
-  delete card.dataset.reminderHasTime;
-  renderRemindersBlock();
-}
-
-// Renders the global Reminders attention-block (below Critical right now)
-function renderRemindersBlock() {
-  const block = document.getElementById('block-reminders');
-  const list  = document.getElementById('reminders-list');
-  const count = document.getElementById('reminders-count');
-  if (!block || !list) return;
-
-  const cards = Array.from(document.querySelectorAll('.client-card.client-card-reminder'));
-  // Only Active-tab cards (not Past-card snapshots)
-  const activeCards = cards.filter((c) => !c.classList.contains('past-card'));
-
-  // Sort by urgency (urgent → soon → unscheduled → scheduled), then by due
-  const order = { urgent: 0, soon: 1, unscheduled: 2, scheduled: 3 };
-  const items = activeCards.map((c) => {
-    const due = c.dataset.reminderDue || '';
-    const hasTime = c.dataset.reminderHasTime === 'true';
-    return {
-      card: c,
-      name: c.querySelector('.cc-name')?.textContent.trim() || 'Client',
-      text: c.dataset.reminderText || '',
-      due, hasTime,
-      urgency: reminderUrgency(due),
-    };
-  });
-  items.sort((a, b) => {
-    const o = order[a.urgency] - order[b.urgency];
-    if (o !== 0) return o;
-    if (a.due && b.due) return new Date(a.due) - new Date(b.due);
-    return 0;
-  });
-
-  list.innerHTML = items.map((it) => `
-    <article class="reminder-item reminder-${it.urgency}" data-reminder-card-id="${it.card.dataset.cardId || ''}">
-      <header class="reminder-top">
-        <span class="reminder-client">${it.name}</span>
-        <span class="reminder-due-chip">${dueLabel(it.due, it.hasTime)}</span>
-      </header>
-      <p class="reminder-text">${it.text.replace(/</g, '&lt;')}</p>
-      <footer class="reminder-actions">
-        <button type="button" class="reminder-btn reminder-btn-open" data-reminder-jump title="Open card">
-          <span class="reminder-btn-icon" aria-hidden="true">↗</span> Open
-        </button>
-        <button type="button" class="reminder-btn reminder-btn-resolve" data-reminder-resolve-block title="Resolve">
-          <span class="reminder-btn-icon" aria-hidden="true">✓</span> Resolve
-        </button>
-      </footer>
-    </article>
-  `).join('');
-
-  if (count) count.textContent = String(items.length);
-  block.hidden = items.length === 0;
-
-  // Sync each card's tint to current urgency (recompute against fake-now)
-  activeCards.forEach((c) => {
-    const u = reminderUrgency(c.dataset.reminderDue || '');
-    applyReminderUrgencyClass(c, u);
-    const b = c.querySelector('.cc-reminder-banner');
-    if (b && !b.hidden) {
-      applyReminderUrgencyClass(b, u);
-      const d = b.querySelector('.cc-reminder-due');
-      if (d) d.textContent = dueLabel(c.dataset.reminderDue || '', c.dataset.reminderHasTime === 'true');
-    }
-  });
-
-  // Wire jump + resolve from the block
-  list.querySelectorAll('[data-reminder-jump]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const id = btn.closest('.reminder-item')?.dataset.reminderCardId;
-      const card = document.querySelector(`.client-card[data-card-id="${id}"]`);
-      if (!card) return;
-      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      card.classList.remove('cc-flash'); void card.offsetWidth; card.classList.add('cc-flash');
-      setTimeout(() => card.classList.remove('cc-flash'), 1500);
-    });
-  });
-  list.querySelectorAll('[data-reminder-resolve-block]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const id = btn.closest('.reminder-item')?.dataset.reminderCardId;
-      const card = document.querySelector(`.client-card[data-card-id="${id}"]`);
-      if (card) clearReminder(card);
-    });
-  });
-}
-
-// Clear-date helper in the editor
+upcomingMoreBtn.addEventListener('click', () => setUpcomingPanel(upcomingFilterPanel.hidden));
+document.getElementById('upcoming-filter-done').addEventListener('click', () => setUpcomingPanel(false));
 document.addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-reminder-when-clear]');
-  if (!btn) return;
-  const editor = btn.closest('.cc-reminder-editor');
-  if (!editor) return;
-  editor.querySelector('.cc-reminder-date').value = '';
-  editor.querySelector('.cc-reminder-time').value = '';
+  if (!upcomingFilterPanel.hidden && !e.target.closest('.filter-more-wrap')) setUpcomingPanel(false);
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !upcomingFilterPanel.hidden) setUpcomingPanel(false);
 });
 
-// Re-tick urgency every minute so colors creep up as time approaches
-setInterval(renderRemindersBlock, 60000);
+populateUpcomingSubs();
+syncUpcomingFilterBar();
 
-document.querySelectorAll('[data-add-reminder]').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const card = btn.closest('.client-card');
-    document.querySelectorAll('.cc-menu').forEach((m) => (m.hidden = true));
-    if (card) openReminderEditor(card);
-  });
-});
-
-document.querySelectorAll('[data-reminder-save]').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const card = btn.closest('.client-card');
-    if (card) saveReminder(card);
-  });
-});
-
-document.querySelectorAll('[data-reminder-cancel]').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const card = btn.closest('.client-card');
-    const editor = card?.querySelector('.cc-reminder-editor');
-    const banner = card?.querySelector('.cc-reminder-banner');
-    if (editor) editor.hidden = true;
-    // If a reminder was previously saved, show its banner again on cancel
-    if (banner && banner.querySelector('.cc-reminder-text')?.textContent.trim()) {
-      banner.hidden = false;
-    }
-  });
-});
-
-document.querySelectorAll('.cc-reminder-resolve').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const card = btn.closest('.client-card');
-    if (card) clearReminder(card);
-  });
+// ---------- "Add documents" — lives in the Manage popup, writes to the card ----------
+document.getElementById('manage-add-docs')?.addEventListener('click', () => {
+  activeCard?.querySelector('.cc-file-input')?.click();
 });
 
 document.querySelectorAll('.client-card .cc-file-input').forEach((input) => {
@@ -852,14 +543,14 @@ document.querySelectorAll('.client-card .cc-file-input').forEach((input) => {
     const card = input.closest('.client-card');
     if (!card) return;
     let list = card.querySelector('.cc-attachment-list');
-    // If View more was empty / no attachments yet, ensure structure exists
+    // No attachments yet → build the section the popup will show
     if (!list) {
-      const viewMoreContent = card.querySelector('.cc-view-more-content');
-      if (viewMoreContent) {
+      const payload = card.querySelector('.cc-manage-content');
+      if (payload) {
         const wrap = document.createElement('div');
         wrap.className = 'cc-attachments';
         wrap.innerHTML = '<div class="cc-section-label">Attachments</div><div class="cc-attachment-list"></div>';
-        viewMoreContent.appendChild(wrap);
+        payload.appendChild(wrap);
         list = wrap.querySelector('.cc-attachment-list');
       }
     }
@@ -892,33 +583,86 @@ document.querySelectorAll('.client-card .cc-file-input').forEach((input) => {
       list.appendChild(item);
     });
 
-    // Auto-open View more so user can see new files
-    const details = card.querySelector('.cc-view-more');
-    if (details) details.open = true;
     input.value = '';
+    if (activeCard === card) renderManageSummary(card);
   });
 });
 
-// ---------- Action buttons on each card ----------
-// 1) Reassign physio → open assign/reassign modal
-document.querySelectorAll('[data-reassign-physio]').forEach((btn) => {
+// ---------- Lead confirmation toggle on each card ----------
+// Only the panel side is clickable here — the trainer side is confirmed in the trainer app.
+document.querySelectorAll('[data-lead-toggle]').forEach((btn) => {
   btn.addEventListener('click', () => {
-    const card = btn.closest('.client-card');
-    if (!card) return;
-    const dateText = card.querySelector('.cc-dt-item strong')?.textContent || '';
-    openModal(card, dateText);
+    const state = btn.closest('.cc-lead-state');
+    const confirmed = state.dataset.confirmed !== 'true';
+    state.dataset.confirmed = String(confirmed);
+    btn.textContent = confirmed ? 'Confirmed' : 'Not confirmed';
+    refreshUnconfirmedAlert();
   });
 });
 
-// 2) Reschedule session time → trigger inline date/time editor on the card
-document.querySelectorAll('[data-reschedule-time]').forEach((btn) => {
+// ---------- Manage session: open the popup from a card ----------
+function renderManageSummary(card) {
+  const summary = document.getElementById('manage-summary');
+  const client = document.getElementById('manage-client');
+  const details = document.getElementById('manage-details');
+  if (!summary || !card) return;
+
+  const text = (sel) => card.querySelector(sel)?.textContent.trim() || '—';
+  const [dateLabel, timeLabel] = Array.from(card.querySelectorAll('.cc-dt-item strong')).map((el) => el.textContent.trim());
+
+  client.innerHTML = `
+    <div class="cc-avatar">${text('.cc-avatar')}</div>
+    <div class="cc-id"><div class="cc-name">${text('.cc-name')}</div><div class="cc-age">${text('.cc-age')}</div></div>
+    <span class="${card.querySelector('.cc-status')?.className || 'cc-status'}">${text('.cc-status')}</span>`;
+
+  const row = (label, value) =>
+    `<div class="cc-grid-row"><div class="cc-grid-cell"><span class="cc-grid-label">${label}</span><span class="cc-grid-value">${value}</span></div></div>`;
+  const address = text('.cc-address');
+  summary.innerHTML =
+    `<div class="cc-grid-row"><div class="cc-grid-cell"><span class="cc-grid-label">Address</span>
+       <div class="cc-address-line"><span class="cc-grid-value cc-address">${address}</span>${mapLink(address)}</div>
+     </div></div>` +
+    row('Service', card.dataset.service || '—') +
+    row('Type', card.dataset.subservice || '—') +
+    `<div class="cc-grid-row cc-datetime"><div class="cc-dt-display">
+       <div class="cc-dt-item"><span class="cc-grid-label">Date</span><strong>${dateLabel}</strong></div>
+       <div class="cc-dt-item"><span class="cc-grid-label">Time</span><strong>${timeLabel}</strong></div>
+     </div></div>` +
+    row(text('.cc-physio-label'), text('.cc-physio-name'));
+
+  // Payment / description / attachments live on the card; the popup shows a live copy.
+  details.innerHTML = '';
+  const payload = card.querySelector('.cc-manage-content');
+  if (payload) {
+    const clone = payload.cloneNode(true);
+    clone.hidden = false;
+    details.appendChild(clone);
+  }
+}
+
+function openManageModal(card) {
+  if (!modal) return;
+  activeCard = card;
+  if (!card.dataset.systemPhysio) card.dataset.systemPhysio = getCurrentPhysioName(card);
+  renderManageSummary(card);
+  modal.hidden = false;
+  showManageView('main');
+}
+
+document.querySelectorAll('[data-manage-session]').forEach((btn) => {
   btn.addEventListener('click', () => {
     const card = btn.closest('.client-card');
-    const dt = card?.querySelector('.cc-datetime');
-    const display = dt?.querySelector('.cc-dt-display');
-    const edit = dt?.querySelector('.cc-dt-edit');
-    if (display) display.hidden = true;
-    if (edit) edit.hidden = false;
+    if (card) openManageModal(card);
+  });
+});
+
+// Main-view buttons switch to their sub-view
+modal?.querySelectorAll('[data-manage-view]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const view = btn.dataset.manageView;
+    if (view === 'reassign') openReassignView(activeCard);
+    else if (view === 'cancel') openCancelView(activeCard);
+    else if (view === 'reschedule') openRescheduleView(activeCard);
   });
 });
 
@@ -933,7 +677,7 @@ document.querySelectorAll('[data-call-toggle]').forEach((btn) => {
   });
 });
 
-// ---------- Inline date/time edit (Save / Cancel) ----------
+// ---------- Reschedule (popup view) ----------
 function formatDate(iso) {
   if (!iso) return '';
   const [y, m, d] = iso.split('-').map(Number);
@@ -948,79 +692,197 @@ function formatTime(t) {
   return `${h12}:${String(mm).padStart(2, '0')} ${period}`;
 }
 
-document.querySelectorAll('.cc-datetime').forEach((dt) => {
-  const display = dt.querySelector('.cc-dt-display');
-  const edit = dt.querySelector('.cc-dt-edit');
-  const cancelBtn = dt.querySelector('[data-cancel]');
-  const saveBtn = dt.querySelector('[data-save]');
-  const dateInput = dt.querySelector('.dt-date');
-  const timeInput = dt.querySelector('.dt-time');
+// Mock calendars: the slots each physio is already booked for.
+const RESCHEDULE_SLOTS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'];
+const RESCHEDULE_PHYSIOS = [
+  { name: 'Dr. Neha Sharma',  spec: 'Sports Rehab',      initials: 'NS', busy: ['08:00','11:00','15:00','18:00'] },
+  { name: 'Dr. Rajan Iyer',   spec: 'Orthopedic Physio', initials: 'RI', busy: ['09:00','12:00','16:00'] },
+  { name: 'Dr. Priya Menon',  spec: 'Neuro Physio',      initials: 'PM', busy: ['10:00','13:00','17:00','19:00'] },
+  { name: 'Dr. Anjali Verma', spec: 'Sports Rehab',      initials: 'AV', busy: ['08:00','09:00','14:00','19:00'] },
+  { name: 'Dr. Vikram Singh', spec: 'Geriatric Physio',  initials: 'VS', busy: ['11:00','13:00','16:00','18:00'] },
+];
 
-  if (!display || !edit) return;
+const rescheduleDateInput = document.getElementById('reschedule-date');
+const rescheduleSlotsEl = document.getElementById('reschedule-slots');
+const reschedulePhysiosEl = document.getElementById('reschedule-physios');
+const rescheduleReason = document.getElementById('reschedule-reason');
+const rescheduleDoneBtn = document.getElementById('reschedule-done');
+const rescheduleTimeHint = document.getElementById('reschedule-time-hint');
+const reschedulePhysioHint = document.getElementById('reschedule-physio-hint');
 
-  cancelBtn?.addEventListener('click', () => {
-    edit.hidden = true;
-    display.hidden = false;
+const reschedule = { time: '', physio: '', origin: { time: '', physio: '' } };
+
+// This session's own slot is not a conflict for the physio already on it.
+const isOwnSlot = (physioName, time) =>
+  physioName === reschedule.origin.physio && time === reschedule.origin.time;
+const busyAt = (physio, time) => physio.busy.includes(time) && !isOwnSlot(physio.name, time);
+
+const physioFree = (physio, time) => !time || !busyAt(physio, time);
+const timeFree = (time, physioName) => {
+  const physio = RESCHEDULE_PHYSIOS.find((p) => p.name === physioName);
+  return !physio || !busyAt(physio, time);
+};
+
+// Each side greys out what the other rules out; picking a conflicting option clears the other.
+function renderRescheduleView() {
+  rescheduleSlotsEl.innerHTML = '';
+  RESCHEDULE_SLOTS.forEach((time) => {
+    const free = timeFree(time, reschedule.physio);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'slot' + (free ? '' : ' slot-booked') + (reschedule.time === time ? ' slot-selected' : '');
+    btn.textContent = formatTime(time);
+    btn.disabled = !free;
+    btn.addEventListener('click', () => {
+      reschedule.time = reschedule.time === time ? '' : time;
+      renderRescheduleView();
+    });
+    rescheduleSlotsEl.appendChild(btn);
   });
-  saveBtn?.addEventListener('click', () => {
-    const dateSpan = display.querySelectorAll('.cc-dt-item strong')[0];
-    const timeSpan = display.querySelectorAll('.cc-dt-item strong')[1];
-    const oldDate = dateSpan?.textContent.trim() || '';
-    const oldTime = timeSpan?.textContent.trim() || '';
-    const newDate = dateInput?.value ? formatDate(dateInput.value) : oldDate;
-    const newTime = timeInput?.value ? formatTime(timeInput.value) : oldTime;
-    if (dateSpan) dateSpan.textContent = newDate;
-    if (timeSpan) timeSpan.textContent = newTime;
-    edit.hidden = true;
-    display.hidden = false;
 
-    if (newDate !== oldDate || newTime !== oldTime) {
-      const card = dt.closest('.client-card');
-      const status = card?.querySelector('.cc-status:not(.status-reassigned)');
-      if (status) {
-        status.className = 'cc-status status-reschedule';
-        status.textContent = 'Rescheduled';
-      }
+  const freePhysios = renderPhysioColumn(reschedulePhysiosEl, {
+    time: reschedule.time,
+    selected: reschedule.physio,
+    current: reschedule.origin.physio,
+    onPick: (p) => {
+      reschedule.physio = reschedule.physio === p.name ? '' : p.name;
+      renderRescheduleView();
+    },
+  });
+
+  const freeSlots = RESCHEDULE_SLOTS.filter((t) => timeFree(t, reschedule.physio)).length;
+  rescheduleTimeHint.textContent = reschedule.physio ? `${freeSlots} free for ${reschedule.physio}` : 'All slots';
+  reschedulePhysioHint.textContent = reschedule.time ? `${freePhysios} free at ${formatTime(reschedule.time)}` : 'All physios';
+  rescheduleDoneBtn.disabled = !(reschedule.time && reschedule.physio && rescheduleReason.value.trim());
+}
+
+function openRescheduleView(card) {
+  const [date, time] = (card.dataset.datetime || '').split('T');
+  rescheduleDateInput.value = date || '';
+  reschedule.time = time || '';
+  reschedule.physio = getCurrentPhysioName(card);
+  reschedule.origin = { time: reschedule.time, physio: reschedule.physio };
+  rescheduleReason.value = '';
+  renderRescheduleView();
+  showManageView('reschedule');
+}
+
+rescheduleReason?.addEventListener('input', renderRescheduleView);
+
+rescheduleDoneBtn?.addEventListener('click', () => {
+  if (!activeCard) return;
+  const dateISO = rescheduleDateInput.value;
+  const [oldDate, oldTime] = (activeCard.dataset.datetime || '').split('T');
+  const oldLabel = `${formatDate(oldDate)}, ${formatTime(oldTime)}`;
+  const newLabel = `${formatDate(dateISO)}, ${formatTime(reschedule.time)}`;
+
+  activeCard.dataset.datetime = `${dateISO}T${reschedule.time}`;
+  const [dateSpan, timeSpan] = activeCard.querySelectorAll('.cc-dt-item strong');
+  if (dateSpan) dateSpan.textContent = formatDate(dateISO);
+  if (timeSpan) timeSpan.textContent = formatTime(reschedule.time);
+
+  applyPhysioAssignment(activeCard, reschedule.physio);
+
+  if (oldLabel !== newLabel) {
+    const status = activeCard.querySelector('.cc-status:not(.status-reassigned)');
+    if (status) {
+      status.className = 'cc-status status-reschedule';
+      status.textContent = 'Rescheduled';
     }
-  });
+    let note = activeCard.querySelector('.cc-reschedule-note');
+    if (!note) {
+      note = document.createElement('div');
+      note.className = 'cc-grid-row cc-reschedule-note';
+      activeCard.querySelector('.cc-grid').appendChild(note);
+    }
+    note.innerHTML = `
+      <span class="rn-label">Rescheduled</span>
+      <span class="rn-old"></span>
+      <span class="rn-arrow">&rarr;</span>
+      <span class="rn-new"></span>
+      <span class="rn-reason"></span>`;
+    note.querySelector('.rn-old').textContent = oldLabel;
+    note.querySelector('.rn-new').textContent = newLabel;
+    note.querySelector('.rn-reason').textContent = rescheduleReason.value.trim();
+  }
+
+  renderManageSummary(activeCard);
+  showManageView('main');
 });
 
-// ---------- Cancel Session flow ----------
-const cancelModal = document.getElementById('cancel-modal');
+// Renders the physio column shared by Reschedule and Reassign: booked-at-this-time greys out.
+function renderPhysioColumn(container, { time, selected, current, onPick }) {
+  container.innerHTML = '';
+  RESCHEDULE_PHYSIOS.forEach((p) => {
+    const free = physioFree(p, time);
+    const isCurrent = p.name === current;
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'physio-row' + (free ? '' : ' physio-row-busy') + (selected === p.name ? ' physio-row-selected' : '');
+    row.disabled = !free;
+    // Only the exceptions get a label — an available physio is just a name,
+    // so a long roster stays scannable.
+    const note = !free ? '<span class="physio-note physio-note-busy">Booked</span>'
+               : isCurrent ? '<span class="physio-note physio-note-current">Current</span>' : '';
+    row.innerHTML = `<span class="physio-name">${p.name}</span>${note}`;
+    row.addEventListener('click', () => onPick(p));
+    container.appendChild(row);
+  });
+  return RESCHEDULE_PHYSIOS.filter((p) => physioFree(p, time)).length;
+}
+
+// ---------- Reassign physio (popup view) — same layout, time locked ----------
+const reassignSlotsEl = document.getElementById('reassign-slots');
+const reassignPhysiosEl = document.getElementById('reassign-physios');
+const reassignPhysioHint = document.getElementById('reassign-physio-hint');
+
+function renderReassignView() {
+  const time = reschedule.origin.time;
+
+  // The slot grid is context only here — every slot is inert, the session's own is marked.
+  reassignSlotsEl.innerHTML = '';
+  RESCHEDULE_SLOTS.forEach((t) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.disabled = true;
+    btn.className = 'slot' + (t === time ? ' slot-selected' : '');
+    btn.textContent = formatTime(t);
+    reassignSlotsEl.appendChild(btn);
+  });
+
+  const free = renderPhysioColumn(reassignPhysiosEl, {
+    time,
+    selected: activePhysio.name,
+    current: reschedule.origin.physio,
+    onPick: (p) => {
+      activePhysio = { name: p.name, spec: p.spec };
+      renderReassignView();
+    },
+  });
+  reassignPhysioHint.textContent = `${free} free at ${formatTime(time)}`;
+  confirmBtn.disabled = !activePhysio.name || activePhysio.name === reschedule.origin.physio;
+}
+
+function openReassignView(card) {
+  const [date, time] = (card.dataset.datetime || '').split('T');
+  reschedule.origin = { time, physio: getCurrentPhysioName(card) };
+  activePhysio = { name: reschedule.origin.physio, spec: '' };
+  document.getElementById('reassign-date').textContent = formatDate(date);
+  document.getElementById('reassign-time').textContent = formatTime(time);
+  renderReassignView();
+  showManageView('reassign');
+}
+
+// ---------- Cancel Session (popup view) ----------
 const cancelClientName = document.getElementById('cancel-client-name');
 const cancelReason = document.getElementById('cancel-reason');
 const confirmCancelBtn = document.getElementById('confirm-cancel');
-const cancelledGrid = document.getElementById('cancelled-grid');
-const cancelledEmpty = document.getElementById('cancelled-empty');
-const cancelledCount = document.getElementById('cancelled-count');
-let cancelTargetCard = null;
 
-function openCancelModal(card) {
-  cancelTargetCard = card;
+function openCancelView(card) {
   if (cancelClientName) cancelClientName.textContent = card.querySelector('.cc-name')?.textContent || '—';
   if (cancelReason) cancelReason.value = '';
   if (confirmCancelBtn) confirmCancelBtn.disabled = true;
-  if (cancelModal) cancelModal.hidden = false;
-}
-function closeCancelModal() {
-  if (cancelModal) cancelModal.hidden = true;
-  cancelTargetCard = null;
-}
-
-document.querySelectorAll('[data-cancel-session]').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const card = btn.closest('.client-card');
-    if (card) openCancelModal(card);
-  });
-});
-
-if (cancelModal) {
-  cancelModal.addEventListener('click', (e) => {
-    if (e.target === cancelModal || e.target.hasAttribute('data-close')) closeCancelModal();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !cancelModal.hidden) closeCancelModal();
-  });
+  showManageView('cancel');
 }
 
 // Compulsory reason — confirm enabled only when textarea has content
@@ -1030,53 +892,57 @@ if (cancelReason && confirmCancelBtn) {
   });
 }
 
+// A cancelled session leaves the active screen entirely — it belongs to Past clients.
+function cardToPastSession(card, reason) {
+  const text = (sel) => card.querySelector(sel)?.textContent.trim() || '';
+  const [date, time] = (card.dataset.datetime || '').split('T');
+  const payment = card.querySelector('.cc-manage-content .cc-payment');
+  const paymentRow = (label) =>
+    Array.from(payment?.querySelectorAll('.cc-payment-row') || [])
+      .find((r) => r.querySelector('.payment-label')?.textContent.trim() === label);
+
+  return {
+    id: `p-${card.dataset.cardId}-${date}`,
+    name: text('.cc-name'),
+    age: Number(text('.cc-age').replace(/\D/g, '')),
+    initials: text('.cc-avatar'),
+    address: text('.cc-address'),
+    service: card.dataset.service,
+    sub: card.dataset.subservice,
+    date,
+    dateLabel: formatDate(date),
+    timeLabel: formatTime(time),
+    physio: getCurrentPhysioName(card),
+    start: '—',
+    end: '—',
+    duration: null,
+    status: 'cancelled',
+    statusLabel: 'Cancelled',
+    short: false,
+    payment: {
+      amount: paymentRow('Amount')?.querySelector('.payment-amount')?.textContent.trim() || '—',
+      stateLabel: 'Refunded',
+      stateClass: 'payment-refunded',
+      extra: [['Refunded on', formatDate(date)], ['Reason', reason]],
+    },
+    description: reason,
+    documents: [],
+    report: null,
+  };
+}
+
 if (confirmCancelBtn) {
   confirmCancelBtn.addEventListener('click', () => {
-    if (!cancelTargetCard) return closeCancelModal();
+    if (!activeCard) return closeModal();
     const reason = (cancelReason?.value || '').trim();
     if (!reason) { cancelReason?.focus(); return; }
 
-    // Update status badge → red Cancelled
-    const status = cancelTargetCard.querySelector('.cc-status');
-    if (status) {
-      status.className = 'cc-status status-cancelled';
-      status.textContent = 'Cancelled';
-    }
+    PAST_SESSIONS_DATA.unshift(cardToPastSession(activeCard, reason));
+    activeCard.remove();
 
-    // Insert cancellation reason block (after the view-more or physio info)
-    let reasonBlock = cancelTargetCard.querySelector('.cc-cancellation');
-    if (!reasonBlock) {
-      reasonBlock = document.createElement('div');
-      reasonBlock.className = 'cc-cancellation';
-      const anchor =
-        cancelTargetCard.querySelector('.cc-view-more') ||
-        cancelTargetCard.querySelector('[data-physio-info]') ||
-        cancelTargetCard.querySelector('.cc-datetime');
-      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(reasonBlock, anchor.nextSibling);
-      else cancelTargetCard.appendChild(reasonBlock);
-    }
-    reasonBlock.innerHTML = '<div class="cc-section-label">Cancellation reason</div><p></p>';
-    reasonBlock.querySelector('p').textContent = reason;
-
-    cancelTargetCard.classList.add('client-card-cancelled');
-    cancelTargetCard.classList.remove('client-card-attention');
-
-    // Cancel removes any TODO tied to the card
-    removeTodoForCard(cancelTargetCard);
-
-    // Disable all action buttons on the cancelled card
-    cancelTargetCard.querySelectorAll('.cc-actions button').forEach((b) => (b.disabled = true));
-
-    // Move to cancelled block
-    if (cancelledGrid) {
-      cancelledGrid.appendChild(cancelTargetCard);
-      if (cancelledEmpty) cancelledEmpty.hidden = true;
-      if (cancelledCount) {
-        cancelledCount.textContent = String(cancelledGrid.querySelectorAll('.client-card').length);
-      }
-    }
-
-    closeCancelModal();
+    closeModal();
+    applyUpcomingFilters();
+    renderPastSessions();
   });
 }
 
@@ -1098,97 +964,170 @@ document.querySelectorAll('[data-page-tab]').forEach((tab) => {
 // ===================================================================
 const PAST_SESSIONS_DATA = [
   { id: 'p1', name: 'Akshat', age: 34, initials: 'AK',
-    address: 'B-204, Prestige Lake Ridge, JP Nagar, Bengaluru', service: 'Physiotherapy',
+    address: 'B-204, Prestige Lake Ridge, JP Nagar, Bengaluru', service: 'Physiotherapy', sub: 'Orthopaedic',
     date: '2026-05-07', dateLabel: 'May 7, 2026', timeLabel: '4:30 PM',
     physio: 'Dr. Neha Sharma', start: '4:30 PM', end: '5:30 PM',
-    duration: 60, rating: 4.5, status: 'completed', statusLabel: 'Completed', short: false,
+    duration: 60, status: 'completed', statusLabel: 'Completed', short: false,
     payment: { amount: '₹1,800', stateLabel: 'Paid', stateClass: 'payment-paid',
       extra: [['Paid on', 'May 7, 2026'], ['Method', 'Credit Card'], ['Transaction', 'TXN-78519044']] },
-    description: 'Lower-back strengthening — full protocol completed.' },
+    description: 'Lower-back strengthening — full protocol completed.',
+    documents: [{ name: 'lumbar-mri-report.pdf', ext: 'PDF', size: '2.8 MB' }, { name: 'posture-scan.jpg', ext: 'JPG', size: '740 KB' }],
+    report: { file: 'session-report-akshat-2026-05-07.pdf', size: '412 KB' } },
 
   { id: 'p2', name: 'Amogh', age: 41, initials: 'AM',
-    address: '12, Dollars Colony, RMV 2nd Stage, Bengaluru', service: 'Physical Trainer',
+    address: '12, Dollars Colony, RMV 2nd Stage, Bengaluru', service: 'Physical Trainer', sub: 'Strength & Conditioning',
     date: '2026-05-06', dateLabel: 'May 6, 2026', timeLabel: '11:00 AM',
     physio: 'Dr. Rajan Iyer', start: '11:08 AM', end: '11:35 AM',
-    duration: 27, rating: 3.0, status: 'delayed', statusLabel: 'Delayed', short: true,
+    duration: 27, status: 'delayed', statusLabel: 'Delayed', short: true,
     payment: { amount: '₹2,500', stateLabel: 'Paid', stateClass: 'payment-paid',
       extra: [['Paid on', 'May 5, 2026'], ['Method', 'UPI'], ['Transaction', 'TXN-78432901']] },
-    description: 'Shoulder mobility — client requested early stop due to fatigue.' },
+    description: 'Shoulder mobility — client requested early stop due to fatigue.',
+    documents: [{ name: 'shoulder-xray-report.pdf', ext: 'PDF', size: '3.2 MB' }, { name: 'workout-history.docx', ext: 'DOC', size: '420 KB' }],
+    report: { file: 'session-report-amogh-2026-05-06.pdf', size: '268 KB' } },
 
   { id: 'p3', name: 'Aman', age: 28, initials: 'AN',
-    address: 'Flat 7B, Brigade Meadows, Kanakapura Road, Bengaluru', service: 'Physiotherapy',
+    address: 'Flat 7B, Brigade Meadows, Kanakapura Road, Bengaluru', service: 'Physiotherapy', sub: 'Sports Injury',
     date: '2026-05-05', dateLabel: 'May 5, 2026', timeLabel: '6:15 PM',
     physio: 'Dr. Priya Menon', start: '6:15 PM', end: '7:15 PM',
-    duration: 60, rating: 3.5, status: 'rescheduled', statusLabel: 'Rescheduled', short: false,
+    duration: 60, status: 'rescheduled', statusLabel: 'Rescheduled', short: false,
     payment: { amount: '₹2,000', stateLabel: 'Paid', stateClass: 'payment-paid',
       extra: [['Paid on', 'May 5, 2026'], ['Method', 'UPI'], ['Transaction', 'TXN-78445120']] },
-    description: 'Knee assessment — rescheduled from earlier slot due to traffic.' },
+    description: 'Knee assessment — rescheduled from earlier slot due to traffic.',
+    documents: [{ name: 'knee-assessment.pdf', ext: 'PDF', size: '1.6 MB' }],
+    report: { file: 'session-report-aman-2026-05-05.pdf', size: '331 KB' } },
 
   { id: 'p4', name: 'Misnawaz', age: 52, initials: 'MN',
-    address: '4th Cross, Indiranagar Stage 1, Bengaluru', service: 'Physiotherapy',
+    address: '4th Cross, Indiranagar Stage 1, Bengaluru', service: 'Physiotherapy', sub: 'Post-surgical Rehab',
     date: '2026-05-04', dateLabel: 'May 4, 2026', timeLabel: '9:00 AM',
     physio: 'Dr. Neha Sharma', start: '9:00 AM', end: '9:30 AM',
-    duration: 30, rating: 3.5, status: 'completed', statusLabel: 'Completed', short: true,
+    duration: 30, status: 'completed', statusLabel: 'Completed', short: true,
     payment: { amount: '₹1,500', stateLabel: 'Paid', stateClass: 'payment-paid',
       extra: [['Paid on', 'May 3, 2026'], ['Method', 'Credit Card'], ['Transaction', 'TXN-78298433']] },
-    description: 'Post-op rehab check — concluded early on physio recommendation.' },
+    description: 'Post-op rehab check — concluded early on physio recommendation.',
+    documents: [{ name: 'post-op-notes.pdf', ext: 'PDF', size: '980 KB' }, { name: 'incision-week3.heic', ext: 'HEIC', size: '1.2 MB' }],
+    report: { file: 'session-report-misnawaz-2026-05-04.pdf', size: '205 KB' } },
 
   { id: 'p5', name: 'Nagaratna', age: 60, initials: 'NG',
-    address: 'Sai Nagar, Whitefield Phase 3, Bengaluru', service: 'Physical Trainer',
+    address: 'Sai Nagar, Whitefield Phase 3, Bengaluru', service: 'Physical Trainer', sub: 'Weight Loss',
     date: '2026-05-03', dateLabel: 'May 3, 2026', timeLabel: '2:00 PM',
     physio: 'Dr. Rajan Iyer', start: '—', end: '—',
-    duration: null, rating: null, status: 'cancelled', statusLabel: 'Cancelled', short: false,
+    duration: null, status: 'cancelled', statusLabel: 'Cancelled', short: false,
     payment: { amount: '₹2,200', stateLabel: 'Refunded', stateClass: 'payment-refunded',
       extra: [['Refunded on', 'May 3, 2026'], ['Method', 'UPI'], ['Reason', 'Client unwell']] },
-    description: 'Cancelled by client morning-of due to flu symptoms.' },
+    description: 'Cancelled by client morning-of due to flu symptoms.',
+    documents: [], report: null },
 
   { id: 'p6', name: 'Rizwana', age: 36, initials: 'RZ',
-    address: 'HSR Layout Sector 7, Bengaluru', service: 'Stretching',
+    address: 'HSR Layout Sector 7, Bengaluru', service: 'Physical Trainer', sub: 'Mobility & Stretching',
     date: '2026-05-02', dateLabel: 'May 2, 2026', timeLabel: '7:00 PM',
     physio: 'Dr. Neha Sharma', start: '7:18 PM', end: '8:18 PM',
-    duration: 60, rating: 4.5, status: 'delayed', statusLabel: 'Delayed', short: false,
+    duration: 60, status: 'delayed', statusLabel: 'Delayed', short: false,
     payment: { amount: '₹1,200', stateLabel: 'Paid', stateClass: 'payment-paid',
       extra: [['Paid on', 'May 2, 2026'], ['Method', 'UPI'], ['Transaction', 'TXN-78211090']] },
-    description: 'Hip-flexor mobility — physio arrived late, full duration completed.' },
+    description: 'Hip-flexor mobility — physio arrived late, full duration completed.',
+    documents: [{ name: 'hip-mobility-baseline.pdf', ext: 'PDF', size: '1.1 MB' }],
+    report: { file: 'session-report-nagaratna-2026-05-03.pdf', size: '300 KB' } },
 
   { id: 'p7', name: 'Saloni Ram', age: 29, initials: 'SR',
-    address: '4th Block, Koramangala, Bengaluru', service: 'Physiotherapy',
+    address: '4th Block, Koramangala, Bengaluru', service: 'Physiotherapy', sub: 'Orthopaedic',
     date: '2026-05-01', dateLabel: 'May 1, 2026', timeLabel: '10:00 AM',
     physio: 'Dr. Priya Menon', start: '10:00 AM', end: '11:00 AM',
-    duration: 60, rating: 5.0, status: 'completed', statusLabel: 'Completed', short: false,
+    duration: 60, status: 'completed', statusLabel: 'Completed', short: false,
     payment: { amount: '₹2,000', stateLabel: 'Paid', stateClass: 'payment-paid',
       extra: [['Paid on', 'Apr 30, 2026'], ['Method', 'Credit Card'], ['Transaction', 'TXN-78103776']] },
-    description: 'Neck and posture assessment — excellent session, follow-up booked.' },
+    description: 'Neck and posture assessment — excellent session, follow-up booked.',
+    documents: [{ name: 'neck-posture-report.pdf', ext: 'PDF', size: '2.1 MB' }, { name: 'desk-setup.png', ext: 'PNG', size: '860 KB' }],
+    report: { file: 'session-report-saloni-ram-2026-05-01.pdf', size: '440 KB' } },
 
   { id: 'p8', name: 'Krishnamma', age: 67, initials: 'KR',
-    address: 'Outer Ring Road, Marathahalli, Bengaluru', service: 'Physical Trainer',
+    address: 'Outer Ring Road, Marathahalli, Bengaluru', service: 'Physical Trainer', sub: 'Strength & Conditioning',
     date: '2026-04-30', dateLabel: 'Apr 30, 2026', timeLabel: '5:00 PM',
     physio: 'Dr. Rajan Iyer', start: '5:00 PM', end: '6:00 PM',
-    duration: 60, rating: 4.0, status: 'rescheduled', statusLabel: 'Rescheduled', short: false,
+    duration: 60, status: 'rescheduled', statusLabel: 'Rescheduled', short: false,
     payment: { amount: '₹1,800', stateLabel: 'Paid', stateClass: 'payment-paid',
       extra: [['Paid on', 'Apr 29, 2026'], ['Method', 'UPI'], ['Transaction', 'TXN-78001244']] },
-    description: 'Geriatric strength training — rescheduled from Apr 28; completed on time.' },
+    description: 'Geriatric strength training — rescheduled from Apr 28; completed on time.',
+    documents: [{ name: 'geriatric-screen.pdf', ext: 'PDF', size: '1.4 MB' }],
+    report: { file: 'session-report-krishnamma-2026-04-30.pdf', size: '298 KB' } },
 
   { id: 'p9', name: 'Himanshu', age: 31, initials: 'HM',
-    address: 'BTM Layout 2nd Stage, Bengaluru', service: 'Stretching',
+    address: 'BTM Layout 2nd Stage, Bengaluru', service: 'Physical Trainer', sub: 'Mobility & Stretching',
     date: '2026-04-29', dateLabel: 'Apr 29, 2026', timeLabel: '12:00 PM',
     physio: 'Dr. Neha Sharma', start: '—', end: '—',
-    duration: null, rating: null, status: 'cancelled', statusLabel: 'Cancelled', short: false,
+    duration: null, status: 'cancelled', statusLabel: 'Cancelled', short: false,
     payment: { amount: '₹1,200', stateLabel: 'Refunded', stateClass: 'payment-refunded',
       extra: [['Refunded on', 'Apr 29, 2026'], ['Method', 'Credit Card'], ['Reason', 'Physio unavailable']] },
-    description: 'Physio rerouted to an emergency; session cancelled and refunded.' },
+    description: 'Physio rerouted to an emergency; session cancelled and refunded.',
+    documents: [], report: null },
 
   { id: 'p10', name: 'Akshat', age: 34, initials: 'AK',
-    address: 'B-204, Prestige Lake Ridge, JP Nagar, Bengaluru', service: 'Physiotherapy',
+    address: 'B-204, Prestige Lake Ridge, JP Nagar, Bengaluru', service: 'Physiotherapy', sub: 'Neurological',
     date: '2026-04-28', dateLabel: 'Apr 28, 2026', timeLabel: '6:00 PM',
     physio: 'Dr. Rajan Iyer', start: '6:22 PM', end: '6:55 PM',
-    duration: 33, rating: 2.5, status: 'delayed', statusLabel: 'Delayed', short: true,
+    duration: 33, status: 'delayed', statusLabel: 'Delayed', short: true,
     payment: { amount: '₹1,800', stateLabel: 'Paid', stateClass: 'payment-paid',
       extra: [['Paid on', 'Apr 27, 2026'], ['Method', 'UPI'], ['Transaction', 'TXN-77988012']] },
-    description: 'First visit — late start, cut short. Client requested change of physio.' },
+    description: 'First visit — late start, cut short. Client requested change of physio.',
+    documents: [{ name: 'first-visit-intake.pdf', ext: 'PDF', size: '760 KB' }],
+    report: { file: 'session-report-himanshu-2026-04-29.pdf', size: '300 KB' } },
+
+  // Akshat is the long-history case: 7 sessions, so the popup's list has to scale.
+  { id: 'p11', name: 'Akshat', age: 34, initials: 'AK',
+    address: 'B-204, Prestige Lake Ridge, JP Nagar, Bengaluru', service: 'Physiotherapy', sub: 'Orthopaedic',
+    date: '2026-04-21', dateLabel: 'Apr 21, 2026', timeLabel: '4:30 PM',
+    physio: 'Dr. Neha Sharma', start: '4:30 PM', end: '5:30 PM',
+    duration: 60, status: 'completed', statusLabel: 'Completed', short: false,
+    payment: { amount: '₹1,800', stateLabel: 'Paid', stateClass: 'payment-paid',
+      extra: [['Paid on', 'Apr 20, 2026'], ['Method', 'UPI'], ['Transaction', 'TXN-77854120']] },
+    description: 'Lumbar mobility — second week of the strengthening block.',
+    documents: [{ name: 'week2-progress.pdf', ext: 'PDF', size: '640 KB' }],
+    report: { file: 'session-report-akshat-2026-04-21.pdf', size: '254 KB' } },
+
+  { id: 'p12', name: 'Akshat', age: 34, initials: 'AK',
+    address: 'B-204, Prestige Lake Ridge, JP Nagar, Bengaluru', service: 'Physiotherapy', sub: 'Orthopaedic',
+    date: '2026-04-14', dateLabel: 'Apr 14, 2026', timeLabel: '5:00 PM',
+    physio: 'Dr. Priya Menon', start: '5:12 PM', end: '6:00 PM',
+    duration: 48, status: 'delayed', statusLabel: 'Delayed', short: false,
+    payment: { amount: '₹1,800', stateLabel: 'Paid', stateClass: 'payment-paid',
+      extra: [['Paid on', 'Apr 13, 2026'], ['Method', 'Credit Card'], ['Transaction', 'TXN-77712004']] },
+    description: 'Cover session while Dr. Sharma was on leave.',
+    documents: [],
+    report: { file: 'session-report-akshat-2026-04-14.pdf', size: '231 KB' } },
+
+  { id: 'p13', name: 'Akshat', age: 34, initials: 'AK',
+    address: 'B-204, Prestige Lake Ridge, JP Nagar, Bengaluru', service: 'Physiotherapy', sub: 'Orthopaedic',
+    date: '2026-04-07', dateLabel: 'Apr 7, 2026', timeLabel: '4:30 PM',
+    physio: 'Dr. Neha Sharma', start: '—', end: '—',
+    duration: null, status: 'cancelled', statusLabel: 'Cancelled', short: false,
+    payment: { amount: '₹1,800', stateLabel: 'Refunded', stateClass: 'payment-refunded',
+      extra: [['Refunded on', 'Apr 7, 2026'], ['Method', 'UPI'], ['Reason', 'Client travelling']] },
+    description: 'Cancelled the morning of — client out of town.',
+    documents: [], report: null },
+
+  { id: 'p14', name: 'Akshat', age: 34, initials: 'AK',
+    address: 'B-204, Prestige Lake Ridge, JP Nagar, Bengaluru', service: 'Physiotherapy', sub: 'Orthopaedic',
+    date: '2026-03-31', dateLabel: 'Mar 31, 2026', timeLabel: '4:30 PM',
+    physio: 'Dr. Neha Sharma', start: '4:30 PM', end: '5:30 PM',
+    duration: 60, status: 'completed', statusLabel: 'Completed', short: false,
+    payment: { amount: '₹1,800', stateLabel: 'Paid', stateClass: 'payment-paid',
+      extra: [['Paid on', 'Mar 30, 2026'], ['Method', 'UPI'], ['Transaction', 'TXN-77490881']] },
+    description: 'First strengthening session after the assessment block.',
+    documents: [{ name: 'baseline-measurements.pdf', ext: 'PDF', size: '520 KB' }],
+    report: { file: 'session-report-akshat-2026-04-07.pdf', size: '300 KB' } },
+
+  { id: 'p15', name: 'Akshat', age: 34, initials: 'AK',
+    address: 'B-204, Prestige Lake Ridge, JP Nagar, Bengaluru', service: 'Physiotherapy', sub: 'Orthopaedic',
+    date: '2026-03-24', dateLabel: 'Mar 24, 2026', timeLabel: '6:00 PM',
+    physio: 'Dr. Rajan Iyer', start: '6:00 PM', end: '6:45 PM',
+    duration: 45, status: 'completed', statusLabel: 'Completed', short: false,
+    payment: { amount: '₹1,800', stateLabel: 'Paid', stateClass: 'payment-paid',
+      extra: [['Paid on', 'Mar 23, 2026'], ['Method', 'Credit Card'], ['Transaction', 'TXN-77301447']] },
+    description: 'Initial assessment — chronic lower-back pain, 4 months.',
+    documents: [{ name: 'intake-form.pdf', ext: 'PDF', size: '410 KB' }, { name: 'referral-letter.pdf', ext: 'PDF', size: '280 KB' }],
+    report: { file: 'session-report-akshat-2026-03-24.pdf', size: '392 KB' } },
 ];
 
-const PAST_VIEW = { mode: 'cards', service: 'all', status: 'all', physio: 'all', date: 'all', dateCustom: null, sort: 'date-desc', query: '' };
+const PAST_VIEW = { service: 'all', sub: 'all', status: 'all', physio: 'all', date: 'all', dateCustom: null, sort: 'date-desc', query: '' };
 
 // visit-count map: id -> { visit, total } based on chronological order per client.
 // Clients are grouped by name for the prototype (swap to client_id later).
@@ -1206,10 +1145,6 @@ const VISIT_INFO = (() => {
   return map;
 })();
 
-function ratingStars(r) {
-  if (r == null) return '<span class="cc-stat-value cc-stat-na">&mdash;</span>';
-  return `<span class="cc-stat-value"><span class="cc-rating-star">&#9733;</span> ${r.toFixed(1)} / 5</span>`;
-}
 function durationLabel(d) {
   if (d == null) return '<span class="cc-stat-value cc-stat-na">&mdash;</span>';
   return `<span class="cc-stat-value">${d} min${d < 45 ? ' <span class="cc-stat-flag">short</span>' : ''}</span>`;
@@ -1223,154 +1158,144 @@ function statusClassFor(status) {
     default: return 'status-scheduled';
   }
 }
-function renderPastCard(s) {
-  const extraRows = s.payment.extra
-    .map(([k, v]) => `<div class="cc-payment-row"><span class="payment-label">${k}</span><span class="payment-value">${v}</span></div>`)
-    .join('');
+// Card and details popup share these builders so the two views cannot drift apart.
+function pastDocuments(s) {
+  if (!s.documents?.length) {
+    return `<div class="cc-attachments"><div class="cc-section-label">Documents</div>
+      <p class="detail-empty">No documents were uploaded for this session.</p></div>`;
+  }
+  const extClass = (ext) => /^(JPG|JPEG|PNG|GIF|HEIC|WEBP)$/.test(ext) ? 'ext-img' : ext === 'PDF' ? 'ext-pdf' : 'ext-doc';
+  const items = s.documents.map((doc) => `
+    <a class="cc-attachment" href="#" onclick="return false;">
+      <span class="cc-attachment-ext ${extClass(doc.ext)}">${doc.ext}</span>
+      <span class="cc-attachment-name">${doc.name}</span>
+      <span class="cc-attachment-size">${doc.size}</span>
+    </a>`).join('');
+  return `<div class="cc-attachments">
+    <div class="cc-section-label">Documents <span class="cc-section-count">${s.documents.length}</span></div>
+    <div class="cc-attachment-list">${items}</div>
+  </div>`;
+}
+
+function pastReport(s) {
+  if (!s.report) {
+    return `<div class="session-report">
+      <div class="cc-section-label">Session report</div>
+      <p class="detail-empty">No report — the session did not take place.</p></div>`;
+  }
+  return `<div class="session-report">
+    <div class="cc-section-label">Session report</div>
+    <a class="report-file" href="#" onclick="return false;">
+      <span class="cc-attachment-ext ext-pdf">PDF</span>
+      <span class="report-file-meta">
+        <span class="cc-attachment-name">${s.report.file}</span>
+        <span class="cc-attachment-size">Filed by ${s.physio} · ${s.report.size}</span>
+      </span>
+      <span class="report-file-open">Open</span>
+    </a>
+  </div>`;
+}
+
+function pastVisitInfo(s) {
+  return VISIT_INFO[s.id];
+}
+function pastVisitBadge(s) {
   const v = VISIT_INFO[s.id];
-  const visitBadge = v && v.total > 1
-    ? `<span class="visit-badge" title="Returning client">Visit ${v.visit} of ${v.total}</span>`
+  return v && v.total > 1
+    ? `<span class="visit-badge" title="Returning client">${v.total} sessions</span>`
     : '';
+}
+function pastSummaryRows(s) {
+  const row = (label, value) =>
+    `<div class="cc-grid-row"><div class="cc-grid-cell"><span class="cc-grid-label">${label}</span><span class="cc-grid-value">${value}</span></div></div>`;
   return `
-    <article class="client-card past-card" data-card-id="${s.id}"
+    <div class="cc-grid-row">
+      <div class="cc-grid-cell"><span class="cc-grid-label">Address</span>
+        <div class="cc-address-line"><span class="cc-grid-value cc-address">${s.address}</span>${mapLink(s.address)}</div>
+      </div>
+    </div>
+    ${row('Service', s.service)}
+    ${row('Type', s.sub)}
+    <div class="cc-grid-row cc-datetime">
+      <div class="cc-dt-display">
+        <div class="cc-dt-item"><span class="cc-grid-label">Date</span><strong>${s.dateLabel}</strong></div>
+        <div class="cc-dt-item"><span class="cc-grid-label">Time</span><strong>${s.timeLabel}</strong></div>
+      </div>
+    </div>
+    <div class="cc-grid-row">
+      <div class="cc-grid-cell cc-physio-info cc-physio-assigned">
+        <span class="cc-physio-label">System assigned</span>
+        <span class="cc-physio-name">${s.physio}</span>
+      </div>
+    </div>`;
+}
+function pastStatsRow(s) {
+  return `
+    <div class="cc-stats-row">
+      <div class="cc-stat"><span class="cc-stat-label">Start</span><span class="cc-stat-value">${s.start}</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">End</span><span class="cc-stat-value">${s.end}</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">Duration</span>${durationLabel(s.duration)}</div>
+    </div>`;
+}
+
+// One card per client: the latest visit is the card, earlier ones nest inside it.
+function collapseByClient(sessions) {
+  const byClient = new Map();
+  sessions.forEach((s) => {
+    const entry = byClient.get(s.name);
+    if (entry) entry.previous.push(s);
+    else byClient.set(s.name, { latest: s, previous: [] });
+  });
+  return Array.from(byClient.values());
+}
+
+function renderPastCard({ latest: s, previous }) {
+  const repeat = previous.length || pastVisitInfo(s)?.total > 1;
+  return `
+    <article class="client-card past-card${repeat ? ' past-card-repeat' : ''}" data-card-id="${s.id}"
              data-datetime="${s.date}T00:00" data-date="${s.date}"
-             data-service="${s.service}" data-physio="${s.physio}"
-             data-status="${s.status}" data-rating="${s.rating ?? ''}">
+             data-service="${s.service}" data-subservice="${s.sub}" data-physio="${s.physio}"
+             data-status="${s.status}">
       <header class="cc-header">
         <div class="cc-avatar">${s.initials}</div>
         <div class="cc-id">
-          <div class="cc-name">${s.name}${visitBadge}</div>
+          <div class="cc-name">${s.name}${pastVisitBadge(s)}</div>
           <div class="cc-age">Age ${s.age}</div>
         </div>
         <span class="cc-status ${statusClassFor(s.status)}">${s.statusLabel}</span>
       </header>
-      <div class="cc-address-row">
-        <p class="cc-address">${s.address}</p>
-        <span class="cc-service">${s.service}</span>
-      </div>
-      <div class="cc-datetime">
-        <div class="cc-dt-display">
-          <span class="cc-dt-item"><strong>${s.dateLabel}</strong></span>
-          <span class="cc-dt-item"><strong>${s.timeLabel}</strong></span>
-        </div>
-      </div>
-      <div class="cc-stats-row">
-        <div class="cc-stat"><span class="cc-stat-label">Start</span><span class="cc-stat-value">${s.start}</span></div>
-        <div class="cc-stat"><span class="cc-stat-label">End</span><span class="cc-stat-value">${s.end}</span></div>
-        <div class="cc-stat"><span class="cc-stat-label">Duration</span>${durationLabel(s.duration)}</div>
-        <div class="cc-stat"><span class="cc-stat-label">Rating</span>${ratingStars(s.rating)}</div>
-      </div>
-      <div class="cc-physio-info cc-physio-assigned">
-        <span class="cc-physio-label">Physio</span>
-        <span class="cc-physio-name">${s.physio}</span>
-      </div>
-      <details class="cc-view-more">
-        <summary>View more</summary>
-        <div class="cc-view-more-content">
-          <details class="cc-payment">
-            <summary class="cc-payment-summary">
-              <div class="cc-payment-row"><span class="payment-label">Amount</span><span class="payment-amount">${s.payment.amount}</span></div>
-              <div class="cc-payment-row"><span class="payment-label">Payment</span><span class="payment-status ${s.payment.stateClass}">${s.payment.stateLabel}</span></div>
-              <span class="cc-payment-hint">Tap for details <span class="cc-payment-chev" aria-hidden="true">&#9662;</span></span>
-            </summary>
-            <div class="cc-payment-extra">${extraRows}</div>
-          </details>
-          <div class="cc-description">
-            <div class="cc-section-label">Description</div>
-            <p>${s.description}</p>
-          </div>
-        </div>
-      </details>
+      <div class="cc-grid">${pastSummaryRows(s)}</div>
+      ${pastStatsRow(s)}
+      <footer class="cc-actions cc-actions-single">
+        <button class="btn btn-primary" data-past-details="${s.id}">Session details</button>
+      </footer>
     </article>
   `;
-}
-
-function renderClientGroup(g) {
-  const totalAcrossAllData = VISIT_INFO[g.sessions[0].id]?.total ?? g.sessions.length;
-  const matchingCount = g.sessions.length;
-  const last = g.sessions[0];
-  const services = Array.from(new Set(g.sessions.map((s) => s.service))).join(', ');
-  const ratings = g.sessions.map((s) => s.rating).filter((r) => r != null);
-  const avgRating = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : '—';
-  const sessionsList = g.sessions.map((s) => `
-    <div class="ch-row" data-status="${s.status}" data-service="${s.service}" data-physio="${s.physio}" data-date="${s.date}">
-      <span class="ch-cell ch-date">${s.dateLabel} <span class="ch-time">· ${s.timeLabel}</span></span>
-      <span class="ch-cell"><span class="service-tag">${s.service}</span></span>
-      <span class="ch-cell ch-physio">${s.physio}</span>
-      <span class="ch-cell ch-duration">${s.duration != null ? s.duration + ' min' : '—'}</span>
-      <span class="ch-cell ch-rating">${s.rating != null ? '<span class="cc-rating-star">★</span> ' + s.rating.toFixed(1) : '—'}</span>
-      <span class="ch-cell"><span class="cc-status ${statusClassFor(s.status)}">${s.statusLabel}</span></span>
-    </div>
-  `).join('');
-  return `
-    <article class="client-group-card" data-group="${g.name}">
-      <header class="cg-header">
-        <div class="cc-avatar">${g.initials}</div>
-        <div class="cg-id">
-          <div class="cc-name">${g.name}</div>
-          <div class="cc-age">Age ${g.age}</div>
-        </div>
-        <span class="visit-badge cg-visit-count">${matchingCount === totalAcrossAllData ? `${totalAcrossAllData} visits` : `${matchingCount} of ${totalAcrossAllData} visits`}</span>
-      </header>
-      <div class="cg-meta">
-        <div class="cg-meta-row"><span class="cg-meta-label">Last visit</span><span class="cg-meta-value">${last.dateLabel} · ${last.timeLabel}</span></div>
-        <div class="cg-meta-row"><span class="cg-meta-label">Last physio</span><span class="cg-meta-value">${last.physio}</span></div>
-        <div class="cg-meta-row"><span class="cg-meta-label">Services</span><span class="cg-meta-value">${services}</span></div>
-        <div class="cg-meta-row"><span class="cg-meta-label">Avg rating</span><span class="cg-meta-value">${avgRating === '—' ? '—' : `<span class="cc-rating-star">★</span> ${avgRating} / 5`}</span></div>
-      </div>
-      <details class="cg-history">
-        <summary>Show ${matchingCount} session${matchingCount === 1 ? '' : 's'}</summary>
-        <div class="ch-list">${sessionsList}</div>
-      </details>
-    </article>
-  `;
-}
-
-function buildClientGroups(sessions) {
-  const groups = {};
-  sessions.forEach((s) => {
-    if (!groups[s.name]) {
-      groups[s.name] = { name: s.name, initials: s.initials, age: s.age, address: s.address, sessions: [] };
-    }
-    groups[s.name].sessions.push(s);
-  });
-  Object.values(groups).forEach((g) => g.sessions.sort((a, b) => b.date.localeCompare(a.date)));
-  // Only true repeat clients belong in Grouped — drop anyone with a single
-  // total session in the underlying data (not just in the current filter).
-  return Object.values(groups)
-    .filter((g) => (VISIT_INFO[g.sessions[0].id]?.total ?? g.sessions.length) > 1)
-    .sort((a, b) => b.sessions[0].date.localeCompare(a.sessions[0].date));
 }
 
 function sortPastData(data) {
   const sorted = data.slice();
-  switch (PAST_VIEW.sort) {
-    case 'date-asc':   sorted.sort((a, b) => a.date.localeCompare(b.date)); break;
-    case 'rating-desc':sorted.sort((a, b) => (b.rating ?? -1) - (a.rating ?? -1)); break;
-    case 'rating-asc': sorted.sort((a, b) => (a.rating ?? 99) - (b.rating ?? 99)); break;
-    case 'date-desc':
-    default:           sorted.sort((a, b) => b.date.localeCompare(a.date));
-  }
-  return sorted;
+  return PAST_VIEW.sort === 'date-asc'
+    ? sorted.sort((a, b) => a.date.localeCompare(b.date))
+    : sorted.sort((a, b) => b.date.localeCompare(a.date));
 }
 
 function matchesPastFilters(s) {
   if (PAST_VIEW.service !== 'all' && s.service !== PAST_VIEW.service) return false;
+  if (PAST_VIEW.sub !== 'all' && s.sub !== PAST_VIEW.sub) return false;
   if (PAST_VIEW.status !== 'all' && s.status !== PAST_VIEW.status) return false;
   if (PAST_VIEW.physio !== 'all' && s.physio !== PAST_VIEW.physio) return false;
   if (PAST_VIEW.date === 'custom' && PAST_VIEW.dateCustom) {
     if (s.date !== PAST_VIEW.dateCustom) return false;
   } else if (PAST_VIEW.date === '7d' || PAST_VIEW.date === '30d') {
     const today = new Date('2026-05-08T00:00:00');
-    const days = PAST_VIEW.date === '7d' ? 7 : 30;
     const cutoff = new Date(today);
-    cutoff.setDate(cutoff.getDate() - days);
-    const sDate = new Date(s.date + 'T00:00:00');
-    if (sDate < cutoff) return false;
+    cutoff.setDate(cutoff.getDate() - (PAST_VIEW.date === '7d' ? 7 : 30));
+    if (new Date(s.date + 'T00:00:00') < cutoff) return false;
   }
   if (PAST_VIEW.query) {
     const q = PAST_VIEW.query.toLowerCase();
-    const haystack = [s.name, s.physio, s.service, s.address, s.description]
+    const haystack = [s.name, s.physio, s.service, s.sub, s.address, s.description]
       .filter(Boolean).join(' ').toLowerCase();
     if (!haystack.includes(q)) return false;
   }
@@ -1379,7 +1304,6 @@ function matchesPastFilters(s) {
 
 function renderPastSessions() {
   const grid = document.getElementById('past-cards-grid');
-  const grouped = document.getElementById('past-grouped-grid');
   const countEl = document.getElementById('past-count');
   const emptyEl = document.getElementById('past-empty');
   if (!grid) return;
@@ -1387,88 +1311,17 @@ function renderPastSessions() {
   const sorted = sortPastData(PAST_SESSIONS_DATA);
   const visible = sorted.filter(matchesPastFilters);
 
-  grid.innerHTML = visible.map(renderPastCard).join('');
-  const groups = buildClientGroups(visible);
-  if (grouped) grouped.innerHTML = groups.map(renderClientGroup).join('');
+  grid.innerHTML = collapseByClient(visible).map(renderPastCard).join('');
 
+  const cardCount = grid.querySelectorAll('.past-card').length;
+  const sessionCount = visible.length;
   if (countEl) {
-    if (PAST_VIEW.mode === 'grouped') {
-      const groupedSessionCount = groups.reduce((n, g) => n + g.sessions.length, 0);
-      countEl.textContent = `${groups.length} repeat client${groups.length === 1 ? '' : 's'} · ${groupedSessionCount} session${groupedSessionCount === 1 ? '' : 's'}`;
-    } else {
-      countEl.textContent = String(visible.length);
-    }
+    countEl.textContent = cardCount === sessionCount
+      ? String(sessionCount)
+      : `${cardCount} client${cardCount === 1 ? '' : 's'} · ${sessionCount} sessions`;
   }
-  if (emptyEl) {
-    if (PAST_VIEW.mode === 'grouped') {
-      emptyEl.textContent = 'No repeat clients in the current filter.';
-      emptyEl.hidden = groups.length > 0;
-    } else {
-      emptyEl.textContent = 'No past sessions match the selected filters.';
-      emptyEl.hidden = visible.length > 0;
-    }
-  }
+  if (emptyEl) emptyEl.hidden = sessionCount > 0;
 }
-
-function applyPastView() {
-  document.querySelectorAll('[data-view-content]').forEach((el) => {
-    el.hidden = el.dataset.viewContent !== PAST_VIEW.mode;
-  });
-  document.querySelectorAll('[data-past-view]').forEach((btn) => {
-    const active = btn.dataset.pastView === PAST_VIEW.mode;
-    btn.classList.toggle('active', active);
-    btn.setAttribute('aria-pressed', String(active));
-  });
-  // Count label format depends on mode (sessions vs repeat-clients · sessions)
-  const countEl = document.getElementById('past-count');
-  const grouped = document.getElementById('past-grouped-grid');
-  const grid = document.getElementById('past-cards-grid');
-  const emptyEl = document.getElementById('past-empty');
-  if (countEl && grid) {
-    if (PAST_VIEW.mode === 'grouped' && grouped) {
-      const groupCount = grouped.querySelectorAll('.client-group-card').length;
-      const groupedSessionCount = grouped.querySelectorAll('.ch-row').length;
-      countEl.textContent = `${groupCount} repeat client${groupCount === 1 ? '' : 's'} · ${groupedSessionCount} session${groupedSessionCount === 1 ? '' : 's'}`;
-      if (emptyEl) {
-        emptyEl.textContent = 'No repeat clients in the current filter.';
-        emptyEl.hidden = groupCount > 0;
-      }
-    } else {
-      const sessionCount = grid.querySelectorAll('.past-card').length;
-      countEl.textContent = String(sessionCount);
-      if (emptyEl) {
-        emptyEl.textContent = 'No past sessions match the selected filters.';
-        emptyEl.hidden = sessionCount > 0;
-      }
-    }
-  }
-}
-
-// Wire view toggle
-document.querySelectorAll('[data-past-view]').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    PAST_VIEW.mode = btn.dataset.pastView;
-    applyPastView();
-  });
-});
-
-// Wire filter pill groups
-function wirePastFilter(group, key) {
-  document.querySelectorAll(`[data-filter-group="${group}"] .filter-pill`).forEach((pill) => {
-    pill.addEventListener('click', () => {
-      pill.parentElement.querySelectorAll('.filter-pill').forEach((p) => p.classList.remove('active'));
-      pill.classList.add('active');
-      PAST_VIEW[key] = pill.dataset[`past${key[0].toUpperCase()}${key.slice(1)}`];
-      if (key === 'date') PAST_VIEW.dateCustom = null;
-      renderPastSessions();
-    });
-  });
-}
-wirePastFilter('past-service', 'service');
-wirePastFilter('past-status', 'status');
-wirePastFilter('past-physio', 'physio');
-wirePastFilter('past-date', 'date');
-wirePastFilter('past-sort', 'sort');
 
 // Search input
 const pastSearchInput = document.getElementById('past-search-input');
@@ -1491,18 +1344,246 @@ if (pastSearchClear) {
   });
 }
 
-// Custom date input
-const pastDateFilter = document.getElementById('past-date-filter');
-if (pastDateFilter) {
-  pastDateFilter.addEventListener('change', () => {
-    if (!pastDateFilter.value) return;
-    PAST_VIEW.date = 'custom';
-    PAST_VIEW.dateCustom = pastDateFilter.value;
-    document.querySelectorAll('[data-filter-group="past-date"] .filter-pill').forEach((p) => p.classList.remove('active'));
-    renderPastSessions();
-  });
+// ---------- Past filter bar (mirrors the upcoming one) ----------
+const PAST_DEFAULTS = { date: 'all', status: 'all', service: 'all', sub: 'all', physio: 'all' };
+const PAST_DATE_LABELS = { '7d': 'Last 7 days', '30d': 'Last 30 days' };
+const PAST_PHYSIOS = [...new Set(PAST_SESSIONS_DATA.map((s) => s.physio))].sort();
+
+const pastWhen = document.getElementById('past-when');
+const pastDateInput = document.getElementById('past-date-filter');
+const pastStatusSelect = document.getElementById('past-status-select');
+const pastServiceSelect = document.getElementById('past-service-select');
+const pastSubSelect = document.getElementById('past-sub-select');
+const pastPhysioSelect = document.getElementById('past-physio-select');
+const pastSortSelect = document.getElementById('past-sort-select');
+const pastMoreBtn = document.getElementById('past-more-btn');
+const pastMoreBadge = document.getElementById('past-more-badge');
+const pastFilterPanel = document.getElementById('past-filter-panel');
+const pastChips = document.getElementById('past-chips');
+
+function pastChipLabel(key) {
+  const v = PAST_VIEW[key];
+  if (key === 'date') return v === 'custom' ? `On ${PAST_VIEW.dateCustom}` : PAST_DATE_LABELS[v];
+  if (key === 'status') return v[0].toUpperCase() + v.slice(1);
+  return v;
 }
 
+function populatePastSubs() {
+  const subs = PAST_VIEW.service === 'all'
+    ? Object.values(SERVICE_TYPES).flat()
+    : SERVICE_TYPES[PAST_VIEW.service];
+  pastSubSelect.innerHTML = ['all', ...subs]
+    .map((x) => `<option value="${x}">${x === 'all' ? 'All types' : x}</option>`).join('');
+  pastSubSelect.value = PAST_VIEW.sub;
+}
+
+function populatePastPhysios() {
+  pastPhysioSelect.innerHTML = ['all', ...PAST_PHYSIOS]
+    .map((x) => `<option value="${x}">${x === 'all' ? 'All physios' : x}</option>`).join('');
+  pastPhysioSelect.value = PAST_VIEW.physio;
+}
+
+function syncPastFilterBar() {
+  const active = Object.keys(PAST_DEFAULTS).filter((k) => PAST_VIEW[k] !== PAST_DEFAULTS[k]);
+
+  pastWhen.value = PAST_VIEW.date;
+  pastStatusSelect.value = PAST_VIEW.status;
+  pastServiceSelect.value = PAST_VIEW.service;
+  pastSortSelect.value = PAST_VIEW.sort;
+  pastDateInput.hidden = PAST_VIEW.date !== 'custom';
+
+  const hidden = active.filter((k) => k !== 'date' && k !== 'status').length;
+  pastMoreBadge.hidden = hidden === 0;
+  pastMoreBadge.textContent = hidden;
+  pastMoreBtn.classList.toggle('has-active', hidden > 0);
+
+  pastChips.hidden = active.length === 0;
+  pastChips.innerHTML = active.map((k) =>
+    `<button type="button" class="filter-chip" data-clear-past="${k}">
+       ${pastChipLabel(k)}<span class="filter-chip-x" aria-hidden="true">&times;</span>
+     </button>`).join('');
+}
+
+function updatePast() {
+  syncPastFilterBar();
+  renderPastSessions();
+}
+
+pastWhen.addEventListener('change', () => {
+  PAST_VIEW.date = pastWhen.value;
+  PAST_VIEW.dateCustom = null;
+  pastDateInput.value = '';
+  if (PAST_VIEW.date === 'custom') pastDateInput.focus();
+  updatePast();
+});
+pastDateInput.addEventListener('change', () => {
+  if (!pastDateInput.value) return;
+  PAST_VIEW.date = 'custom';
+  PAST_VIEW.dateCustom = pastDateInput.value;
+  updatePast();
+});
+pastStatusSelect.addEventListener('change', () => {
+  PAST_VIEW.status = pastStatusSelect.value;
+  updatePast();
+});
+pastServiceSelect.addEventListener('change', () => {
+  PAST_VIEW.service = pastServiceSelect.value;
+  PAST_VIEW.sub = 'all';
+  populatePastSubs();
+  updatePast();
+});
+pastSubSelect.addEventListener('change', () => {
+  PAST_VIEW.sub = pastSubSelect.value;
+  updatePast();
+});
+pastPhysioSelect.addEventListener('change', () => {
+  PAST_VIEW.physio = pastPhysioSelect.value;
+  updatePast();
+});
+pastSortSelect.addEventListener('change', () => {
+  PAST_VIEW.sort = pastSortSelect.value;
+  renderPastSessions();
+});
+
+pastChips.addEventListener('click', (e) => {
+  const chip = e.target.closest('[data-clear-past]');
+  if (!chip) return;
+  const key = chip.dataset.clearPast;
+  PAST_VIEW[key] = PAST_DEFAULTS[key];
+  if (key === 'date') { PAST_VIEW.dateCustom = null; pastDateInput.value = ''; }
+  if (key === 'service') { PAST_VIEW.sub = 'all'; populatePastSubs(); }
+  if (key === 'physio') populatePastPhysios();
+  updatePast();
+});
+
+document.getElementById('past-clear-all').addEventListener('click', () => {
+  Object.assign(PAST_VIEW, PAST_DEFAULTS, { dateCustom: null });
+  pastDateInput.value = '';
+  populatePastSubs();
+  populatePastPhysios();
+  updatePast();
+});
+
+function setPastPanel(open) {
+  pastFilterPanel.hidden = !open;
+  pastMoreBtn.setAttribute('aria-expanded', String(open));
+}
+pastMoreBtn.addEventListener('click', () => setPastPanel(pastFilterPanel.hidden));
+document.getElementById('past-filter-done').addEventListener('click', () => setPastPanel(false));
+document.addEventListener('click', (e) => {
+  if (!pastFilterPanel.hidden && !e.target.closest('.filter-more-wrap')) setPastPanel(false);
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !pastFilterPanel.hidden) setPastPanel(false);
+});
+
+populatePastSubs();
+populatePastPhysios();
+syncPastFilterBar();
 renderPastSessions();
-applyPastView();
-renderRemindersBlock();
+
+// ---------- Past session details popup (read-only counterpart to Manage session) ----------
+const pastDetailModal = document.getElementById('past-detail-modal');
+
+// Long histories stay scannable: the newest few are listed, the rest sit behind a toggle.
+const HISTORY_PREVIEW = 4;
+
+function pastHistoryFor(session) {
+  return PAST_SESSIONS_DATA
+    .filter((x) => x.name === session.name && x.id !== session.id)
+    .sort((a, b) => b.date.localeCompare(a.date));
+}
+
+function renderPastHistory(session) {
+  const history = pastHistoryFor(session);
+  if (!history.length) return '';
+  const row = (x) => `
+    <div class="past-hist-row">
+      <span class="past-hist-when">${x.dateLabel}<span class="past-hist-time"> · ${x.timeLabel}</span></span>
+      <span class="past-hist-service">${x.service} · ${x.sub}</span>
+      <span class="past-hist-amount">${x.payment.amount}</span>
+      <span class="cc-status ${statusClassFor(x.status)}">${x.statusLabel}</span>
+      <button class="btn btn-outline btn-sm" data-past-details="${x.id}">See details</button>
+    </div>`;
+  const head = history.slice(0, HISTORY_PREVIEW).map(row).join('');
+  const rest = history.slice(HISTORY_PREVIEW).map(row).join('');
+  return `
+    <div class="cc-section-label">Previous sessions <span class="cc-section-count">${history.length}</span></div>
+    <div class="past-hist-list">${head}</div>
+    ${rest ? `<details class="past-hist-more">
+      <summary>Show ${history.length - HISTORY_PREVIEW} older session${history.length - HISTORY_PREVIEW === 1 ? '' : 's'}</summary>
+      <div class="past-hist-list">${rest}</div>
+    </details>` : ''}`;
+}
+
+// Drilling from one session into an earlier one pushes onto this stack; Back pops it.
+const pastDetailStack = [];
+
+function openPastDetails(id, push = true) {
+  const s = PAST_SESSIONS_DATA.find((x) => x.id === id);
+  if (!s || !pastDetailModal) return;
+
+  document.getElementById('past-detail-client').innerHTML = `
+    <div class="cc-avatar">${s.initials}</div>
+    <div class="cc-id">
+      <div class="cc-name">${s.name}${pastVisitBadge(s)}</div>
+      <div class="cc-age">Age ${s.age}</div>
+    </div>
+    <span class="cc-status ${statusClassFor(s.status)}">${s.statusLabel}</span>`;
+
+  document.getElementById('past-detail-summary').innerHTML = pastSummaryRows(s);
+
+  const extraRows = s.payment.extra
+    .map(([k, v]) => `<div class="cc-payment-row"><span class="payment-label">${k}</span><span class="payment-value">${v}</span></div>`)
+    .join('');
+  document.getElementById('past-detail-extra').innerHTML = `
+    ${pastStatsRow(s)}
+    <details class="cc-payment">
+      <summary class="cc-payment-summary">
+        <div class="cc-payment-row"><span class="payment-label">Amount</span><span class="payment-amount">${s.payment.amount}</span></div>
+        <div class="cc-payment-row"><span class="payment-label">Payment</span><span class="payment-status ${s.payment.stateClass}">${s.payment.stateLabel}</span></div>
+        <span class="cc-payment-hint">Tap for details <span class="cc-payment-chev" aria-hidden="true">&#9662;</span></span>
+      </summary>
+      <div class="cc-payment-extra">${extraRows}</div>
+    </details>
+    <div class="cc-description">
+      <div class="cc-section-label">Description</div>
+      <p>${s.description}</p>
+    </div>
+    ${pastReport(s)}
+    ${pastDocuments(s)}`;
+
+  document.getElementById('past-detail-history').innerHTML = renderPastHistory(s);
+  // When popping, the session being shown is already on the stack — depth is one less.
+  const depth = push ? pastDetailStack.length : pastDetailStack.length - 1;
+  document.getElementById('past-detail-title').textContent =
+    depth ? 'Previous session details' : 'Session details';
+  document.getElementById('past-detail-back').hidden = depth === 0;
+
+  pastDetailModal.hidden = false;
+  pastDetailModal.querySelector('.modal-body').scrollTop = 0;
+  if (push) pastDetailStack.push(id);
+}
+
+document.getElementById('past-detail-back')?.addEventListener('click', () => {
+  pastDetailStack.pop();
+  const back = pastDetailStack[pastDetailStack.length - 1];
+  if (back) openPastDetails(back, false);
+});
+
+function closePastDetails() {
+  pastDetailStack.length = 0;
+  if (pastDetailModal) pastDetailModal.hidden = true;
+}
+
+// Delegated — past cards are re-rendered on every filter change.
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-past-details]');
+  if (btn) openPastDetails(btn.dataset.pastDetails || btn.closest('.past-card')?.dataset.cardId);
+});
+pastDetailModal?.addEventListener('click', (e) => {
+  if (e.target === pastDetailModal || e.target.hasAttribute('data-close')) closePastDetails();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && pastDetailModal && !pastDetailModal.hidden) closePastDetails();
+});
