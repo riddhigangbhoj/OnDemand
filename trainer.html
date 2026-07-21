@@ -698,18 +698,21 @@
     // ---------- Lead confirmations ----------
     // One record per session. Home and the Confirm screen both read and write
     // this list, so a session can never look confirmed on one and not the other.
+    // The trainer app runs as if today is this date.
+    const TODAY_ISO = '2026-05-13';
+
     const PENDING_SESSIONS = [
       { id: 'riya',  name: 'Riya Sharma',   initials: 'RS', service: 'Physiotherapy',    sub: 'Orthopaedic',
-        date: 'Wed, May 13', time: '10:30 AM', address: '14, Indiranagar 5th Cross, Bengaluru',
+        iso: '2026-05-13', date: 'Wed, May 13', time: '10:30 AM', address: '14, Indiranagar 5th Cross, Bengaluru',
         waiting: '2h 45m', urgent: true,  confirmed: false },
       { id: 'devan', name: 'Devan Rao',     initials: 'DR', service: 'Physical Trainer', sub: 'Strength & Conditioning',
-        date: 'Wed, May 13', time: '1:00 PM', address: '22, Koramangala 4th Block, Bengaluru',
+        iso: '2026-05-13', date: 'Wed, May 13', time: '1:00 PM', address: '22, Koramangala 4th Block, Bengaluru',
         waiting: '55m', urgent: false, confirmed: false },
       { id: 'meera', name: 'Meera Nair',    initials: 'MN', service: 'Physiotherapy',    sub: 'Post-surgical Rehab',
-        date: 'Thu, May 14', time: '9:00 AM', address: '7, HSR Layout Sector 3, Bengaluru',
+        iso: '2026-05-14', date: 'Thu, May 14', time: '9:00 AM', address: '7, HSR Layout Sector 3, Bengaluru',
         waiting: '20m', urgent: false, confirmed: false },
       { id: 'arjun', name: 'Arjun Bhat',    initials: 'AB', service: 'Physical Trainer', sub: 'Mobility & Stretching',
-        date: 'Thu, May 14', time: '6:15 PM', address: '3, Whitefield Main Road, Bengaluru',
+        iso: '2026-05-15', date: 'Fri, May 15', time: '6:15 PM', address: '3, Whitefield Main Road, Bengaluru',
         waiting: '8m',  urgent: false, confirmed: false },
     ];
 
@@ -769,10 +772,12 @@
       document.getElementById('done-count').textContent = String(DONE_SESSIONS.length);
     }
 
-    function confirmCardHTML(s) {
+    // `i` is the card's position within its own day, so numbering restarts at 1 each day.
+    function confirmCardHTML(s, i) {
       return `
         <article class="confirm-card" data-confirm-id="${s.id}" data-confirmed="${s.confirmed}">
           <div class="confirm-card-top">
+            <span class="confirm-num">${i + 1}</span>
             ${s.confirmed
               ? `<span class="confirm-done">Confirmed</span>`
               : `<span class="confirm-wait${s.urgent ? ' confirm-wait-urgent' : ''}">Waiting ${s.waiting}</span>`}
@@ -809,10 +814,43 @@
         </article>`;
     }
 
+    // "10:30 AM" -> minutes past midnight, for ordering sessions within a day.
+    function timeMinutes(t) {
+      const m = t.match(/(\d+):(\d+)\s*(AM|PM)/i);
+      if (!m) return 0;
+      let h = Number(m[1]) % 12;
+      if (/PM/i.test(m[3])) h += 12;
+      return h * 60 + Number(m[2]);
+    }
+
+    // Relative day label off TODAY_ISO; null means "far enough to show the date".
+    function dayLabel(iso) {
+      const diff = Math.round((new Date(iso) - new Date(TODAY_ISO)) / 86400000);
+      return { 0: 'Today', 1: 'Tomorrow', 2: 'Day after' }[diff] ?? null;
+    }
+
     function renderConfirmations() {
       const list = document.getElementById('confirm-list');
       if (!list) return;
-      list.innerHTML = PENDING_SESSIONS.map(confirmCardHTML).join('');
+
+      // Bucket by day so the trainer sees the load per date at a glance.
+      const groups = {};
+      PENDING_SESSIONS.forEach((s) => (groups[s.iso] = groups[s.iso] || []).push(s));
+
+      list.innerHTML = Object.keys(groups).sort().map((iso) => {
+        const items = groups[iso].slice().sort((a, b) => timeMinutes(a.time) - timeMinutes(b.time));
+        const rel = dayLabel(iso);
+        const left = items.filter((s) => !s.confirmed).length;
+        return `
+          <section class="confirm-group${rel === 'Today' ? ' confirm-group-today' : ''}">
+            <header class="confirm-group-head">
+              <span class="confirm-group-day">${rel || items[0].date}</span>
+              ${rel ? `<span class="confirm-group-date">${items[0].date}</span>` : ''}
+              <span class="confirm-group-count">${left ? `${left} to confirm` : 'All set'}</span>
+            </header>
+            ${items.map(confirmCardHTML).join('')}
+          </section>`;
+      }).join('');
 
       const pending = PENDING_SESSIONS.filter((s) => !s.confirmed).length;
       const badge = document.getElementById('confirm-badge');

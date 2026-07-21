@@ -1126,7 +1126,7 @@ button.session-card:active { transform: scale(0.995); }
 .nav-badge[hidden] { display: none; }
 .nav-item span:not(.nav-badge):not(.nav-icon-wrap) { font-size: 11px; }
 
-.confirm-list { display: flex; flex-direction: column; gap: 14px; }
+.confirm-list { display: flex; flex-direction: column; gap: 26px; }
 
 /* The card carries one decision, so the action is the loudest thing on it. */
 .confirm-card {
@@ -1378,3 +1378,60 @@ button.session-card:active { transform: scale(0.995); }
   box-shadow: 0 4px 12px rgba(26, 194, 220, 0.32);
 }
 .confirm-action-start svg { width: 15px; height: 15px; }
+
+/* Day buckets — the trainer reads workload per date at a glance */
+.confirm-group { display: flex; flex-direction: column; gap: 12px; }
+.confirm-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 2px 2px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: linear-gradient(var(--bg) 70%, transparent);
+}
+.confirm-group-day {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.confirm-group-date {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.confirm-group-count {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  background: var(--row-bg);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+/* Today leads the page — mark it so it's unmistakable */
+.confirm-group-today .confirm-group-day { color: #0d7a8c; }
+.confirm-group-today .confirm-group-count {
+  color: #0d7a8c;
+  background: #e6f9fc;
+}
+
+/* Per-day sequence number so the trainer can count 1, 2, 3 for the day */
+.confirm-num {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--text);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.confirm-group-today .confirm-num { background: var(--cyan); }
+.confirm-card[data-confirmed="true"] .confirm-num { background: #34d399; }
