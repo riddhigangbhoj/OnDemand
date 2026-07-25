@@ -16,7 +16,7 @@ export function Category({ service }: { service: Service }) {
     return (
       <div>
         {/* banner — decorated brand band on top (desktop) */}
-        <div className="relative hidden h-[36rem] w-full overflow-hidden bg-gradient-to-br from-pine-700 via-pine-700 to-blue-700 lg:block">
+        <div className="relative hidden h-[504px] w-full overflow-hidden bg-gradient-to-br from-pine-700 via-pine-700 to-blue-700 lg:block">
           <div className="grain-light pointer-events-none absolute inset-0" aria-hidden />
           <div className="pointer-events-none absolute -right-24 -top-28 h-96 w-96 rounded-full bg-orange-500/25 blur-3xl" aria-hidden />
           <div className="pointer-events-none absolute -bottom-40 left-1/4 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl" aria-hidden />
