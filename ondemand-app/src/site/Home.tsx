@@ -92,7 +92,7 @@ export function Home() {
         <div className="pointer-events-none absolute -right-24 -top-28 hidden h-80 w-80 rounded-full bg-pine-500/40 blur-3xl lg:block" aria-hidden />
         <div className="pointer-events-none absolute -bottom-32 right-1/3 hidden h-72 w-72 rounded-full bg-blue-600/20 blur-3xl lg:block" aria-hidden />
         <div className="relative mx-auto w-full max-w-7xl px-5 py-10 lg:px-8 lg:py-24">
-          <h1 className="max-w-2xl font-display text-[1.7rem] font-semibold leading-[1.12] sm:text-[2.1rem] lg:max-w-4xl lg:text-[2.15rem] lg:leading-[1.1] xl:text-[2.45rem]">
+          <h1 className="max-w-2xl font-display text-[1.7rem] font-semibold leading-[1.12] sm:text-[2.1rem] lg:max-w-2xl lg:text-[1.1rem] lg:leading-[1.2] xl:text-[1.25rem]">
             Get a physio or fitness trainer at your home in Bengaluru.{' '}
             <span className="text-orange-100">Same day.</span>
           </h1>
