@@ -15,7 +15,11 @@ export default function App() {
     <div className="flex h-[100dvh] flex-col overflow-hidden">
       <DevBar />
       <div className="min-h-0 flex-1 overflow-y-auto">
-        {state.role === 'site' && <SiteApp />}
+        {state.role === 'site' && (
+          <div className="site-zoom">
+            <SiteApp />
+          </div>
+        )}
         {state.role === 'panel' && <Panel />}
         {state.role === 'trainer' && <TrainerApp />}
       </div>
