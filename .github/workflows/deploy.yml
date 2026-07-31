@@ -1,6 +1,9 @@
-name: Deploy customer app to GitHub Pages
+name: Deploy prototypes to GitHub Pages
 
-# Builds ondemand-app and publishes it to the `gh-pages` branch.
+# Publishes ALL prototypes to the `gh-pages` branch (one Pages site):
+#   /OnDemand/            -> vanilla prototype (index.html, script.js, styles.css)
+#   /OnDemand/trainer.html-> trainer prototype
+#   /OnDemand/app/#/      -> React customer app (ondemand-app)
 # Runs from the `add-customer-app` branch — no merge to main required.
 on:
   push:
@@ -30,13 +33,23 @@ jobs:
         working-directory: ondemand-app
         run: npm ci
 
-      - name: Build
+      - name: Build customer app
         working-directory: ondemand-app
         run: npm run build
+
+      - name: Assemble Pages site
+        run: |
+          rm -rf _site
+          mkdir -p _site/app
+          # vanilla + trainer prototypes at the root (unchanged live URLs)
+          cp index.html script.js styles.css trainer.css trainer.html _site/
+          [ -d docs ] && cp -r docs _site/ || true
+          # React customer app under /app/
+          cp -r ondemand-app/dist/. _site/app/
 
       - name: Publish to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ondemand-app/dist
+          publish_dir: _site
           publish_branch: gh-pages
