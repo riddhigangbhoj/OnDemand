@@ -1,0 +1,42 @@
+name: Deploy customer app to GitHub Pages
+
+# Builds ondemand-app and publishes it to the `gh-pages` branch.
+# Runs from the `add-customer-app` branch — no merge to main required.
+on:
+  push:
+    branches: [add-customer-app]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ondemand-app/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ondemand-app
+        run: npm ci
+
+      - name: Build
+        working-directory: ondemand-app
+        run: npm run build
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ondemand-app/dist
+          publish_branch: gh-pages
