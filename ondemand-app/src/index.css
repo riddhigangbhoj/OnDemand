@@ -1,0 +1,272 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Fredoka', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Nunito', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* fixed 5-step type scale — the only sizes used across the site */
+  --text-fine: 1.25rem;         /* 20px — labels, meta, captions */
+  --text-fine--line-height: 1.5;
+  --text-body: 1.375rem;        /* 22px — body copy, inputs, buttons */
+  --text-body--line-height: 1.6;
+  --text-title: 1.75rem;        /* 28px — card titles, sub-headings */
+  --text-title--line-height: 1.3;
+  --text-heading: 2.625rem;     /* 42px — section headings */
+  --text-heading--line-height: 1.12;
+  --text-display: 3.75rem;      /* 60px — hero / page headlines */
+  --text-display--line-height: 1.03;
+
+  /* warm bone canvas — a recovery studio, not a lab */
+  --color-canvas: #f3efe6;
+  --color-surface: #fbf9f4;
+  --color-surface-2: #efe9dc;
+  --color-ink: #1a2621;
+  --color-ink-soft: #5d675f;
+  --color-line: #e2dccd;
+  --color-line-strong: #d3ccba;
+
+  /* forest — primary, trust */
+  --color-forest-50: #e9f0ea;
+  --color-forest-100: #cfe0d3;
+  --color-forest-200: #a8c6b0;
+  --color-forest-300: #79a486;
+  --color-forest-400: #4d8468;
+  --color-forest-500: #2f6b4f;
+  --color-forest-600: #23553f;
+  --color-forest-700: #1a4231;
+  --color-forest-800: #143327;
+  --color-forest-900: #0e241b;
+
+  /* clay — accent, human warmth, CTAs */
+  --color-clay-50: #fbeee5;
+  --color-clay-100: #f4d8c5;
+  --color-clay-200: #ebbfa3;
+  --color-clay-300: #e0a179;
+  --color-clay-400: #d1834f;
+  --color-clay-500: #c76b41;
+  --color-clay-600: #b0552f;
+  --color-clay-700: #8f4526;
+
+  /* sage — soft support */
+  --color-sage-100: #e5ede4;
+  --color-sage-200: #cdddce;
+  --color-sage-500: #86a190;
+
+  /* butter — tiny highlights */
+  --color-butter: #e7c46f;
+
+  /* rust — errors only */
+  --color-rust-50: #f8e8e3;
+  --color-rust-500: #bd4f3b;
+  --color-rust-600: #9e3f2d;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'ss01' on;
+}
+
+::selection {
+  background: var(--color-forest-200);
+  color: var(--color-forest-900);
+}
+
+/* thin, quiet scrollbars in warm tones */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cabfa8 transparent;
+}
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #d3ccba;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #bdb49e;
+  background-clip: padding-box;
+}
+
+/* ---------- motion ---------- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.965);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+@keyframes drawLine {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-rise {
+  animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-fade {
+  animation: fade 0.8s ease both;
+}
+.animate-pop {
+  animation: pop 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-slide {
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.floaty {
+  animation: floaty 9s ease-in-out infinite;
+}
+
+/* auto-scrolling marquee (track holds two copies; -50% loops seamlessly) */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 48s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
+
+/* stagger helpers for page-load reveals */
+.stagger > * {
+  animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.stagger > *:nth-child(1) {
+  animation-delay: 0.02s;
+}
+.stagger > *:nth-child(2) {
+  animation-delay: 0.09s;
+}
+.stagger > *:nth-child(3) {
+  animation-delay: 0.16s;
+}
+.stagger > *:nth-child(4) {
+  animation-delay: 0.23s;
+}
+.stagger > *:nth-child(5) {
+  animation-delay: 0.3s;
+}
+.stagger > *:nth-child(6) {
+  animation-delay: 0.37s;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* soft rounded display face — gentle tracking */
+.font-display {
+  letter-spacing: -0.005em;
+}
+
+/* underline that grows on the whole card hover */
+.grow-line {
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.group:hover .grow-line {
+  transform: scaleX(1);
+}
+
+/* ---------- texture ---------- */
+/* fine paper grain for dark blocks (light speckle) */
+.grain-dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* fine grain for light blocks (dark speckle) */
+.grain-light::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* soft radial glow used behind hero art */
+.glow {
+  background: radial-gradient(closest-side, currentColor, transparent);
+}
+
+/* placeholder tile when a condition photo is missing — reads as intentional */
+.tile-placeholder {
+  background:
+    radial-gradient(120% 120% at 0% 0%, rgba(199, 107, 65, 0.1), transparent 55%),
+    linear-gradient(150deg, var(--color-forest-700), var(--color-forest-800));
+}
