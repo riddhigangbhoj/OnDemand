@@ -1,19 +1,855 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kinetic Age · On-demand</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <script type="module" crossorigin src="./assets/index-C4W6svdQ.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-pYJawOz3.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kinetic Age — Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
+  <link rel="stylesheet" href="styles.css?v=5" />
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">KA</div>
+        <div class="brand-text">
+          <div class="brand-title">Kinetic Age</div>
+          <div class="brand-subtitle">Admin Panel</div>
+        </div>
+      </div>
+
+      <div class="nav-label">Navigation</div>
+
+      <nav class="nav">
+        <a class="nav-item" href="#" data-page="dashboard"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span><span>Dashboard</span></a>
+        <a class="nav-item" href="#" data-page="analytics"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span><span>Analytics</span></a>
+        <a class="nav-item active" href="#" data-page="clients"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>Client</span></a>
+        <a class="nav-item" href="#" data-page="trainers"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></span><span>Trainers</span></a>
+        <a class="nav-item" href="#" data-page="sessions"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M16 2v4"/></svg></span><span>Sessions</span></a>
+        <a class="nav-item" href="#" data-page="pending-plans"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M8 12h8"/><path d="M8 16h6"/></svg></span><span>Pending Exercise Plans</span></a>
+        <a class="nav-item" href="#" data-page="leaves"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M16 2v4"/><path d="m14 14-4 4"/><path d="m10 14 4 4"/></svg></span><span>Leaves</span></a>
+        <a class="nav-item" href="#" data-page="reports"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v5h5"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span>Reports</span></a>
+        <a class="nav-item" href="#" data-page="trials"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.31"/><path d="M14 9.3V2"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/></svg></span><span>Trials</span></a>
+        <a class="nav-item" href="#" data-page="audits"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span><span>Audits</span></a>
+        <a class="nav-item" href="#" data-page="reviews"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.5 3.2a.6.6 0 0 1 1 0l2.3 4.7 5.2.7a.6.6 0 0 1 .3 1l-3.8 3.6.9 5.1a.6.6 0 0 1-.9.6L12 16.5l-4.6 2.4a.6.6 0 0 1-.9-.6l.9-5.1L3.6 9.6a.6.6 0 0 1 .3-1l5.2-.7Z"/></svg></span><span>Reviews</span></a>
+        <a class="nav-item" href="#" data-page="crm"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span><span>CRM</span></a>
+        <a class="nav-item" href="#" data-page="call-analysis"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.68 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.32 1.85.55 2.81.68A2 2 0 0 1 22 16.92Z"/></svg></span><span>Call Analysis</span></a>
+        <a class="nav-item" href="#" data-page="universal-otp"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1Z"/></svg></span><span>Universal OTP</span></a>
+        <a class="nav-item" href="#" data-page="on-demand"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span><span>On Demand</span></a>
+      </nav>
+    </aside>
+
+    <!-- Main area -->
+    <div class="main">
+      <header class="header">
+        <div class="search">
+          <span class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <input type="text" placeholder="Search..." />
+        </div>
+        <div class="user">
+          <div class="user-avatar">AD</div>
+          <div class="user-meta">
+            <div class="user-name">Riddhi</div>
+            <div class="user-role">Admin</div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content" id="page-content">
+        <section class="page" id="page-clients">
+
+          <div class="page-tabs" role="tablist">
+            <button type="button" class="page-tab active" data-page-tab="active" role="tab">Active</button>
+            <button type="button" class="page-tab" data-page-tab="past" role="tab">Past clients</button>
+          </div>
+
+          <div class="tab-pane" data-tab-pane="active">
+
+          <!-- ============ TOP ALERT BANNER ============ -->
+          <div class="alert-banner">
+            <div class="alert-left">
+              <div class="alert-eyebrow">Friday, May 8, 2026</div>
+              <h1 class="alert-title" id="attention-title">2 sessions need your attention</h1>
+              <div class="alert-meta">
+                <button class="alert-chip alert-chip-clickable alert-chip-danger" data-scroll-to="block-alerts">
+                  <span class="chip-count" id="chip-alerts-count">2</span> Alerts &rarr;
+                </button>
+                <button class="alert-chip alert-chip-clickable" data-scroll-to="block-ongoing">
+                  <span class="chip-count" id="chip-ongoing-count">2</span> Ongoing &rarr;
+                </button>
+                <span class="alert-chip alert-chip-static">
+                  <span class="chip-count" id="chip-slack-count">0</span> Sent to Slack today
+                </span>
+              </div>
+            </div>
+            <div class="alert-right">
+              <div class="alert-num"><span id="attention-num">2</span><span class="alert-num-suffix">/ 20</span></div>
+              <div class="alert-num-label">attention / total today</div>
+            </div>
+          </div>
+
+          <!-- ============ ALERTS + ONGOING ============ -->
+          <section class="section attention-section">
+            <h2 class="section-title attention-title">Ongoing Session</h2>
+
+            <!-- Alerts: one group per severity -->
+            <div class="attention-block" id="block-alerts">
+              <div class="attention-block-head">
+                <span class="attention-block-title">Alerts</span>
+                <span class="attention-count" id="alerts-count">2</span>
+              </div>
+
+              <div class="alert-grid">
+                  <article class="alert-card alert-card-critical" data-card-id="aman">
+                    <div class="card-flag card-flag-critical">
+                      <span class="card-flag-head">
+                        <span class="card-flag-sev">Critical</span>
+                        <span class="card-flag-name">Session not started</span>
+                      </span>
+                      <span class="card-flag-value">Not started &middot; 18 min late</span>
+                    </div>
+                    <header class="cc-header">
+                      <div class="cc-avatar">AN</div>
+                      <div class="cc-id"><div class="cc-name">Aman</div></div>
+                    </header>
+                    <div class="cc-grid">
+                      <div class="cc-grid-row">
+                        <div class="cc-grid-cell"><span class="cc-grid-label">Physio</span><span class="cc-grid-value">Dr. Rajan Iyer</span></div>
+                      </div>
+                      <div class="cc-grid-row">
+                        <div class="cc-grid-cell"><span class="cc-grid-label">Treatment type</span><span class="cc-grid-value">Physiotherapy &middot; Orthopaedic</span></div>
+                      </div>
+                      <div class="cc-grid-row cc-datetime">
+                        <div class="cc-dt-display">
+                          <div class="cc-dt-item"><span class="cc-grid-label">Date</span><strong>May 8, 2026</strong></div>
+                          <div class="cc-dt-item"><span class="cc-grid-label">Time</span><strong>6:15 PM</strong></div>
+                        </div>
+                      </div>
+                      <div class="cc-grid-row">
+                        <div class="cc-grid-cell"><span class="cc-grid-label">Address</span><span class="cc-grid-value cc-address">Flat 7B, Brigade Meadows, Kanakapura Road, Bengaluru</span></div>
+                      </div>
+                    </div>
+                    <div class="alert-card-foot">Scheduled 6:15 PM &middot; no start logged</div>
+                  </article>
+                  <article class="alert-card alert-card-moderate" data-card-id="akshat">
+                    <div class="card-flag card-flag-moderate">
+                      <span class="card-flag-head">
+                        <span class="card-flag-sev">Moderate</span>
+                        <span class="card-flag-name">Not confirmed by any provider</span>
+                      </span>
+                      <span class="card-flag-value">Unconfirmed &middot; 2h 45m</span>
+                    </div>
+                    <header class="cc-header">
+                      <div class="cc-avatar">AK</div>
+                      <div class="cc-id"><div class="cc-name">Akshat</div></div>
+                    </header>
+                    <div class="cc-grid">
+                      <div class="cc-grid-row">
+                        <div class="cc-grid-cell"><span class="cc-grid-label">Physio</span><span class="cc-grid-value">Dr. Neha Sharma</span></div>
+                      </div>
+                      <div class="cc-grid-row">
+                        <div class="cc-grid-cell"><span class="cc-grid-label">Treatment type</span><span class="cc-grid-value">Physical Trainer &middot; Mobility &amp; Stretching</span></div>
+                      </div>
+                      <div class="cc-grid-row cc-datetime">
+                        <div class="cc-dt-display">
+                          <div class="cc-dt-item"><span class="cc-grid-label">Date</span><strong>May 10, 2026</strong></div>
+                          <div class="cc-dt-item"><span class="cc-grid-label">Time</span><strong>4:30 PM</strong></div>
+                        </div>
+                      </div>
+                      <div class="cc-grid-row">
+                        <div class="cc-grid-cell"><span class="cc-grid-label">Address</span><span class="cc-grid-value cc-address">B-204, Prestige Lake Ridge, JP Nagar, Bengaluru</span></div>
+                      </div>
+                    </div>
+                    <div class="alert-card-foot">Panel &#10007; &nbsp;&middot;&nbsp; Trainer app &#10007;</div>
+                  </article>
+              </div>
+            </div>
+
+            <!-- Ongoing sessions: started, whether on time or late -->
+            <div class="attention-block" id="block-ongoing">
+              <div class="attention-block-head">
+                <span class="attention-block-title">Ongoing sessions</span>
+                <span class="attention-count attention-count-neutral" id="ongoing-count">2</span>
+              </div>
+              <div class="alert-grid">
+                  <article class="alert-card alert-card-ok">
+                    <div class="card-flag card-flag-ok">
+                      <span class="card-flag-head">
+                        <span class="card-flag-sev">On time</span>
+                        <span class="card-flag-name">Session in progress</span>
+                      </span>
+                      <span class="card-flag-value">Started 4:30 PM</span>
+                    </div>
+                    <header class="cc-header">
+                      <div class="cc-avatar">AK</div>
+                      <div class="cc-id"><div class="cc-name">Akshat</div></div>
+                    </header>
+                    <div class="cc-grid">
+                      <div class="cc-grid-row">
+                        <div class="cc-grid-cell"><span class="cc-grid-label">Physio</span><span class="cc-grid-value">Dr. Neha Sharma</span></div>
+                      </div>
+                      <div class="cc-grid-row">
+                        <div class="cc-grid-cell"><span class="cc-grid-label">Treatment type</span><span class="cc-grid-value">Physical Trainer &middot; Mobility &amp; Stretching</span></div>
+                      </div>
+                      <div class="cc-grid-row cc-datetime">
+                        <div class="cc-dt-display">
+                          <div class="cc-dt-item"><span class="cc-grid-label">Date</span><strong>May 8, 2026</strong></div>
+                          <div class="cc-dt-item"><span class="cc-grid-label">Time</span><strong>4:30 PM</strong></div>
+                        </div>
+                      </div>
+                      <div class="cc-grid-row">
+                        <div class="cc-grid-cell"><span class="cc-grid-label">Address</span><span class="cc-grid-value cc-address">B-204, Prestige Lake Ridge, JP Nagar, Bengaluru</span></div>
+                      </div>
+                    </div>
+                    <div class="alert-card-foot">Scheduled 4:30 PM &middot; Started 4:30 PM</div>
+                  </article>
+                  <article class="alert-card alert-card-moderate">
+                    <div class="card-flag card-flag-moderate">
+                      <span class="card-flag-head">
+                        <span class="card-flag-sev">Late</span>
+                        <span class="card-flag-name">Session in progress</span>
+                      </span>
+                      <span class="card-flag-value">Started 11:08 AM &middot; 8 min late</span>
+                    </div>
+                    <header class="cc-header">
+                      <div class="cc-avatar">AM</div>
+                      <div class="cc-id"><div class="cc-name">Amogh</div></div>
+                    </header>
+                    <div class="cc-grid">
+                      <div class="cc-grid-row">
+                        <div class="cc-grid-cell"><span class="cc-grid-label">Physio</span><span class="cc-grid-value">Dr. Rajan Iyer</span></div>
+                      </div>
+                      <div class="cc-grid-row">
+                        <div class="cc-grid-cell"><span class="cc-grid-label">Treatment type</span><span class="cc-grid-value">Physical Trainer &middot; Strength &amp; Conditioning</span></div>
+                      </div>
+                      <div class="cc-grid-row cc-datetime">
+                        <div class="cc-dt-display">
+                          <div class="cc-dt-item"><span class="cc-grid-label">Date</span><strong>May 8, 2026</strong></div>
+                          <div class="cc-dt-item"><span class="cc-grid-label">Time</span><strong>11:00 AM</strong></div>
+                        </div>
+                      </div>
+                      <div class="cc-grid-row">
+                        <div class="cc-grid-cell"><span class="cc-grid-label">Address</span><span class="cc-grid-value cc-address">12, Dollars Colony, RMV 2nd Stage, Bengaluru</span></div>
+                      </div>
+                    </div>
+                    <div class="alert-card-foot">Scheduled 11:00 AM &middot; Started 11:08 AM</div>
+                  </article>
+              </div>
+            </div>
+
+            <!-- Upcoming sessions -->
+            <div class="attention-block">
+              <div class="attention-block-head">
+                <span class="attention-block-title">Upcoming sessions</span>
+                <span class="attention-count" id="upcoming-count">3</span>
+              </div>
+
+              <div class="filter-bar">
+                <div class="filter-bar-main">
+                  <select class="filter-select" id="upcoming-when" aria-label="When">
+                    <option value="all">Any time</option>
+                    <option value="today">Today</option>
+                    <option value="tomorrow">Tomorrow</option>
+                    <option value="custom">Specific date&hellip;</option>
+                  </select>
+                  <input type="date" class="filter-date" id="upcoming-date-filter" aria-label="Specific date" hidden />
+
+                  <div class="filter-more-wrap">
+                    <button type="button" class="filter-more" id="upcoming-more-btn" aria-expanded="false" aria-controls="upcoming-filter-panel">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
+                      More filters
+                      <span class="filter-more-badge" id="upcoming-more-badge" hidden>0</span>
+                    </button>
+
+                    <div class="filter-panel" id="upcoming-filter-panel" hidden>
+                      <div class="filter-panel-row">
+                        <label for="upcoming-service-select">Service</label>
+                        <select class="filter-select" id="upcoming-service-select">
+                          <option value="all">All services</option>
+                          <option value="Physiotherapy">Physiotherapy</option>
+                          <option value="Physical Trainer">Physical Trainer</option>
+                        </select>
+                      </div>
+                      <div class="filter-panel-row">
+                        <label for="upcoming-sub-select">Type</label>
+                        <select class="filter-select" id="upcoming-sub-select"></select>
+                      </div>
+                      <div class="filter-panel-foot">
+                        <button type="button" class="filter-clear" id="upcoming-clear-all">Clear all</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="upcoming-filter-done">Done</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="filter-chips" id="upcoming-chips" hidden></div>
+              </div>
+
+              <div class="cards-grid" id="upcoming-grid">
+
+                <!-- Sorted by date ASC: May 9 → May 10 → May 12 -->
+
+                <!-- Amogh — May 9, 11:00 AM -->
+                <article class="client-card" data-card-id="amogh" data-datetime="2026-05-09T11:00" data-service="Physical Trainer" data-subservice="Strength &amp; Conditioning">
+                  <div class="cc-lead">
+                    <span class="cc-lead-label">Lead confirmation</span>
+                    <div class="cc-lead-states">
+                      <div class="cc-lead-state" data-confirmed="false">
+                        <span class="cc-lead-who">Panel &middot; Ops</span>
+                        <button type="button" class="cc-lead-btn" data-lead-toggle>Not confirmed</button>
+                      </div>
+                      <div class="cc-lead-state cc-lead-state-trainer" data-confirmed="true" data-trainer-confirmed>
+                        <span class="cc-lead-who">Trainer app</span>
+                        <span class="cc-lead-flag"><span class="cc-lead-mark" aria-hidden="true"></span>Confirmed</span>
+                      </div>
+                    </div>
+                  </div>
+                  <header class="cc-header">
+                    <div class="cc-avatar">AM</div>
+                    <div class="cc-id"><div class="cc-name">Amogh</div><div class="cc-age">Age 41</div></div>
+                    <span class="cc-status status-scheduled">Scheduled</span>
+                  </header>
+                  <div class="cc-grid">
+                    <div class="cc-grid-row">
+                      <div class="cc-grid-cell"><span class="cc-grid-label">Address</span><div class="cc-address-line"><span class="cc-grid-value cc-address">12, Dollars Colony, RMV 2nd Stage, Bengaluru</span><a class="cc-map-btn" href="https://www.google.com/maps/search/?api=1&amp;query=12%2C%20Dollars%20Colony%2C%20RMV%202nd%20Stage%2C%20Bengaluru" target="_blank" rel="noopener" aria-label="Locate on Maps" title="Locate on Maps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Map</span></a></div></div>
+                    </div>
+                    <div class="cc-grid-row">
+                      <div class="cc-grid-cell"><span class="cc-grid-label">Service</span><span class="cc-grid-value">Physical Trainer</span></div>
+                    </div>
+                    <div class="cc-grid-row">
+                      <div class="cc-grid-cell"><span class="cc-grid-label">Type</span><span class="cc-grid-value">Strength &amp; Conditioning</span></div>
+                    </div>
+                    <div class="cc-grid-row cc-datetime">
+                      <div class="cc-dt-display">
+                        <div class="cc-dt-item"><span class="cc-grid-label">Date</span><strong>May 9, 2026</strong></div>
+                        <div class="cc-dt-item"><span class="cc-grid-label">Time</span><strong>11:00 AM</strong></div>
+                      </div>
+                    </div>
+                    <div class="cc-grid-row">
+                      <div class="cc-grid-cell cc-physio-info cc-physio-assigned" data-physio-info>
+                        <span class="cc-physio-label">System assigned</span>
+                        <span class="cc-physio-name">Dr. Neha Sharma</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <input type="file" class="cc-file-input" hidden multiple />
+
+                  <div class="cc-manage-content" hidden>
+                      <details class="cc-payment">
+                        <summary class="cc-payment-summary">
+                          <div class="cc-payment-row"><span class="payment-label">Amount</span><span class="payment-amount">&#8377;2,500</span></div>
+                          <div class="cc-payment-row"><span class="payment-label">Payment</span><span class="payment-status payment-paid">Paid</span></div>
+                          <span class="cc-payment-hint">Tap for details <span class="cc-payment-chev" aria-hidden="true">&#9662;</span></span>
+                        </summary>
+                        <div class="cc-payment-extra">
+                          <div class="cc-payment-row"><span class="payment-label">Paid on</span><span class="payment-value">May 5, 2026</span></div>
+                          <div class="cc-payment-row"><span class="payment-label">Method</span><span class="payment-value">UPI</span></div>
+                          <div class="cc-payment-row"><span class="payment-label">Transaction</span><span class="payment-value">TXN-78432901</span></div>
+                        </div>
+                      </details>
+                      <div class="cc-description">
+                        <div class="cc-section-label">Description</div>
+                        <p>Chronic right-shoulder stiffness with limited overhead movement after a recent gym injury.</p>
+                      </div>
+                      <div class="cc-attachments">
+                        <div class="cc-section-label">Attachments</div>
+                        <div class="cc-attachment-list">
+                          <a class="cc-attachment" href="#" onclick="return false;">
+                            <span class="cc-attachment-ext ext-pdf">PDF</span>
+                            <span class="cc-attachment-name">shoulder-xray-report.pdf</span>
+                            <span class="cc-attachment-size">3.2 MB</span>
+                          </a>
+                          <a class="cc-attachment" href="#" onclick="return false;">
+                            <span class="cc-attachment-ext ext-doc">DOC</span>
+                            <span class="cc-attachment-name">workout-history.docx</span>
+                            <span class="cc-attachment-size">420 KB</span>
+                          </a>
+                        </div>
+                      </div>
+                  </div>
+
+                  <footer class="cc-actions cc-actions-grid">
+                    <button class="btn btn-outline" data-manage-session>Manage session</button>
+                    <div class="cc-call-cell">
+                      <button class="btn btn-primary" data-call-toggle>Call client</button>
+                      <div class="cc-phone-display" hidden>
+                        <a href="tel:+919812345002" class="cc-phone-link">+91 98123 45002</a>
+                      </div>
+                    </div>
+                  </footer>
+                </article>
+
+                <!-- Akshat — May 10, 4:30 PM -->
+                <article class="client-card" data-card-id="akshat" data-datetime="2026-05-10T16:30" data-service="Physical Trainer" data-subservice="Mobility &amp; Stretching">
+                  <div class="cc-lead">
+                    <span class="cc-lead-label">Lead confirmation</span>
+                    <div class="cc-lead-states">
+                      <div class="cc-lead-state" data-confirmed="false">
+                        <span class="cc-lead-who">Panel &middot; Ops</span>
+                        <button type="button" class="cc-lead-btn" data-lead-toggle>Not confirmed</button>
+                      </div>
+                      <div class="cc-lead-state cc-lead-state-trainer" data-confirmed="false" data-trainer-confirmed>
+                        <span class="cc-lead-who">Trainer app</span>
+                        <span class="cc-lead-flag"><span class="cc-lead-mark" aria-hidden="true"></span>Not confirmed</span>
+                      </div>
+                    </div>
+                  </div>
+                  <header class="cc-header">
+                    <div class="cc-avatar">AK</div>
+                    <div class="cc-id"><div class="cc-name">Akshat</div><div class="cc-age">Age 34</div></div>
+                    <span class="cc-status status-scheduled">Scheduled</span>
+                  </header>
+                  <div class="cc-grid">
+                    <div class="cc-grid-row">
+                      <div class="cc-grid-cell"><span class="cc-grid-label">Address</span><div class="cc-address-line"><span class="cc-grid-value cc-address">B-204, Prestige Lake Ridge, JP Nagar, Bengaluru</span><a class="cc-map-btn" href="https://www.google.com/maps/search/?api=1&amp;query=B-204%2C%20Prestige%20Lake%20Ridge%2C%20JP%20Nagar%2C%20Bengaluru" target="_blank" rel="noopener" aria-label="Locate on Maps" title="Locate on Maps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Map</span></a></div></div>
+                    </div>
+                    <div class="cc-grid-row">
+                      <div class="cc-grid-cell"><span class="cc-grid-label">Service</span><span class="cc-grid-value">Physical Trainer</span></div>
+                    </div>
+                    <div class="cc-grid-row">
+                      <div class="cc-grid-cell"><span class="cc-grid-label">Type</span><span class="cc-grid-value">Mobility &amp; Stretching</span></div>
+                    </div>
+                    <div class="cc-grid-row cc-datetime">
+                      <div class="cc-dt-display">
+                        <div class="cc-dt-item"><span class="cc-grid-label">Date</span><strong>May 10, 2026</strong></div>
+                        <div class="cc-dt-item"><span class="cc-grid-label">Time</span><strong>4:30 PM</strong></div>
+                      </div>
+                    </div>
+                    <div class="cc-grid-row">
+                      <div class="cc-grid-cell cc-physio-info cc-physio-assigned" data-physio-info>
+                        <span class="cc-physio-label">System assigned</span>
+                        <span class="cc-physio-name">Dr. Neha Sharma</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <input type="file" class="cc-file-input" hidden multiple />
+
+                  <div class="cc-manage-content" hidden>
+                      <details class="cc-payment">
+                        <summary class="cc-payment-summary">
+                          <div class="cc-payment-row"><span class="payment-label">Amount</span><span class="payment-amount">&#8377;1,800</span></div>
+                          <div class="cc-payment-row"><span class="payment-label">Payment</span><span class="payment-status payment-paid">Paid</span></div>
+                          <span class="cc-payment-hint">Tap for details <span class="cc-payment-chev" aria-hidden="true">&#9662;</span></span>
+                        </summary>
+                        <div class="cc-payment-extra">
+                          <div class="cc-payment-row"><span class="payment-label">Paid on</span><span class="payment-value">May 7, 2026</span></div>
+                          <div class="cc-payment-row"><span class="payment-label">Method</span><span class="payment-value">Credit Card</span></div>
+                          <div class="cc-payment-row"><span class="payment-label">Transaction</span><span class="payment-value">TXN-78519044</span></div>
+                        </div>
+                      </details>
+                      <div class="cc-description">
+                        <div class="cc-section-label">Description</div>
+                        <p>Sharp lower-back pain radiating to the left leg, worsens after sitting for long hours.</p>
+                      </div>
+                      <div class="cc-attachments">
+                        <div class="cc-section-label">Attachments</div>
+                        <div class="cc-attachment-list">
+                          <a class="cc-attachment" href="#" onclick="return false;">
+                            <span class="cc-attachment-ext ext-pdf">PDF</span>
+                            <span class="cc-attachment-name">MRI-lumbar-spine.pdf</span>
+                            <span class="cc-attachment-size">2.4 MB</span>
+                          </a>
+                          <a class="cc-attachment" href="#" onclick="return false;">
+                            <span class="cc-attachment-ext ext-img">JPG</span>
+                            <span class="cc-attachment-name">posture-photo.jpg</span>
+                            <span class="cc-attachment-size">1.1 MB</span>
+                          </a>
+                        </div>
+                      </div>
+                  </div>
+
+                  <footer class="cc-actions cc-actions-grid">
+                    <button class="btn btn-outline" data-manage-session>Manage session</button>
+                    <div class="cc-call-cell">
+                      <button class="btn btn-primary" data-call-toggle>Call client</button>
+                      <div class="cc-phone-display" hidden>
+                        <a href="tel:+919812345001" class="cc-phone-link">+91 98123 45001</a>
+                      </div>
+                    </div>
+                  </footer>
+                </article>
+
+                <!-- Aman — May 12, 6:15 PM (Rescheduled) -->
+                <article class="client-card client-card-attention" data-card-id="aman" data-datetime="2026-05-12T18:15" data-service="Physiotherapy" data-subservice="Orthopaedic">
+                  <div class="cc-lead">
+                    <span class="cc-lead-label">Lead confirmation</span>
+                    <div class="cc-lead-states">
+                      <div class="cc-lead-state" data-confirmed="false">
+                        <span class="cc-lead-who">Panel &middot; Ops</span>
+                        <button type="button" class="cc-lead-btn" data-lead-toggle>Not confirmed</button>
+                      </div>
+                      <div class="cc-lead-state cc-lead-state-trainer" data-confirmed="true" data-trainer-confirmed>
+                        <span class="cc-lead-who">Trainer app</span>
+                        <span class="cc-lead-flag"><span class="cc-lead-mark" aria-hidden="true"></span>Confirmed</span>
+                      </div>
+                    </div>
+                  </div>
+                  <header class="cc-header">
+                    <div class="cc-avatar">AN</div>
+                    <div class="cc-id"><div class="cc-name">Aman</div><div class="cc-age">Age 28</div></div>
+                    <span class="cc-status status-reschedule">Rescheduled</span>
+                  </header>
+                  <div class="cc-grid">
+                    <div class="cc-grid-row">
+                      <div class="cc-grid-cell"><span class="cc-grid-label">Address</span><div class="cc-address-line"><span class="cc-grid-value cc-address">Flat 7B, Brigade Meadows, Kanakapura Road, Bengaluru</span><a class="cc-map-btn" href="https://www.google.com/maps/search/?api=1&amp;query=Flat%207B%2C%20Brigade%20Meadows%2C%20Kanakapura%20Road%2C%20Bengaluru" target="_blank" rel="noopener" aria-label="Locate on Maps" title="Locate on Maps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Map</span></a></div></div>
+                    </div>
+                    <div class="cc-grid-row">
+                      <div class="cc-grid-cell"><span class="cc-grid-label">Service</span><span class="cc-grid-value">Physiotherapy</span></div>
+                    </div>
+                    <div class="cc-grid-row">
+                      <div class="cc-grid-cell"><span class="cc-grid-label">Type</span><span class="cc-grid-value">Orthopaedic</span></div>
+                    </div>
+                    <div class="cc-grid-row cc-datetime">
+                      <div class="cc-dt-display">
+                        <div class="cc-dt-item"><span class="cc-grid-label">Date</span><strong>May 12, 2026</strong></div>
+                        <div class="cc-dt-item"><span class="cc-grid-label">Time</span><strong>6:15 PM</strong></div>
+                      </div>
+                    </div>
+                    <div class="cc-grid-row cc-reschedule-note">
+                      <span class="rn-label">Rescheduled</span>
+                      <span class="rn-old">May 11, 2026, 11:00 AM</span>
+                      <span class="rn-arrow">&rarr;</span>
+                      <span class="rn-new">May 12, 2026, 6:15 PM</span>
+                    </div>
+                    <div class="cc-grid-row">
+                      <div class="cc-grid-cell cc-physio-info cc-physio-assigned" data-physio-info>
+                        <span class="cc-physio-label">System assigned</span>
+                        <span class="cc-physio-name">Dr. Rajan Iyer</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <input type="file" class="cc-file-input" hidden multiple />
+
+                  <div class="cc-manage-content" hidden>
+                      <details class="cc-payment">
+                        <summary class="cc-payment-summary">
+                          <div class="cc-payment-row"><span class="payment-label">Amount</span><span class="payment-amount">&#8377;2,000</span></div>
+                          <div class="cc-payment-row"><span class="payment-label">Payment</span><span class="payment-status payment-pending">Pending</span></div>
+                          <span class="cc-payment-hint">Tap for details <span class="cc-payment-chev" aria-hidden="true">&#9662;</span></span>
+                        </summary>
+                        <div class="cc-payment-extra">
+                          <div class="cc-payment-row"><span class="payment-label">Due by</span><span class="payment-value">May 12, 2026</span></div>
+                          <div class="cc-payment-row"><span class="payment-label">Method</span><span class="payment-value">&mdash;</span></div>
+                          <div class="cc-payment-row"><span class="payment-label">Transaction</span><span class="payment-value">&mdash;</span></div>
+                        </div>
+                      </details>
+                      <div class="cc-description">
+                        <div class="cc-section-label">Description</div>
+                        <p>Persistent knee pain while climbing stairs, suspected meniscus strain from running.</p>
+                      </div>
+                      <div class="cc-attachments">
+                        <div class="cc-section-label">Attachments</div>
+                        <div class="cc-attachment-list">
+                          <a class="cc-attachment" href="#" onclick="return false;">
+                            <span class="cc-attachment-ext ext-img">JPG</span>
+                            <span class="cc-attachment-name">knee-mri.jpg</span>
+                            <span class="cc-attachment-size">1.8 MB</span>
+                          </a>
+                          <a class="cc-attachment" href="#" onclick="return false;">
+                            <span class="cc-attachment-ext ext-pdf">PDF</span>
+                            <span class="cc-attachment-name">previous-physio-notes.pdf</span>
+                            <span class="cc-attachment-size">680 KB</span>
+                          </a>
+                        </div>
+                      </div>
+                  </div>
+
+                  <footer class="cc-actions cc-actions-grid">
+                    <button class="btn btn-outline" data-manage-session>Manage session</button>
+                    <div class="cc-call-cell">
+                      <button class="btn btn-primary" data-call-toggle>Call client</button>
+                      <div class="cc-phone-display" hidden>
+                        <a href="tel:+919812345003" class="cc-phone-link">+91 98123 45003</a>
+                      </div>
+                    </div>
+                  </footer>
+                </article>
+
+              </div>
+            </div>
+
+          </section>
+
+          </div><!-- end tab-pane active -->
+
+          <div class="tab-pane" data-tab-pane="past" hidden>
+            <section class="section attention-section">
+              <h2 class="section-title">Past clients</h2>
+
+              <div class="attention-block">
+                <div class="attention-block-head">
+                  <span class="attention-block-title">All past sessions</span>
+                  <span class="attention-count" id="past-count">0</span>
+                </div>
+
+                <div class="filter-bar">
+                  <div class="filter-bar-main">
+                    <span class="past-search-wrap">
+                      <span class="past-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+                      <input type="search" class="past-search-input" id="past-search-input" placeholder="Client, physio, service, or description…" autocomplete="off" />
+                      <button type="button" class="past-search-clear" id="past-search-clear" hidden aria-label="Clear search">&times;</button>
+                    </span>
+
+                    <select class="filter-select" id="past-when" aria-label="When">
+                      <option value="all">Any time</option>
+                      <option value="7d">Last 7 days</option>
+                      <option value="30d">Last 30 days</option>
+                      <option value="custom">Specific date…</option>
+                    </select>
+                    <input type="date" class="filter-date" id="past-date-filter" aria-label="Specific date" hidden />
+
+                    <select class="filter-select" id="past-status-select" aria-label="Status">
+                      <option value="all">All statuses</option>
+                      <option value="completed">Completed</option>
+                      <option value="delayed">Delayed</option>
+                      <option value="rescheduled">Rescheduled</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+
+                    <div class="filter-more-wrap">
+                      <button type="button" class="filter-more" id="past-more-btn" aria-expanded="false" aria-controls="past-filter-panel">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
+                        More filters
+                        <span class="filter-more-badge" id="past-more-badge" hidden>0</span>
+                      </button>
+
+                      <div class="filter-panel" id="past-filter-panel" hidden>
+                        <div class="filter-panel-row">
+                          <label for="past-service-select">Service</label>
+                          <select class="filter-select" id="past-service-select">
+                            <option value="all">All services</option>
+                            <option value="Physiotherapy">Physiotherapy</option>
+                            <option value="Physical Trainer">Physical Trainer</option>
+                          </select>
+                        </div>
+                        <div class="filter-panel-row">
+                          <label for="past-sub-select">Type</label>
+                          <select class="filter-select" id="past-sub-select"></select>
+                        </div>
+                        <div class="filter-panel-row">
+                          <label for="past-physio-select">Physio</label>
+                          <select class="filter-select" id="past-physio-select"></select>
+                        </div>
+                        <div class="filter-panel-foot">
+                          <button type="button" class="filter-clear" id="past-clear-all">Clear all</button>
+                          <button type="button" class="btn btn-primary btn-sm" id="past-filter-done">Done</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <label class="filter-sort">
+                      <span class="filter-sort-label">Sort</span>
+                      <select class="filter-select" id="past-sort-select" aria-label="Sort by">
+                        <option value="date-desc">Newest first</option>
+                        <option value="date-asc">Oldest first</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <div class="filter-chips" id="past-chips" hidden></div>
+                </div>
+
+                <div class="cards-grid past-cards-grid" id="past-cards-grid"></div>
+
+                <div class="metrics-empty" id="past-empty" hidden>No past sessions match the selected filters.</div>
+              </div>
+            </section>
+          </div><!-- end tab-pane past -->
+
+        </section>
+      </main>
+    </div>
+
+    <!-- Floating helper -->
+    <button class="kinetic-query">KineticQuery</button>
+
+    <!-- Comment system (Figma-style) -->
+    <button class="comment-toggle" id="comment-toggle" aria-label="Toggle comment mode">Comment</button>
+    <div class="comment-capture" id="comment-capture" hidden></div>
+    <div id="comment-pins"></div>
+
+    <!-- Manage session popup — every per-session action lives here -->
+    <div class="modal-overlay" id="manage-modal" hidden>
+      <div class="modal modal-lg" role="dialog" aria-modal="true" aria-labelledby="manage-title">
+        <header class="modal-header">
+          <button class="back-btn" data-manage-back hidden>&larr; Back</button>
+          <h3 class="modal-title" id="manage-title">Manage session</h3>
+          <button class="modal-close" data-close>&times;</button>
+        </header>
+        <div class="modal-body">
+
+          <div class="modal-view" data-view="main">
+            <div class="manage-client" id="manage-client"></div>
+            <div class="cc-grid" id="manage-summary"></div>
+            <div class="manage-details" id="manage-details"></div>
+            <button type="button" class="cc-add-docs" id="manage-add-docs">
+              <span class="cc-add-docs-icon" aria-hidden="true">+</span>Add documents
+            </button>
+            <div class="manage-actions">
+              <button class="btn btn-outline" data-manage-view="reschedule">Reschedule session</button>
+              <button class="btn btn-outline" data-manage-view="reassign">Reassign physio</button>
+              <button class="btn btn-outline-danger" data-manage-view="cancel">Cancel session</button>
+            </div>
+          </div>
+
+          <div class="modal-view" data-view="reschedule" hidden>
+            <p class="modal-sub">Pick a slot and a physiotherapist &mdash; each side greys out what the other rules out.</p>
+
+            <label class="manage-field manage-field-date">
+              <span class="cc-grid-label">Date</span>
+              <input type="date" class="dt-input" id="reschedule-date" />
+            </label>
+
+            <div class="reschedule-split">
+              <section class="reschedule-col">
+                <div class="reschedule-col-head">
+                  <span class="cc-grid-label">Time</span>
+                  <span class="reschedule-col-hint" id="reschedule-time-hint">All slots</span>
+                </div>
+                <div class="schedule-slots" id="reschedule-slots"></div>
+              </section>
+              <section class="reschedule-col">
+                <div class="reschedule-col-head">
+                  <span class="cc-grid-label">Physiotherapist</span>
+                  <span class="reschedule-col-hint" id="reschedule-physio-hint">All physios</span>
+                </div>
+                <div class="physio-list" id="reschedule-physios"></div>
+              </section>
+            </div>
+
+            <div class="slot-legend">
+              <span class="legend-dot legend-free"></span> Available
+              <span class="legend-dot legend-booked"></span> Booked
+              <span class="legend-dot legend-selected"></span> Selected
+            </div>
+
+            <label class="manage-field">
+              <span class="cc-grid-label">Reason for reschedule <span class="required-mark">*</span></span>
+              <textarea id="reschedule-reason" placeholder="Required: e.g. client requested a later slot, physio double-booked..."></textarea>
+            </label>
+
+            <div class="modal-actions">
+              <button class="btn btn-outline" data-manage-back>Back</button>
+              <button class="btn btn-primary" id="reschedule-done" disabled>Done</button>
+            </div>
+          </div>
+
+          <div class="modal-view" data-view="reassign" hidden>
+            <p class="modal-sub">Pick a physiotherapist for this slot &mdash; the date and time stay as they are.</p>
+
+            <div class="reschedule-split">
+              <section class="reschedule-col">
+                <div class="reschedule-col-head">
+                  <span class="cc-grid-label">Time</span>
+                  <span class="reschedule-col-hint reschedule-col-locked">Locked</span>
+                </div>
+                <div class="cc-grid reassign-when">
+                  <div class="cc-grid-row cc-datetime">
+                    <div class="cc-dt-display">
+                      <div class="cc-dt-item"><span class="cc-grid-label">Date</span><strong id="reassign-date">&mdash;</strong></div>
+                      <div class="cc-dt-item"><span class="cc-grid-label">Time</span><strong id="reassign-time">&mdash;</strong></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="schedule-slots schedule-slots-locked" id="reassign-slots"></div>
+              </section>
+              <section class="reschedule-col">
+                <div class="reschedule-col-head">
+                  <span class="cc-grid-label">Physiotherapist</span>
+                  <span class="reschedule-col-hint" id="reassign-physio-hint">&mdash;</span>
+                </div>
+                <div class="physio-list" id="reassign-physios"></div>
+              </section>
+            </div>
+
+            <div class="slot-legend">
+              <span class="legend-dot legend-free"></span> Available
+              <span class="legend-dot legend-booked"></span> Booked
+              <span class="legend-dot legend-selected"></span> Selected
+            </div>
+
+            <p class="manage-note">
+              To change the time as well as the physiotherapist, use <strong>Reschedule session</strong> instead.
+            </p>
+
+            <div class="modal-actions">
+              <button class="btn btn-outline" data-manage-back>Back</button>
+              <button class="btn btn-primary" id="confirm-assign" disabled>Confirm Assignment</button>
+            </div>
+          </div>
+
+          <div class="modal-view" data-view="cancel" hidden>
+            <p class="modal-sub">Cancel session for <strong id="cancel-client-name">&mdash;</strong>?</p>
+            <div class="cancel-form">
+              <label for="cancel-reason">Reason for cancellation <span class="required-mark">*</span></label>
+              <textarea id="cancel-reason" required placeholder="Required: e.g. Client unavailable, physio unwell, weather, other..."></textarea>
+              <div class="form-hint">A reason is required to cancel this session.</div>
+            </div>
+            <div class="modal-actions">
+              <button class="btn btn-outline" data-manage-back>Keep session</button>
+              <button class="btn btn-danger" id="confirm-cancel" disabled>Confirm Cancellation</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       FIREBASE FIRESTORE (for shared comments across all viewers)
+       Until you replace the placeholder config below, comments fall
+       back to localStorage (per-browser only).
+
+       To enable shared comments:
+         1. Create a free Firebase project at https://console.firebase.google.com/
+         2. Add a Web app, copy the firebaseConfig object
+         3. Replace the placeholder below with your real config
+         4. Enable Firestore Database (Build → Firestore Database → Create
+            database → Start in test mode)
+         5. Commit + push — done!
+  ================================================================ -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    if (firebaseConfig.apiKey !== "YOUR_API_KEY" && window.firebase) {
+      try { firebase.initializeApp(firebaseConfig); }
+      catch (e) { console.error('Firebase init failed:', e); }
+    }
+  </script>
+
+
+  <!-- Past session details — read-only information popup -->
+  <div class="modal-overlay" id="past-detail-modal" hidden>
+    <div class="modal modal-lg" role="dialog" aria-modal="true" aria-labelledby="past-detail-title">
+      <header class="modal-header">
+        <button class="back-btn" id="past-detail-back" hidden>&larr; Back</button>
+        <h3 class="modal-title" id="past-detail-title">Session details</h3>
+        <button class="modal-close" data-close aria-label="Close">&times;</button>
+      </header>
+      <div class="modal-body">
+        <div class="manage-client" id="past-detail-client"></div>
+        <div class="cc-grid" id="past-detail-summary"></div>
+        <div class="manage-details" id="past-detail-extra"></div>
+        <div class="past-history" id="past-detail-history"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js?v=5"></script>
+</body>
 </html>
