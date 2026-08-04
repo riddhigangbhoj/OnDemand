@@ -156,7 +156,7 @@ export function Home() {
             <div className="mt-8 inline-flex flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl border border-surface/12 bg-surface/[0.06] px-5 py-3 text-fine font-semibold text-surface backdrop-blur">
               <span className="inline-flex items-center gap-2"><Clock size={18} className="text-butter" /> Arrives in ~2 hrs</span>
               <span className="hidden h-4 w-px bg-surface/20 sm:block" />
-              <span className="inline-flex items-center gap-2"><ShieldCheck size={18} className="text-butter" /> Verified pros</span>
+              <span className="inline-flex items-center gap-2"><ShieldCheck size={18} className="text-butter" /> Verified providers</span>
               <span className="hidden h-4 w-px bg-surface/20 sm:block" />
               <span className="inline-flex items-center gap-2"><Star size={18} className="fill-butter text-butter" /> 4.9 rated</span>
             </div>
@@ -435,7 +435,7 @@ export function Home() {
             <MapPin size={15} className="text-butter" /> Serving all of Bengaluru
           </span>
           <h2 className="max-w-2xl font-display text-heading font-medium tracking-tight lg:text-display">Care that comes to you</h2>
-          <p className="max-w-md text-body text-forest-50/80">A verified physiotherapist or trainer at your door in about 2 hours. From ₹{FROM_PRICE}, no lock-in.</p>
+          <p className="max-w-md text-body text-forest-50/80">A verified physiotherapist or trainer at your door in about 2 hours, at ₹{FROM_PRICE}.</p>
           <div className="mt-1 flex flex-wrap items-center justify-center gap-3">
             <Link to="/physiotherapy" className="sheen cta-pulse group inline-flex items-center justify-center gap-2 rounded-full bg-clay-500 px-8 py-4 text-body font-semibold text-surface transition hover:bg-clay-600 active:scale-[0.98]">
               Book a home visit

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Phone, RotateCw, CalendarClock } from 'lucide-react';
 import { useStore } from '../store/store';
-import { Button, Card, Field, cn } from '../shared/ui';
+import { Button, Card, Field, cn, WhatsAppIcon, WHATSAPP_HELP } from '../shared/ui';
 import { fmtDay, fmtTime } from '../store/clock';
 import { cardBySlug, conditionBySlug } from '../store/catalog';
 import type { Booking } from '../store/types';
@@ -151,6 +151,14 @@ function AccountCard({ booking: b, onRebook }: { booking: Booking; onRebook: () 
             </Button>
           )}
         </div>
+        <a
+          href={WHATSAPP_HELP}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2.5 flex items-center justify-center gap-2 rounded-full border border-line-strong px-6 py-3 text-body font-semibold text-ink transition hover:border-forest-500 hover:bg-forest-50/50"
+        >
+          <WhatsAppIcon className="text-[#25D366]" /> Need help? Message us on WhatsApp
+        </a>
       </div>
     </Card>
   );

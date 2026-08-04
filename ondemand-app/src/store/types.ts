@@ -68,6 +68,7 @@ export interface Booking {
   address: string;
   note?: string;
   entryInstructions?: string;
+  attachments?: string[];
   amount: number;
 
   scheduledAt: number;

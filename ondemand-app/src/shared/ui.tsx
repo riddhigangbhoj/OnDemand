@@ -4,6 +4,17 @@ import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, TextareaHTML
 export const cn = (...parts: Array<string | false | null | undefined>) =>
   parts.filter(Boolean).join(' ');
 
+// TODO: set the WhatsApp business link (e.g. https://wa.me/<number>) before launch.
+export const WHATSAPP_HELP = '#';
+
+export function WhatsAppIcon({ size = 17, className }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 1.8c2.16 0 4.19.84 5.72 2.37a8.06 8.06 0 0 1 2.37 5.73c0 4.47-3.64 8.11-8.11 8.11a8.08 8.08 0 0 1-4.12-1.13l-.3-.18-3.12.82.83-3.04-.19-.31a8.05 8.05 0 0 1-1.24-4.29c0-4.47 3.64-8.11 8.11-8.11Zm-2.7 4.35c-.15 0-.4.06-.6.28-.21.22-.79.77-.79 1.88s.81 2.18.92 2.33c.11.15 1.57 2.4 3.81 3.36.53.23.95.37 1.27.47.53.17 1.02.15 1.4.09.43-.06 1.31-.54 1.5-1.06.19-.52.19-.96.13-1.06-.06-.09-.21-.15-.44-.26-.23-.11-1.31-.65-1.51-.72-.2-.07-.35-.11-.5.11-.15.22-.57.72-.7.87-.13.15-.26.17-.48.06-.23-.11-.95-.35-1.81-1.11-.67-.6-1.12-1.33-1.25-1.56-.13-.22-.01-.34.1-.45.1-.1.22-.26.33-.39.11-.13.15-.22.22-.37.07-.15.04-.28-.02-.39-.06-.11-.5-1.21-.69-1.66-.18-.44-.37-.38-.5-.39-.13-.01-.28-.01-.43-.01Z" />
+    </svg>
+  );
+}
+
 type Variant = 'primary' | 'clay' | 'ghost' | 'danger' | 'soft' | 'dark';
 const variants: Record<Variant, string> = {
   primary: 'bg-forest-700 text-surface hover:bg-forest-800 shadow-[0_8px_24px_-12px_rgba(20,51,39,0.6)]',

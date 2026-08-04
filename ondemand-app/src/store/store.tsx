@@ -35,6 +35,7 @@ type Action =
       amount: number;
       note?: string;
       entryInstructions?: string;
+      attachments?: string[];
     }
   | { t: 'OPS_CONFIRM'; id: string }
   | { t: 'TRAINER_CONFIRM'; id: string }
@@ -170,6 +171,7 @@ function reducer(s: StoreState, a: Action): StoreState {
         address: a.address,
         note: a.note,
         entryInstructions: a.entryInstructions,
+        attachments: a.attachments,
         amount: a.amount,
         scheduledAt: a.scheduledAt,
         createdAt: s.now,

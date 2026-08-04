@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, MapPin, Check, ChevronRight, Search, Navigation,
-  Pencil, Lock, ArrowUpRight,
+  Pencil, Lock, ArrowUpRight, Paperclip, FileText, X,
 } from 'lucide-react';
 import { useStore } from '../../store/store';
 import { Button, Card, Field, TextField, Pill, cn } from '../../shared/ui';
@@ -51,6 +51,7 @@ export function BookingFlow() {
   const [targetDate, setTargetDate] = useState<number | null>(null);
   const [scheduledAt, setScheduledAt] = useState<number | null>(null);
   const [note, setNote] = useState('');
+  const [files, setFiles] = useState<string[]>([]);
 
   const tiles = useMemo(() => getDateTiles(state.now), [state.now]);
   const groups = useMemo(() => (targetDate ? getDaySlots(targetDate) : []), [targetDate]);
@@ -78,6 +79,7 @@ export function BookingFlow() {
       amount,
       note: note || undefined,
       entryInstructions: entry || undefined,
+      attachments: files.length ? files : undefined,
     });
     setPlaced(true);
   };
@@ -230,6 +232,43 @@ export function BookingFlow() {
                 <div className="rounded-3xl border border-line bg-surface p-5">
                   <div className="text-fine font-semibold uppercase tracking-[0.12em] text-ink-soft">Note for the professional (optional)</div>
                   <TextField rows={3} className="mt-2.5" placeholder="e.g. It started three days ago, worse in the mornings…" value={note} onChange={(e) => setNote(e.target.value)} />
+
+                  <label className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded-full border border-line-strong px-4 py-2 text-fine font-semibold text-forest-700 transition hover:border-forest-500 hover:bg-forest-50">
+                    <Paperclip size={15} /> Attach a document
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*,.pdf,.doc,.docx"
+                      className="hidden"
+                      onChange={(e) => {
+                        const names = Array.from(e.target.files ?? []).map((f) => f.name);
+                        if (names.length) setFiles((prev) => [...prev, ...names]);
+                        e.target.value = '';
+                      }}
+                    />
+                  </label>
+                  <p className="mt-2 text-fine text-ink-soft">Prescriptions, scans or reports that help the professional prepare.</p>
+
+                  {files.length > 0 && (
+                    <ul className="mt-3 space-y-2">
+                      {files.map((f, i) => (
+                        <li key={`${f}-${i}`} className="flex items-center justify-between gap-3 rounded-2xl border border-line bg-canvas/50 px-3.5 py-2.5">
+                          <span className="flex min-w-0 items-center gap-2 text-fine text-ink">
+                            <FileText size={15} className="shrink-0 text-forest-600" />
+                            <span className="truncate">{f}</span>
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setFiles((prev) => prev.filter((_, j) => j !== i))}
+                            className="shrink-0 rounded-full p-1 text-ink-soft transition hover:bg-surface-2 hover:text-ink"
+                            aria-label={`Remove ${f}`}
+                          >
+                            <X size={15} />
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
                 <ReviewRow label="Amount" value={`₹${amount.toLocaleString('en-IN')} · prepaid`} onEdit={() => {}} noEdit />
                 <Button className="mt-2 w-full" onClick={() => go(1)}>{requiresIdentity ? 'Continue' : 'Continue to pay'} <ChevronRight size={17} /></Button>
@@ -288,9 +327,7 @@ export function BookingFlow() {
                 <ul className="mt-7 space-y-3 border-t border-surface/15 pt-7">
                   {[
                     'Home visit at your address',
-                    'Same-day, 8am to 8pm',
                     'Verified, screened professional',
-                    'One prepaid session, no packages',
                   ].map((t) => (
                     <li key={t} className="flex gap-3 text-fine text-forest-50/80">
                       <Check size={17} className="mt-0.5 shrink-0 text-butter" /> {t}
