@@ -47,7 +47,6 @@ export function LoginProfile({
               maxLength={6}
               value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-              hint="Prototype — any 6 digits, e.g. 123456"
               className="text-center text-body font-semibold tracking-[0.4em]"
             />
           )}
@@ -62,9 +61,8 @@ export function LoginProfile({
           </button>
           <div>
             <h2 className="font-display text-title font-medium leading-tight text-ink">Almost there</h2>
-            <p className="mt-3 text-body leading-relaxed text-ink-soft">What should we call you?</p>
           </div>
-          <Field label="Full name" placeholder="e.g. Aman Verma" value={name} onChange={(e) => setName(e.target.value)} />
+          <Field label="Name" placeholder="e.g. Aman Verma" value={name} onChange={(e) => setName(e.target.value)} />
           <Button
             className="w-full"
             disabled={!name.trim()}

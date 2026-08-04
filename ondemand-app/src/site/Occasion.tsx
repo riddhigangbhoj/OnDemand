@@ -58,7 +58,7 @@ export function Occasion() {
 
   const faqs = [
     { q: 'How soon can someone come?', a: 'Same day. Book now and we confirm your professional and time on WhatsApp.' },
-    { q: 'Who visits me?', a: 'A licensed, background-checked professional, verified before their first visit.' },
+    { q: 'Who visits me?', a: 'One of our licensed, background-checked professionals, verified before their first visit.' },
     { q: 'What does it cost?', a: `Flat ₹${price.toLocaleString('en-IN')}, prepaid, for one home session. No packages.` },
     { q: 'Can I reschedule or cancel?', a: 'Yes — reach us on WhatsApp any time and we will sort it out for you.' },
   ];
@@ -66,7 +66,7 @@ export function Occasion() {
   const trustRow = [
     { i: HomeIcon, t: 'At your home' },
     { i: Clock, t: 'Same-day, 8am–8pm' },
-    { i: ShieldCheck, t: 'Verified professional' },
+    { i: ShieldCheck, t: 'Our verified professional' },
   ];
 
   return (

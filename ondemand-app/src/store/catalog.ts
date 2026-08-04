@@ -20,15 +20,15 @@ export const SERVICE_META: Record<
   physiotherapy: {
     path: 'physiotherapy',
     title: 'Physiotherapy',
-    tagline: 'Recover from pain and injury with a physio at your door.',
-    gate: 'Explore the pain areas we treat.',
+    tagline: 'Recover from pain and injury with a physiotherapist at your door.',
+    gate: 'Explore our services',
     hub: 'Select card according to your needs.',
   },
   training: {
     path: 'physical-training',
     title: 'Physical Training',
     tagline: 'Move better and get stronger with a trainer in your space.',
-    gate: 'Explore how a trainer can help, in your own space.',
+    gate: 'Explore our services',
     hub: 'Select card according to your needs.',
   },
 };
@@ -50,7 +50,7 @@ const T = (slug: string, label: string, type: string, blurb: string): Condition 
 
 export const CONDITIONS: Condition[] = [
   // physiotherapy
-  P('back-pain', 'Back pain, sudden or recurring', 'Orthopaedic', 'A physio finds the driver of your back pain and gives you a plan you can hold.'),
+  P('back-pain', 'Back pain, sudden or recurring', 'Orthopaedic', 'A physiotherapist finds the driver of your back pain and gives you a plan you can hold.'),
   P('sciatica-flare', 'Sciatica flare', 'Spine', 'Ease the nerve pain shooting down your leg with targeted, hands-on care.'),
   P('neck-desk', 'Neck pain from desk work', 'Orthopaedic', 'Undo the strain of long hours at a screen.'),
   P('upper-back', 'Upper back pain', 'Orthopaedic', 'Release the tension between your shoulder blades.'),

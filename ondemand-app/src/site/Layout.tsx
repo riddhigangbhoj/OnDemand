@@ -76,7 +76,7 @@ export function Layout() {
             <div>
               <Wordmark className="text-heading text-surface" />
               <p className="mt-4 max-w-sm text-body leading-relaxed text-forest-50/70">
-                Same-day physiotherapy and physical training, delivered to your door across Bengaluru.
+                Physiotherapy and physical training at your door in about 2 hours, across Bengaluru.
               </p>
             </div>
             <nav className="flex flex-wrap gap-x-8 gap-y-3 text-body font-medium">
@@ -88,10 +88,6 @@ export function Layout() {
           </div>
           <div className="mt-8 flex flex-col gap-3 text-fine text-forest-50/55 sm:flex-row sm:items-center sm:justify-between">
             <span>© {new Date().getFullYear()} Kinetic Age · Bengaluru</span>
-            <span className="max-w-xl">
-              A home physiotherapy &amp; training service by the KINE physiotherapy group. Prototype — no real
-              payment, message, or booking is processed.
-            </span>
           </div>
         </div>
       </footer>

@@ -1,7 +1,7 @@
 import { Phone } from 'lucide-react';
 
 const faqs = [
-  { q: 'When will my session be confirmed?', a: 'After payment your booking is placed. Our ops team and the assigned physio each confirm it — you get a WhatsApp message the moment both are done.' },
+  { q: 'When will my session be confirmed?', a: 'After payment your booking is placed. Our ops team and the assigned physiotherapist each confirm it — you get a WhatsApp message the moment both are done.' },
   { q: 'Can I book for today?', a: 'Same-day isn’t available yet. The earliest slot is tomorrow. Tapping today lets us know you needed it sooner.' },
   { q: 'How do I know the right person arrived?', a: 'You’ll get a 6-digit code on WhatsApp when your session starts. Share it with the professional at your door.' },
   { q: 'What are the working hours?', a: 'Sessions run from 8:00am to 8:00pm. Book late at night and the next morning starts from 12:00pm.' },
