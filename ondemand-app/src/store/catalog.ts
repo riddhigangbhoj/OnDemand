@@ -115,7 +115,6 @@ export const SERVICE_CARDS: Record<Service, ServiceCard[]> = {
     { slug: 'space-program', label: 'Home gym exercise planning', img: '/back-pain.jpg' },
     { slug: 'bodyweight', label: 'Bodyweight exercise', img: '/back-pain.jpg' },
     { slug: 'home-gym-workout', label: 'Home gym workout', img: '/back-pain.jpg' },
-    { slug: 'progression', label: 'Weight and reps', img: '/back-pain.jpg' },
   ],
 };
 
